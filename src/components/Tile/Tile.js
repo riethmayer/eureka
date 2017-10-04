@@ -1,6 +1,13 @@
 import React, { Component } from 'react'
 
 class Tile extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      active: false
+    }
+  }
+
   color(key) {
     const colors = {
       a: 'blue',
@@ -44,10 +51,10 @@ class Tile extends Component {
   }
 
   render() {
-    const { caption, active } = this.props
+    const { caption, active, onClick } = this.props
 
     return (
-      <svg xmlns="http//www.w3.org/2000/svg" fill="gray" stroke="none" height="40" width="40">
+      <svg xmlns="http//www.w3.org/2000/svg" fill="gray" stroke="none" height="40" width="40" onClick={onClick} >
         <rect width={39}
               height={39}
               x={1} y={1}

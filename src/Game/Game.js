@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { start, tick, pause, resume, abort } from '../reducers'
 import GameOver from '../components/GameOver/GameOver'
 import GamePaused from '../components/GamePaused/GamePaused'
-import GameRunning from '../components/GameRunning/GameRunning'
+import GameRunning from '../GameRunning/GameRunning'
 
 class Game extends Component {
   componentDidMount() {
