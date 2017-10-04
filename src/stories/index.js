@@ -24,86 +24,86 @@ storiesOf('Game states', module)
 storiesOf('Tiles', module)
   .add('characters', () =>
     <div>
-      <Tile caption="A" color="blue" />
-      <Tile caption="B" color="red" />
-      <Tile caption="C" color="green" />
-      <Tile caption="D" color="brown" />
-      <Tile caption="E" color="purple" />
-      <Tile caption="F" color="orange" />
-      <Tile caption="G" color="yellow" />
-      <Tile caption="H" color="aqua" />
-      <Tile caption="I" color="blueviolet" />
-      <Tile caption="J" color="cadetblue" />
-      <Tile caption="K" color="coral" />
-      <Tile caption="L" color="cornflowerblue" />
-      <Tile caption="M" color="crimson" />
-      <Tile caption="N" color="cyan" />
-      <Tile caption="O" color="darkblue" />
-      <Tile caption="P" color="darkcyan" />
-      <Tile caption="Q" color="darkgreen" />
-      <Tile caption="R" color="darksalmon" />
-      <Tile caption="S" color="deepskyblue" />
-      <Tile caption="T" color="deeppink" />
-      <Tile caption="U" color="yellow" />
-      <Tile caption="V" color="forestgreen" />
-      <Tile caption="W" color="greenyellow" />
-      <Tile caption="X" color="palevioletred" />
-      <Tile caption="Y" color="darkseagreen" />
-      <Tile caption="Z" color="tomato" />
+      <Tile caption="A" />
+      <Tile caption="B" />
+      <Tile caption="C" />
+      <Tile caption="D" />
+      <Tile caption="E" />
+      <Tile caption="F" />
+      <Tile caption="G" />
+      <Tile caption="H" />
+      <Tile caption="I" />
+      <Tile caption="J" />
+      <Tile caption="K" />
+      <Tile caption="L" />
+      <Tile caption="M" />
+      <Tile caption="N" />
+      <Tile caption="O" />
+      <Tile caption="P" />
+      <Tile caption="Q" />
+      <Tile caption="R" />
+      <Tile caption="S" />
+      <Tile caption="T" />
+      <Tile caption="U" />
+      <Tile caption="V" />
+      <Tile caption="W" />
+      <Tile caption="X" />
+      <Tile caption="Y" />
+      <Tile caption="Z" />
     </div>
   ).add('active characters', () =>
     <div>
-      <Tile caption="A" color="royalblue" />
-      <Tile active caption="B" color="red" />
-      <Tile caption="C" color="green" />
-      <Tile caption="D" color="brown" />
-      <Tile caption="E" color="purple" />
-      <Tile caption="F" color="orange" />
-      <Tile caption="G" color="yellow" />
-      <Tile caption="H" color="aqua" />
-      <Tile caption="I" color="blueviolet" />
-      <Tile active caption="J" color="cadetblue" />
-      <Tile active caption="K" color="coral" />
-      <Tile caption="L" color="cornflowerblue" />
-      <Tile caption="M" color="crimson" />
-      <Tile caption="N" color="cyan" />
-      <Tile caption="O" color="darkblue" />
-      <Tile caption="P" color="darkcyan" />
-      <Tile caption="Q" color="darkgreen" />
-      <Tile caption="R" color="darksalmon" />
-      <Tile caption="S" color="deepskyblue" />
-      <Tile caption="T" color="deeppink" />
-      <Tile caption="U" color="yellow" />
-      <Tile caption="V" color="forestgreen" />
-      <Tile caption="W" color="greenyellow" />
-      <Tile caption="X" color="palevioletred" />
-      <Tile caption="Y" color="darkseagreen" />
-      <Tile caption="Z" color="tomato" />
+      <Tile caption="A" />
+      <Tile active caption="B" />
+      <Tile caption="C" />
+      <Tile caption="D" />
+      <Tile caption="E" />
+      <Tile caption="F" />
+      <Tile caption="G" />
+      <Tile caption="H" />
+      <Tile caption="I" />
+      <Tile active caption="J" />
+      <Tile active caption="K" />
+      <Tile caption="L" />
+      <Tile caption="M" />
+      <Tile caption="N" />
+      <Tile caption="O" />
+      <Tile caption="P" />
+      <Tile caption="Q" />
+      <Tile caption="R" />
+      <Tile caption="S" />
+      <Tile caption="T" />
+      <Tile caption="U" />
+      <Tile caption="V" />
+      <Tile caption="W" />
+      <Tile caption="X" />
+      <Tile caption="Y" />
+      <Tile caption="Z" />
     </div>
   ).add('numbers', () =>
     <div>
-      <Tile caption="0" color="blue" />
-      <Tile caption="1" color="red" />
-      <Tile caption="2" color="green" />
-      <Tile caption="3" color="brown" />
-      <Tile caption="4" color="purple" />
-      <Tile caption="5" color="orange" />
-      <Tile caption="6" color="yellow" />
-      <Tile caption="7" color="aqua" />
-      <Tile caption="8" color="blueviolet" />
-      <Tile caption="9" color="cadetblue" />
+      <Tile caption="0" />
+      <Tile caption="1" />
+      <Tile caption="2" />
+      <Tile caption="3" />
+      <Tile caption="4" />
+      <Tile caption="5" />
+      <Tile caption="6" />
+      <Tile caption="7" />
+      <Tile caption="8" />
+      <Tile caption="9" />
     </div>
   ).add('active numbers', () =>
     <div>
-      <Tile caption="0" color="royalblue" />
-      <Tile active caption="1" color="red" />
-      <Tile caption="2" color="green" />
-      <Tile caption="3" color="brown" />
-      <Tile caption="4" color="purple" />
-      <Tile active caption="5" color="orange" />
-      <Tile active caption="6" color="yellow" />
-      <Tile caption="7" color="aqua" />
-      <Tile caption="8" color="blueviolet" />
-      <Tile caption="9" color="cadetblue" />
+      <Tile caption="0" />
+      <Tile active caption="1" />
+      <Tile caption="2" />
+      <Tile caption="3" />
+      <Tile caption="4" />
+      <Tile active caption="5" />
+      <Tile active caption="6" />
+      <Tile caption="7" />
+      <Tile caption="8" />
+      <Tile caption="9" />
     </div>
   )

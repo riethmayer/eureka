@@ -1,8 +1,51 @@
 import React, { Component } from 'react'
 
 class Tile extends Component {
+  color(key) {
+    const colors = {
+      a: 'blue',
+      b: 'red',
+      c: 'green',
+      d: 'brown',
+      e: 'purple',
+      f: 'orange',
+      g: 'yellow',
+      h: 'aqua',
+      i: 'blueviolet',
+      j: 'cadetblue',
+      k: 'coral',
+      l: 'cornflowerblue',
+      m: 'crimson',
+      n: 'cyan',
+      o: 'darkblue',
+      p: 'darkcyan',
+      q: 'darkgreen',
+      r: 'darksalmon',
+      s: 'deepskyblue',
+      t: 'deeppink',
+      u: 'yellow',
+      v: 'forestgreen',
+      w: 'greenyellow',
+      x: 'palevioletred',
+      y: 'darkseagreen',
+      z: 'tomato',
+      0: 'orchid',
+      1: 'peru',
+      2: 'steelblue',
+      3: 'thistle',
+      4: 'teal',
+      5: 'wheat',
+      6: 'turquoise',
+      7: 'springgreen',
+      8: 'papayawhip',
+      9: 'olivedrab'
+    }
+    return colors[String(key).toLowerCase()]
+  }
+
   render() {
-    const { color, caption, active } = this.props
+    const { caption, active } = this.props
+
     return (
       <svg xmlns="http//www.w3.org/2000/svg" fill="gray" stroke="none" height="40" width="40">
         <rect width={39}
@@ -22,7 +65,7 @@ class Tile extends Component {
               strokeWidth='1'
               alignmentBaseline="middle" textAnchor="middle" fontFamily="Verdana"
               fontWeight="bold"
-              fontSize="36" fill={color || 'white'}>
+              fontSize="36" fill={this.color(caption) || 'white'}>
           { caption || 'nil' }
         </text>
       </svg>
