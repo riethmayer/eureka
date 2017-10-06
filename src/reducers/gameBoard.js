@@ -11,11 +11,18 @@ const shuffle = (array) => {
   return array;
 }
 
-export const clicked = (name,index) => {
-  return ((dispatch, state) => {
+export const clicked = (name, index) => {
+  return (dispatch, state) => {
+    const { board } = state()
+    if(board['name'] == name) {
+      if(board['index'] == index) {
+        dispatch(deselected({name, index}))
+      }
+    }
+    console.log('clicked', board)
     // 0. nothing is selected:
     // 1. click tile with caption 'A' and id=5
-    dispatch(selected({index, name}))
+    dispatch(selected({name, index}))
     // 1.1 tile with id 5 becomes active
     // 1.2 tiles with caption 'A' become solvable  // maybe?
     // 1.3.1 click elem with id=5 again
@@ -27,23 +34,35 @@ export const clicked = (name,index) => {
     // 1.4.1.3 tile with caption 'B' and id=38 clicked
     // 1.4.1.3.1 remove tile 38 and 2 from the board
     // 1.4.1.3.2 tiles lose solvable
-  })
+  }
 }
 
-const selected = ({index, name}) => {
+const selected = ({name, index}) => {
   return (dispatch) => {
-    console.log('actionCreator', index, name)
+    console.log('actionCreator', name, index)
     dispatch({
       type: actions.selected,
-      index,
-      name
+      name,
+      index
+    })
+  }
+}
+
+const deselected = ({name, index}) => {
+  return (dispatch) => {
+    console.log('deselected', name, index)
+    dispatch({
+      type: actions.deselected,
+      name,
+      index
     })
   }
 }
 
 const actions = {
   new: 'NEW',
-  selected: 'SELECTED'
+  selected: 'SELECTED',
+  deselected: 'DESELECTED'
 }
 
 const initialState = shuffle(allTokens)
@@ -55,8 +74,10 @@ const gameBoard = (state = initialState, action = {}) => {
     case actions.new:
       return initialState
     case actions.selected:
-      console.log('reducer', action.index, action.name)
-      return { ...state, index: action.index, name: action.name }
+      console.log('reducer', action.name, action.index)
+      return { ...state, name: action.name, index: action.index }
+    case actions.deselected:
+      return { ...state, name: undefined, index: undefined }
     default:
       return state
   }
