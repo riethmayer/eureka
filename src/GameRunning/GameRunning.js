@@ -2,36 +2,29 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import TimeLeft from '../components/TimeLeft/TimeLeft'
-import Tile from '../components/Tile/Tile'
-import { pause } from '../reducers'
+import GameBoard from './GameBoard/GameBoard'
+
+import { pause } from '../reducers/timer'
 
 class GameRunning extends Component {
-  clicked(name,index) {
-    return (() => {
-      console.log(name, index)
-    })
-  }
-  tile(name, index) {
-    return(
-      <Tile caption={name} id={`tile_${index}`} onClick={this.clicked(name, index)} key={`tile_${index}`}/>
-    )
-  }
   render() {
-    const { timeLeft } = this.props
+    const { timeLeft, gameRunning, pause } = this.props
     return(
       <div>
         <TimeLeft timeLeft={timeLeft} pause={pause} />
-        { ['a','b'].map((elem, index) => this.tile(elem, index)) }
+        { gameRunning && <GameBoard /> }
       </div>
     )
   }
 }
 
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({time}) => {
   return({
-    timeLeft: state.timeLeft,
+    timeLeft: time.timeLeft,
+    gameRunning: time.gameRunning,
+    gameBoard: time.gameBoard
   })
 }
 
-export default connect(mapStateToProps, {pause})(GameRunning)
+export default connect(mapStateToProps, { pause })(GameRunning)

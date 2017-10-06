@@ -54,7 +54,7 @@ class Tile extends Component {
     const { caption, active, onClick } = this.props
 
     return (
-      <svg xmlns="http//www.w3.org/2000/svg" fill="gray" stroke="none" height="40" width="40" onClick={onClick} >
+      <svg xmlns="http//www.w3.org/2000/svg" fill="gray" stroke="none" height="40" width="40" onClick={onClick}>
         <rect width={39}
               height={39}
               x={1} y={1}

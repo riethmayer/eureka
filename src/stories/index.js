@@ -5,12 +5,14 @@ import { storiesOf } from '@storybook/react';
 import { Button, Welcome } from '@storybook/react/demo';
 import GameOver from '../components/GameOver/GameOver'
 import GamePaused from '../components/GamePaused/GamePaused'
-import GameRunning from '../components/GameRunning/GameRunning'
+import GameRunning from '../GameRunning/GameRunning'
 import { MemoryRouter } from 'react-router-dom'
 import Tile from '../components/Tile/Tile'
+import configureStore from '../configureStore'
+
+const store = configureStore()
 
 import App from '../App'
-
 storiesOf('Game states', module)
   .addDecorator(story =>
     (<MemoryRouter initialEntries={['/']}>
@@ -19,7 +21,7 @@ storiesOf('Game states', module)
   ).add('Start screen', () => <App />)
   .add('GAME OVER', () => <GameOver />)
   .add('PAUSED', () => <GamePaused />)
-  .add('RUNNING', () => <GameRunning timeLeft={123}/>)
+  .add('RUNNING', () => <GameRunning timeLeft={123} store={store}/>)
 
 storiesOf('Tiles', module)
   .add('characters', () =>

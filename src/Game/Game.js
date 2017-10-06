@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { start, tick, pause, resume, abort } from '../reducers'
+import { start, tick, pause, resume, abort } from '../reducers/timer'
 import GameOver from '../components/GameOver/GameOver'
 import GamePaused from '../components/GamePaused/GamePaused'
 import GameRunning from '../GameRunning/GameRunning'
@@ -34,13 +34,13 @@ class Game extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({time}) => {
   return({
-    timer: state.timer,
-    timeLeft: state.timeLeft,
-    gameRunning: state.gameRunning,
-    gameOver: state.gameOver,
-    gamePaused: state.gamePaused
+    timer: time.timer,
+    timeLeft: time.timeLeft,
+    gameRunning: time.gameRunning,
+    gameOver: time.gameOver,
+    gamePaused: time.gamePaused
   })
 }
 
