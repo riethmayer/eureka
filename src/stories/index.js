@@ -1,14 +1,15 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
+import configureStore from '../configureStore'
+import { MemoryRouter } from 'react-router-dom'
 
 import { Button, Welcome } from '@storybook/react/demo';
 import GameOver from '../components/GameOver/GameOver'
 import GamePaused from '../components/GamePaused/GamePaused'
 import GameRunning from '../GameRunning/GameRunning'
-import { MemoryRouter } from 'react-router-dom'
 import Tile from '../components/Tile/Tile'
-import configureStore from '../configureStore'
+import Turtle from '../components/Turtle/Turtle'
 
 const store = configureStore()
 
@@ -16,7 +17,7 @@ import App from '../App'
 storiesOf('Game states', module)
   .addDecorator(story =>
     (<MemoryRouter initialEntries={['/']}>
-  {story()}
+      {story()}
     </MemoryRouter>)
   ).add('Start screen', () => <App />)
   .add('GAME OVER', () => <GameOver />)
@@ -108,4 +109,8 @@ storiesOf('Tiles', module)
       <Tile caption="8" />
       <Tile caption="9" />
     </div>
+  )
+storiesOf('Turtle', module)
+  .add('normal', () =>
+    <Turtle store={store} />
   )

@@ -1,0 +1,80 @@
+.turtle {
+  position: relative;
+}
+.bottom {
+  position: relative;
+}
+.first-layer {
+  position: absolute;
+  top: 40px;
+  left: 160px;
+  z-index: 10;
+}
+.second-layer {
+  position: absolute;
+  top: 80px;
+  left: 200px;
+  z-index: 20;
+}
+.third-layer {
+  position: absolute;
+  top: 120px;
+  left: 240px;
+  z-index: 30;
+}
+.top-piece {
+  position: absolute;
+  top: 140px;
+  left: 260px;
+  z-index: 40;
+}
+.tile {
+  box-shadow: 2px 2px 2px #555;
+}
+.row {
+  height: 40px;
+}
+
+.row-1 {
+  margin-left: 40px;
+}
+
+.row-2 {
+  margin-left: 120px;
+}
+
+.row-3 {
+  margin-left: 80px;
+}
+
+.row-4 {
+  margin-left: 40px;
+}
+
+.row-5-left {
+  position: absolute;
+  top: 140px;
+  z-index: -10;
+}
+
+.row-6 {
+  margin-left: 40px;
+}
+
+.row-7-right {
+  position: absolute;
+  top: 140px;
+  margin-left: 520px;
+}
+
+.row-8 {
+  margin-left: 80px;
+}
+
+.row-9 {
+  margin-left: 120px;
+}
+
+.row-10 {
+  margin-left: 40px;
+}
