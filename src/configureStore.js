@@ -2,7 +2,7 @@ import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { createLogger } from "redux-logger";
 
-import foo from "./reducers";
+import eureka from "./reducers";
 
 const configureStore = () => {
   const middlewares = [ thunk ];
@@ -13,7 +13,7 @@ const configureStore = () => {
 
   /* eslint-disable no-underscore-dangle */
   return createStore(
-    foo,
+    eureka,
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
     applyMiddleware( ...middlewares ),
   );
