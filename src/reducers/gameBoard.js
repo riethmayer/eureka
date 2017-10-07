@@ -22,6 +22,7 @@ export const clicked = (clickedIndex) => {
     } else {
       dispatch(selected(index))
       dispatch(solve(index))
+      dispatch(cleanup(index))
     }
   }
 }
@@ -57,7 +58,6 @@ const solve = (currentIndex) => {
              tile['active'] &&
              (tile['index'] !== currentIndex)
     })
-    console.log('length', solved.length, solved)
     if(solved.length > 0) {
       dispatch({
         type: actions.solved,
@@ -68,11 +68,25 @@ const solve = (currentIndex) => {
   }
 }
 
+const cleanup = (currentIndex) => {
+  return (dispatch, state) => {
+    const { board } = state()
+    const { token } = board
+    const toClean = Object.keys(board).filter((id) => {
+      let tile = board[id]
+      return tile && (tile['token'] !== token) && tile['active'] && tile['index'] !== currentIndex
+    }).map(parseInt)
+    console.log('cleanup', toClean)
+    toClean.map((i) => dispatch(deselected(i)))
+  }
+}
+
 
 const actions = {
   selected: 'SELECTED',
   deselected: 'DESELECTED',
-  solved: 'SOLVED'
+  solved: 'SOLVED',
+  cleanup: 'CLEANUP'
 }
 
 const initialState = shuffle(allTokens)
