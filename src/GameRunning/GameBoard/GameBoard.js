@@ -6,7 +6,6 @@ import { clicked } from '../../reducers/gameBoard.js'
 class GameBoard extends Component {
 
   render() {
-    const { board, clicked } = this.props
     return (
       <div>
         <h1>Game Board</h1>

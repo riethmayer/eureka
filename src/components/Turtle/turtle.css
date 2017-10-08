@@ -1,80 +1,140 @@
 .turtle {
   position: relative;
 }
-.bottom {
-  position: relative;
-}
-.first-layer {
+.tile {
   position: absolute;
-  top: 40px;
-  left: 160px;
+}
+.layer-0 {
   z-index: 10;
 }
-.second-layer {
-  position: absolute;
-  top: 80px;
-  left: 200px;
+.layer-1 {
   z-index: 20;
 }
-.third-layer {
-  position: absolute;
-  top: 120px;
-  left: 240px;
+.layer-2 {
   z-index: 30;
 }
-.top-piece {
-  position: absolute;
-  top: 140px;
-  left: 260px;
-  z-index: 40;
+.layer-3 {
+  z-index: 40
 }
+.layer-4 {
+  z-index: 50
+}
+.row-1 {
+  top: 40px;
+}
+.row-2 {
+  top: 80px;
+}
+.row-3 {
+  top: 120px;
+}
+.row-4 { /* single left */
+  top: 140px;
+}
+.row-5 {
+  top: 160px;
+}
+.row-6 {
+  top: 140px;
+}
+.row-7 {
+  top: 200px;
+}
+.row-8 {
+  top: 240px;
+}
+.row-9 {
+  top: 280px;
+}
+.row-10 { /* second layer*/
+  top: 40px;
+}
+.row-11 {
+  top: 80px;
+}
+.row-12 {
+  top: 120px;
+}
+.row-13 {
+  top: 160px;
+}
+.row-14 {
+  top: 200px;
+}
+.row-15 {
+  top: 240px;
+}
+.row-16 { /* third layer */
+  top: 80px;
+}
+.row-17 {
+  top: 120px;
+}
+.row-18 {
+  top: 160px;
+}
+.row-19 {
+  top: 200px;
+}
+.row-20 { /* fourth layer */
+  top: 120px;
+}
+.row-21 {
+  top: 160px;
+}
+.row-22 {
+  top: 140px;
+}
+
+.column-0 {
+  left: 0;
+}
+.column-1 {
+  left: 40px;
+}
+.column-2 {
+  left: 80px;
+}
+.column-3 {
+  left: 120px;
+}
+.column-4 {
+  left: 160px;
+}
+.column-5 {
+  left: 200px;
+}
+.column-6 {
+  left: 240px;
+}
+.column-7 {
+  left: 280px;
+}
+.column-8 {
+  left: 320px;
+}
+.column-9 {
+  left: 360px;
+}
+.column-10 {
+  left: 400px;
+}
+.column-11 {
+  left: 440px;
+}
+.column-12 {
+  left: 480px;
+}
+.column-13 {
+  left: 520px;
+}
+.column-14 { 
+  left: 560px;
+}
+.column-15 { /* top piece */
+  left: 260px;
+}
+
 .tile {
   box-shadow: 2px 2px 2px #555;
-}
-.row {
-  height: 40px;
-}
-
-.row-1 {
-  margin-left: 40px;
-}
-
-.row-2 {
-  margin-left: 120px;
-}
-
-.row-3 {
-  margin-left: 80px;
-}
-
-.row-4 {
-  margin-left: 40px;
-}
-
-.row-5-left {
-  position: absolute;
-  top: 140px;
-  z-index: -10;
-}
-
-.row-6 {
-  margin-left: 40px;
-}
-
-.row-7-right {
-  position: absolute;
-  top: 140px;
-  margin-left: 520px;
-}
-
-.row-8 {
-  margin-left: 80px;
-}
-
-.row-9 {
-  margin-left: 120px;
-}
-
-.row-10 {
-  margin-left: 40px;
 }
