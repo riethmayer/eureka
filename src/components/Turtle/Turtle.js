@@ -1,17 +1,20 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { clicked } from '../../reducers/gameBoard.js'
 import Tile from '../Tile/Tile'
 import './turtle.css'
 
+
 class Turtle extends Component {
   tile(i) {
-    const { board, handleClick } = this.props
+    const { board, clicked } = this.props
     const { token, index, active } = board[i]
     return(
       <Tile token={ token }
             active={ active }
             className={`${token}`}
             id={`tile_${index}`}
-            onClick={ () => handleClick(index) }
+            onClick={ () => clicked(index) }
             key={ index } />
     )
   }
@@ -168,4 +171,10 @@ class Turtle extends Component {
   }
 }
 
-export default Turtle
+const mapStateToProps = ({board}) => {
+  return({
+    board
+  });
+}
+
+export default connect(mapStateToProps,{ clicked })(Turtle)

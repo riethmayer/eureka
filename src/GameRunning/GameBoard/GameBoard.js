@@ -10,9 +10,7 @@ class GameBoard extends Component {
     return (
       <div>
         <h1>Game Board</h1>
-        <Turtle handleClick={ clicked }
-                board={ board }
-        />
+        <Turtle />
       </div>
     )
   }
