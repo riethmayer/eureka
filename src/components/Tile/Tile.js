@@ -51,10 +51,10 @@ class Tile extends Component {
   }
 
   render() {
-    const { caption, active, onClick } = this.props
+    const { token, active, onClick } = this.props
 
     return (
-      <svg xmlns="http//www.w3.org/2000/svg" fill="gray" stroke="none" height="40" width="40" onClick={onClick} className="tile">
+      <svg xmlns="http//www.w3.org/2000/svg" fill="gray" stroke="none" height="40" width="40" onClick={onClick} className={`${String(token).toLowerCase()} tile`}>
         <rect width={39}
               height={39}
               x={1} y={1}
@@ -72,8 +72,8 @@ class Tile extends Component {
               strokeWidth='1'
               alignmentBaseline="middle" textAnchor="middle" fontFamily="Verdana"
               fontWeight="bold"
-              fontSize="36" fill={this.color(caption) || 'white'}>
-          { caption || 'nil' }
+              fontSize="36" fill={this.color(token) || 'white'}>
+          { token || 'nil' }
         </text>
       </svg>
     )

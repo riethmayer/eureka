@@ -7,8 +7,9 @@ class Turtle extends Component {
     const { board, handleClick } = this.props
     const { token, index, active } = board[i]
     return(
-      <Tile caption={ token }
+      <Tile token={ token }
             active={ active }
+            className={`${token}`}
             id={`tile_${index}`}
             onClick={ () => handleClick(index) }
             key={ index } />
