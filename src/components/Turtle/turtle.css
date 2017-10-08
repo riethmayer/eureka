@@ -1,7 +1,7 @@
 .turtle {
   position: relative;
 }
-.tile {
+.turtle .tile {
   position: absolute;
 }
 .layer-0 {
