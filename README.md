@@ -1,5 +1,7 @@
 # Eureka fun project
 
+Eureka is one of many names for the game [**Mahjong Solitaire**](https://en.wikipedia.org/wiki/Mahjong_solitaire).
+
 # Installation
 
 You can install everything via `./bin/setup`
