@@ -5,15 +5,42 @@ import buildTiles from './buildTiles'
 export const clicked = (clickedIndex) => {
   return (dispatch, state) => {
     const { board } = state()
-    const { index, token, active } = board[clickedIndex]
-    console.log(token, index, active)
+    const { index, active } = board[clickedIndex]
     if(active) {
       dispatch(deselected(index))
     } else {
+      dispatch(freeTile(index))
+    }
+  }
+}
+
+const freeTile = (clickedIndex) => {
+  return (dispatch, state) => {
+    /* see whether tile is free */
+    const { board } = state()
+    const { index, active, row } = board[clickedIndex]
+    let rowItems = Object.keys(board).filter((i) => {
+      return board[i].row === row
+    }).map((i) => parseInt(i))
+    const isFree = (index === _.last(rowItems)) || (index === _.first(rowItems))
+    if(isFree) {
       dispatch(selected(index))
       dispatch(solve(index))
       dispatch(cleanup(index))
+    } else {
+      dispatch(invalidTileClicked(index))
     }
+  }
+}
+
+const invalidTileClicked = (clickedIndex) => {
+  return (dispatch,state) => {
+    const { board } = state()
+    const { index, token, active } = board[clickedIndex]
+    dispatch({
+      type: actions.invalidTileclicked,
+      index
+    })
   }
 }
 
@@ -75,7 +102,8 @@ const actions = {
   selected: 'SELECTED',
   deselected: 'DESELECTED',
   solved: 'SOLVED',
-  cleanup: 'CLEANUP'
+  cleanup: 'CLEANUP',
+  invalidTileclicked: 'INVALID_CLICK'
 }
 
 const initialState = buildTiles()
