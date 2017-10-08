@@ -51,11 +51,28 @@ class Tile extends Component {
   }
 
   render() {
-    const { token, active, onClick } = this.props
-
+    const { token,
+            active,
+            layer,
+            column,
+            row,
+            onClick } = this.props
+    let className = [
+      'tile',
+      `tile-${String(token).toLowerCase()}`,
+      `layer-${layer}`,
+      `column-${column}`,
+      `row-${row}`
+    ].join(" ")
     return (
-      <svg xmlns="http//www.w3.org/2000/svg" fill="gray" stroke="none" height="40" width="40" onClick={onClick} className={`${String(token).toLowerCase()} tile`}>
-        <rect width={39}
+      <svg xmlns="http//www.w3.org/2000/svg"
+      fill="gray"
+      stroke="none"
+      height="40"
+      width="40"
+      onClick={onClick}
+      className={`${className}`}>
+      <rect width={39}
               height={39}
               x={1} y={1}
               fill={ 'lightgrey' }
