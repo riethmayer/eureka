@@ -18,10 +18,10 @@ const freeTile = (clickedIndex) => {
   return (dispatch, state) => {
     /* see whether tile is free */
     const { board } = state()
-    const { index, active, row } = board[clickedIndex]
+    const { index, row } = board[clickedIndex]
     let rowItems = Object.keys(board).filter((i) => {
       return board[i].row === row
-    }).map((i) => parseInt(i))
+    }).map((i) => parseInt(i, 10))
     const isFree = (index === _.last(rowItems)) || (index === _.first(rowItems))
     if(isFree) {
       dispatch(selected(index))
@@ -36,7 +36,7 @@ const freeTile = (clickedIndex) => {
 const invalidTileClicked = (clickedIndex) => {
   return (dispatch,state) => {
     const { board } = state()
-    const { index, token, active } = board[clickedIndex]
+    const { index } = board[clickedIndex]
     dispatch({
       type: actions.invalidTileclicked,
       index
