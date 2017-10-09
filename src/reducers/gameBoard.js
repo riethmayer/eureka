@@ -5,15 +5,67 @@ import buildTiles from './buildTiles'
 export const clicked = (clickedIndex) => {
   return (dispatch, state) => {
     const { board } = state()
-    const { index, token, active } = board[clickedIndex]
-    console.log(token, index, active)
+    const { index, active } = board[clickedIndex]
     if(active) {
       dispatch(deselected(index))
     } else {
+      dispatch(freeTile(index))
+    }
+  }
+}
+
+const rowItems = (row, board) => {
+  return Object.keys(board).filter((i) => {
+    return board[i].row === row
+  }).map((i) => parseInt(i, 10))
+}
+
+const checkFree = (index, row, board) => {
+  const items = rowItems(row, board)
+  switch(true) {
+    case (row === 3 && index === 30):
+      return rowItems(4, board).length === 0
+    case (row === 3 && index === 41):
+      return rowItems(6, board).length === 0
+    case (row === 5 && index === 43):
+      return rowItems(6, board).length === 0
+    case (row === 5 && index === 54):
+      return rowItems(6, board).length === 0
+    case (row === 6 && index === 56):
+      return true
+    case (row === 6 && index === 55):
+      return rowItems(6,board).length === 1 // is last element in its row
+    case (row === 20 || row === 21):
+      /* 4 tiles below the top tile only clickable after top tile is gone */ 
+      return rowItems(22, board).length === 0
+    default:
+      return (index === _.last(items)) || (index === _.first(items))
+  }
+}
+
+const freeTile = (clickedIndex) => {
+  return (dispatch, state) => {
+    /* see whether tile is free */
+    const { board } = state()
+    const { index, row } = board[clickedIndex]
+    if(checkFree(index, row, board)) {
       dispatch(selected(index))
       dispatch(solve(index))
       dispatch(cleanup(index))
+    } else {
+      dispatch(invalidTileClicked(index))
     }
+  }
+}
+
+const invalidTileClicked = (clickedIndex) => {
+  return (dispatch,state) => {
+    const { board } = state()
+    const { index } = board[clickedIndex]
+    dispatch({
+      type: actions.invalidTileclicked,
+      index
+    })
   }
 }
 
@@ -75,7 +127,8 @@ const actions = {
   selected: 'SELECTED',
   deselected: 'DESELECTED',
   solved: 'SOLVED',
-  cleanup: 'CLEANUP'
+  cleanup: 'CLEANUP',
+  invalidTileclicked: 'INVALID_CLICK'
 }
 
 const initialState = buildTiles()
