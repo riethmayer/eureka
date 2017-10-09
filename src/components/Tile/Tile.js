@@ -66,31 +66,17 @@ class Tile extends Component {
     ].join(" ")
     return (
       <svg xmlns="http//www.w3.org/2000/svg"
-      fill="gray"
-      stroke="none"
-      height="40"
-      width="40"
+        fill="gray"
+        stroke="none"
+        height="40"
+        width="40"
       onClick={onClick}
-      className={`${className}`}>
-      <rect width={39}
-              height={39}
-              x={1} y={1}
-              fill={ 'lightgrey' }
-              strokeWidth={'1'}
-              stroke={ active ? 'black' : '#cccccc' } />
-        <rect width={36}
-              height={36}
-              x={2} y={2}
-              fill={ active ? '#efefef' : 'lightgrey' }
-              strokeWidth={'1'}
-              stroke={ active ? '#666666' : '#efefef' } />
-        <text x="50%" y="60%"
-              stroke={ '#dddddd' }
-              strokeWidth='1'
+      className={`${className} rect`}>
+      <text x="50%" y="60%"
+        className='rect-text'
               alignmentBaseline="middle" textAnchor="middle" fontFamily="Verdana"
-              fontWeight="bold"
-              fontSize="36" fill={this.color(token) || 'white'}>
-          { token || 'nil' }
+        fill={this.color(token) || 'white'}>
+        { token || 'nil' }
         </text>
       </svg>
     )

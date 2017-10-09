@@ -12,12 +12,15 @@
 }
 .layer-2 {
   z-index: 30;
+  display: none;
 }
 .layer-3 {
+  display: none;
   z-index: 40
 }
 .layer-4 {
-  z-index: 50
+  display: none;
+z-index: 50
 }
 .row-1 {
   top: 40px;
@@ -135,6 +138,23 @@
   left: 260px;
 }
 
-.tile {
-  box-shadow: 2px 2px 2px #555;
+.rect {
+  background-color: #ccc;
+}
+
+.rect-text {
+  font-family: 'Rubik', sans-serif;
+  font-size: 3ex;
+  font-weight: 900;
+  stroke: black;
+  stroke-width: 1;
+}
+
+.tile.layer-0 {
+  box-shadow: 1px 1px 3px #dddddd;
+}
+
+.tile.layer-1 {
+  padding: 1px;
+  box-shadow: 1px 1px 3px #bbb;
 }
