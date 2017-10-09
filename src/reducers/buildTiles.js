@@ -162,7 +162,6 @@ const buildTiles = () => {
     .map((token, index) => { return [token, index] })
     .reduce((obj, [token, index]) => {
       let config = tileConfig[index]
-      console.log('config', config)
       obj[index]= {
         ...config,
         index: index,

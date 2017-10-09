@@ -71,7 +71,6 @@ const invalidTileClicked = (clickedIndex) => {
 
 const selected = (index) => {
   return (dispatch) => {
-    console.log('actionCreator', index)
     dispatch({
       type: actions.selected,
       index
@@ -81,7 +80,6 @@ const selected = (index) => {
 
 const deselected = (index) => {
   return (dispatch) => {
-    console.log('deselected', index)
     dispatch({
       type: actions.deselected,
       index
@@ -118,7 +116,6 @@ const cleanup = (currentIndex) => {
       let tile = board[id]
       return tile && (tile['token'] !== token) && tile['active'] && tile['index'] !== currentIndex
     }).map(parseInt)
-    console.log('cleanup', toClean)
     toClean.map((i) => dispatch(deselected(i)))
   }
 }
