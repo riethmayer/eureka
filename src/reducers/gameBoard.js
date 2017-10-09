@@ -14,16 +14,41 @@ export const clicked = (clickedIndex) => {
   }
 }
 
+const rowItems = (row, board) => {
+  return Object.keys(board).filter((i) => {
+    return board[i].row === row
+  }).map((i) => parseInt(i, 10))
+}
+
+const checkFree = (index, row, board) => {
+  const items = rowItems(row, board)
+  switch(true) {
+    case (row === 3 && index === 30):
+      return rowItems(4, board).length === 0
+    case (row === 3 && index === 41):
+      return rowItems(6, board).length === 0
+    case (row === 5 && index === 43):
+      return rowItems(6, board).length === 0
+    case (row === 5 && index === 54):
+      return rowItems(6, board).length === 0
+    case (row === 6 && index === 56):
+      return true
+    case (row === 6 && index === 55):
+      return rowItems(6,board).length === 1 // is last element in its row
+    case (row === 20 || row === 21):
+      /* 4 tiles below the top tile only clickable after top tile is gone */ 
+      return rowItems(22, board).length === 0
+    default:
+      return (index === _.last(items)) || (index === _.first(items))
+  }
+}
+
 const freeTile = (clickedIndex) => {
   return (dispatch, state) => {
     /* see whether tile is free */
     const { board } = state()
     const { index, row } = board[clickedIndex]
-    let rowItems = Object.keys(board).filter((i) => {
-      return board[i].row === row
-    }).map((i) => parseInt(i, 10))
-    const isFree = (index === _.last(rowItems)) || (index === _.first(rowItems))
-    if(isFree) {
+    if(checkFree(index, row, board)) {
       dispatch(selected(index))
       dispatch(solve(index))
       dispatch(cleanup(index))
