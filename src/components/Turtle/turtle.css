@@ -17,7 +17,7 @@
   z-index: 40
 }
 .layer-4 {
-  z-index: 50
+z-index: 50
 }
 .row-1 {
   top: 40px;
@@ -135,6 +135,38 @@
   left: 260px;
 }
 
-.tile {
-  box-shadow: 2px 2px 2px #555;
+.rect {
+  background-color: #ccc;
+}
+
+.rect-text {
+  font-family: 'Rubik', sans-serif;
+  font-size: 3ex;
+  font-weight: 900;
+  stroke: black;
+  stroke-width: 1;
+}
+
+.tile.layer-0 {
+  box-shadow: 1px 1px 3px 1px #000;
+}
+
+.tile.layer-1 {
+  margin: 1px 0px 0px -2px;
+  box-shadow: 1px 1px 3px 1px #000;
+}
+
+.tile.layer-2 {
+  margin: 2px 0 0 -4px;
+  box-shadow: 1px 1px 3px 1px #000;
+}
+
+.tile.layer-3 {
+  margin: 3px 0 0 -6px;
+  box-shadow: 1px 1px 3px 1px #000;
+}
+
+.tile.layer-4 {
+  margin: 4px 0 0 -8px;
+  box-shadow: 1px 1px 3px 1px #000;
 }
