@@ -30,16 +30,16 @@ const Menu = styled.div`
 
 const Board = styled.div`
 background-color: #333;
-width: 640px;
-margin: 10px;
+width: 100%;
 `
 
 const Main = styled.div`
 background-color: white;
-height: 340px;
-padding: 10px 10px 0 10px;
-width: 600px;
-margin: 10px;
+height: 350px;
+padding: 0;
+width: 615px;
+margin: 0 auto;
+padding: 20px 0 0 5px;
 `
 
 const Controls = styled(Flex)`
@@ -56,9 +56,9 @@ font-size: 3ex;
 height: 60px;
 width: 198px;
 border: 0px solid transparent;
-color: ${props => props.primary && colors.dark || colors.light};
+color: ${props => (props.primary && colors.dark) || colors.light};
 cursor: pointer;
-background-color: ${(props) => props.primary && colors.primary || props.secondary && colors.secondary }
+background-color: ${(props) => (props.primary && colors.primary) || (props.secondary && colors.secondary) }
 `
 
 const Title = styled.h1`
@@ -67,34 +67,34 @@ text-align: center;
 `
 
 const InnerProgressBar = styled.div`
-width: ${props => props.percentage}px;
-height: 10px;
+width: ${props => props.percentage}%;
+height: 20px;
 margin: 0 0 10px 0;
 background-color: ${props => props.percentage > 75 ? 'red' : 'green'};
 `
 const OuterProgressBar = styled.div`
 position: relative;
-width: 550px;
-height: 10px;
-margin: 0 0 10px 0;
-background-color: black;
+width: 620px;
+height: 20px;
+margin: 0 auto;
+background-color: #333;
 `
 const TimerProgressBar = styled.div`
-position: absolute;
-right: 5px;
-top: 0;
-margin-bottom: 3px;
+color: white;
+float: left;
+margin-left: 555px;
 `
 
 const ProgressBar = ({timeLeft}) => {
-  const percentage = Math.round(100-(timeLeft / 180 * 100))
+  const percentage = (1-(timeLeft / 180))*100
+  console.log('timeleft', timeLeft, percentage)
   return (
     <div>
       <OuterProgressBar>
-        <TimerProgressBar>
-          { moment.utc(timeLeft*1000).format('mm:ss') }
-        </TimerProgressBar>
         <InnerProgressBar percentage={percentage}>
+          <TimerProgressBar>
+            { moment.utc(timeLeft*1000).format('mm:ss') }
+          </TimerProgressBar>
         </InnerProgressBar>
       </OuterProgressBar>
     </div>
@@ -105,7 +105,7 @@ const ProgressBar = ({timeLeft}) => {
 
 class GameBoard extends Component {
   render() {
-    const { timeLeft } = this.props
+    const { timeLeft, pause } = this.props
     return (
       <Board>
         <Menu align="center" >
@@ -113,12 +113,12 @@ class GameBoard extends Component {
             <Title>Eureka</Title>
           </Box>
         </Menu>
+        <ProgressBar timeLeft={timeLeft} />
         <Main>
-          <ProgressBar timeLeft={timeLeft} />
           <Turtle />
         </Main>
         <Controls>
-          <Button primary>
+          <Button primary onClick={ pause }>
             Pause
           </Button>
           <Button secondary>
