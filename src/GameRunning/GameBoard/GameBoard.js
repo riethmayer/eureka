@@ -87,7 +87,6 @@ margin-left: 555px;
 
 const ProgressBar = ({timeLeft}) => {
   const percentage = (1-(timeLeft / 180))*100
-  console.log('timeleft', timeLeft, percentage)
   return (
     <div>
       <OuterProgressBar>
