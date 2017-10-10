@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import _ from 'lodash'
 
 class Tile extends Component {
   constructor(props) {
@@ -57,26 +58,29 @@ class Tile extends Component {
             column,
             row,
             onClick } = this.props
-    let className = [
+    let className = _.compact([
       'tile',
       `tile-${String(token).toLowerCase()}`,
       `layer-${layer}`,
       `column-${column}`,
-      `row-${row}`
-    ].join(" ")
+      `row-${row}`,
+      `${active ? 'active' : ''}`
+    ]).join(" ")
     return (
       <svg xmlns="http//www.w3.org/2000/svg"
-        fill="gray"
-        stroke="none"
-        height="40"
-        width="40"
-      onClick={onClick}
-      className={`${className} rect`}>
-      <text x="50%" y="60%"
-        className='rect-text'
-              alignmentBaseline="middle" textAnchor="middle" fontFamily="Verdana"
-        fill={this.color(token) || 'white'}>
-        { token || 'nil' }
+           fill="gray"
+           stroke="none"
+           height="36"
+           width="36"
+           onClick={onClick}
+           className={`${className} rect`}>
+        <text x="50%"
+              y="60%"
+              className='rect-text'
+              alignmentBaseline="middle"
+              textAnchor="middle"
+              fill={this.color(token) || 'white'}>
+          { token || 'nil' }
         </text>
       </svg>
     )

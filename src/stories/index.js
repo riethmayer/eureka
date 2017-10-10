@@ -3,12 +3,14 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import configureStore from '../configureStore'
 import { MemoryRouter } from 'react-router-dom'
+import { Provider } from "react-redux"
 
 import { Button, Welcome } from '@storybook/react/demo';
 import GameOver from '../components/GameOver/GameOver'
 import GamePaused from '../components/GamePaused/GamePaused'
 import GameRunning from '../GameRunning/GameRunning'
 import Tile from '../components/Tile/Tile'
+import GameBoard from '../GameRunning/GameBoard/GameBoard'
 import Turtle from '../components/Turtle/Turtle'
 
 const store = configureStore()
@@ -23,6 +25,13 @@ storiesOf('Game states', module)
   .add('GAME OVER', () => <GameOver />)
   .add('PAUSED', () => <GamePaused />)
   .add('RUNNING', () => <GameRunning timeLeft={123} store={store}/>)
+
+storiesOf('Game Board', module)
+  .addDecorator(story =>
+    (<Provider store={store}>
+      {story()}
+    </Provider>)
+  ).add('normal', () => <GameBoard store={store} />)
 
 storiesOf('Tiles', module)
   .add('characters', () =>

@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-
-import TimeLeft from '../components/TimeLeft/TimeLeft'
 import GameBoard from './GameBoard/GameBoard'
-
 import { pause } from '../reducers/timer'
 
 class GameRunning extends Component {
@@ -11,8 +8,7 @@ class GameRunning extends Component {
     const { timeLeft, gameRunning, pause } = this.props
     return(
       <div>
-        <TimeLeft timeLeft={timeLeft} pause={pause} />
-        { gameRunning && <GameBoard /> }
+        { gameRunning && <GameBoard timeLeft={timeLeft} pause={pause} /> }
       </div>
     )
   }
