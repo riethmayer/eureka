@@ -1,12 +1,13 @@
+const initialTimeLeft = 180
+
 const initialState = {
   timer: undefined,
   gameRunning: false,
-  timeLeft: 0,
+  timeLeft: initialTimeLeft,
   gameOver: false,
   gamePaused: false,
 }
 
-const initialTimeLeft = 180
 
 const actions = {
   start: 'GAME_START',
@@ -18,12 +19,14 @@ const actions = {
 }
 
 export const start = () => {
-  return (dispatch) => {
+  return (dispatch, state) => {
+    const { time } = state()
+    clearInterval(time.timer)
     const timer = setInterval(() => dispatch(tick()), 1000)
     dispatch({
+        ...initialState,
       type: actions.start,
       timer: timer,
-      timeLeft: initialTimeLeft,
       gameRunning: true
     })
   }

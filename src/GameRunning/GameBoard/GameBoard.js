@@ -105,7 +105,7 @@ const ProgressBar = ({timeLeft}) => {
 
 class GameBoard extends Component {
   render() {
-    const { timeLeft, pause } = this.props
+    const { timeLeft, pause, start } = this.props
     return (
       <Board>
         <Menu align="center" >
@@ -121,7 +121,7 @@ class GameBoard extends Component {
           <Button primary onClick={ pause }>
             Pause
           </Button>
-          <Button secondary>
+          <Button secondary onClick={ start }>
             Restart
           </Button>
         </Controls>
