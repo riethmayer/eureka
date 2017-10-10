@@ -121,6 +121,7 @@ const cleanup = (currentIndex) => {
 }
 
 const actions = {
+  start: 'GAME_START',
   selected: 'SELECTED',
   deselected: 'DESELECTED',
   solved: 'SOLVED',
@@ -133,6 +134,8 @@ const initialState = buildTiles()
 const gameBoard = (state = initialState, action = {}) => {
   const tile = state[action.index]
   switch(action.type) {
+    case actions.start:
+      return buildTiles()
     case actions.selected:
       return {
         ...state,

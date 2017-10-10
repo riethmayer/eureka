@@ -1,18 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-
-import TimeLeft from '../components/TimeLeft/TimeLeft'
 import GameBoard from './GameBoard/GameBoard'
-
-import { pause } from '../reducers/timer'
+import { pause, start } from '../reducers/timer'
 
 class GameRunning extends Component {
   render() {
-    const { timeLeft, gameRunning, pause } = this.props
+    const { timeLeft, gameRunning, pause, start } = this.props
     return(
       <div>
-        <TimeLeft timeLeft={timeLeft} pause={pause} />
-        { gameRunning && <GameBoard /> }
+        { gameRunning && <GameBoard timeLeft={timeLeft}
+                                    pause={pause}
+                                    start={start} /> }
       </div>
     )
   }
@@ -27,4 +25,4 @@ const mapStateToProps = ({time}) => {
   })
 }
 
-export default connect(mapStateToProps, { pause })(GameRunning)
+export default connect(mapStateToProps, { pause, start })(GameRunning)
