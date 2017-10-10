@@ -1,3 +1,4 @@
+import actions from './actions'
 const initialTimeLeft = 180
 
 const initialState = {
@@ -6,16 +7,6 @@ const initialState = {
   timeLeft: initialTimeLeft,
   gameOver: false,
   gamePaused: false,
-}
-
-
-const actions = {
-  start: 'GAME_START',
-  pause: 'GAME_PAUSE',
-  tick: 'TICK',
-  resume: 'GAME_RESUME',
-  abort: 'GAME_ABORT',
-  gameOver: 'GAME_OVER'
 }
 
 export const start = () => {
@@ -54,6 +45,7 @@ export const abort = () => {
     dispatch({type: actions.abort})
   }
 }
+
 export const gameOver = () => {
   return (dispatch, state) => {
     const { timer } = state().time

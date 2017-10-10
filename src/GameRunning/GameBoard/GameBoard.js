@@ -2,20 +2,19 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Turtle from '../../components/Turtle/Turtle'
 import { clicked } from '../../reducers/gameBoard.js'
-import moment from 'moment'
 import styled, { injectGlobal } from 'styled-components'
 import { Flex, Box } from 'grid-styled'
+import ProgressBar from '../../components/ProgressBar/ProgressBar'
 
 injectGlobal`
-
 body {
   font-family: 'Rubik', sans-serif;
 }
-  .tile-text {
-    font-family: 'Rubik', sans-serif;
-    font-weight: 900;
-    font-size: 3ex;
-  }
+            .tile-text {
+              font-family: 'Rubik', sans-serif;
+              font-weight: 900;
+              font-size: 3ex;
+            }
 `
 
 const colors = {
@@ -25,8 +24,6 @@ const colors = {
   light: '#efefef'
 }
 
-const Menu = styled.div`
-`
 
 const Board = styled.div`
 background-color: #333;
@@ -65,53 +62,29 @@ const Title = styled.h1`
 color: white;
 text-align: center;
 `
-
-const InnerProgressBar = styled.div`
-width: ${props => props.percentage}%;
-height: 20px;
-margin: 0 0 10px 0;
-background-color: ${props => props.percentage > 75 ? 'red' : 'green'};
-`
-const OuterProgressBar = styled.div`
-position: relative;
-width: 620px;
-height: 20px;
-margin: 0 auto;
-background-color: #333;
-`
-const TimerProgressBar = styled.div`
+const ScoreValue = styled.h2`
 color: white;
-float: left;
-margin-left: 555px;
+text-align: center;
 `
 
-const ProgressBar = ({timeLeft}) => {
-  const percentage = (1-(timeLeft / 180))*100
+const Score = ({ score }) => {
   return (
-    <div>
-      <OuterProgressBar>
-        <InnerProgressBar percentage={percentage}>
-          <TimerProgressBar>
-            { moment.utc(timeLeft*1000).format('mm:ss') }
-          </TimerProgressBar>
-        </InnerProgressBar>
-      </OuterProgressBar>
-    </div>
+    <ScoreValue>
+      { score } Punkte
+    </ScoreValue>
   )
 }
 
 
-
 class GameBoard extends Component {
   render() {
-    const { timeLeft, pause, start } = this.props
+    const { timeLeft, pause, start, score } = this.props
     return (
       <Board>
-        <Menu align="center" >
-          <Box width={1} p={10}>
-            <Title>Eureka</Title>
-          </Box>
-        </Menu>
+        <Box width={1} p={10}>
+          <Title>Eureka</Title>
+          <Score score={ score } />
+        </Box>
         <ProgressBar timeLeft={timeLeft} />
         <Main>
           <Turtle />
@@ -129,9 +102,10 @@ class GameBoard extends Component {
   }
 }
 
-const mapStateToProps = ({board}) => {
+const mapStateToProps = ({board, score}) => {
   return({
-    board: board
+    board: board,
+    score: score
   });
 }
 

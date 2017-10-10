@@ -1,5 +1,5 @@
 import _ from 'lodash'
-
+import actions from './actions'
 import buildTiles from './buildTiles'
 
 export const clicked = (clickedIndex) => {
@@ -118,15 +118,6 @@ const cleanup = (currentIndex) => {
     }).map(parseInt)
     toClean.map((i) => dispatch(deselected(i)))
   }
-}
-
-const actions = {
-  start: 'GAME_START',
-  selected: 'SELECTED',
-  deselected: 'DESELECTED',
-  solved: 'SOLVED',
-  cleanup: 'CLEANUP',
-  invalidTileclicked: 'INVALID_CLICK'
 }
 
 const initialState = buildTiles()
