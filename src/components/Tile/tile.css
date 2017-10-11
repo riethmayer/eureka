@@ -1,0 +1,58 @@
+
+.active svg .inner-rectangle {
+  fill: #efefef;
+  stroke-width: 15;
+  stroke: limegreen;
+}
+
+svg .inner-rectangle {
+  fill: #ccc;
+  stroke-width: 10;
+  stroke: #ccc;
+}
+
+.rect {
+  width: 40px;
+  height: 40px;
+  position: relative;
+}
+
+.rect svg {
+  height: 100%;
+  width: 100%;
+}
+
+
+.rect-text .inner-token {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 900;
+  font-size: 300px;
+  stroke: #444;
+  stroke-width: 10;
+}
+
+.active .inner-token {
+  stroke: #black;
+}
+
+.tile.layer-0 {
+}
+
+.tile.layer-1 {
+  margin: -4px 0px 0px -4px;
+}
+
+.tile.layer-2 {
+  margin: -8px 0px 0px -8px;
+}
+
+.tile.layer-3 {
+  margin: -12px 0px 0px -12px;
+}
+
+.tile.layer-4 {
+  margin: -14px 0px 0px -14px;
+}
+
+.tile.layer-6 {
+}
