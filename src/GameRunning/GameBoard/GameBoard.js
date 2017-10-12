@@ -5,7 +5,7 @@ import { clicked } from '../../reducers/gameBoard.js'
 import styled, { injectGlobal } from 'styled-components'
 import { Flex, Box } from 'grid-styled'
 import ProgressBar from '../../components/ProgressBar/ProgressBar'
-
+import './board.css'
 injectGlobal`
 body {
   font-family: 'Rubik', sans-serif;
@@ -24,11 +24,6 @@ const colors = {
   light: '#efefef'
 }
 
-
-const Board = styled.div`
-background-color: #333;
-width: 100%;
-`
 
 const Main = styled.div`
 background-color: white;
@@ -80,7 +75,7 @@ class GameBoard extends Component {
   render() {
     const { timeLeft, pause, start, score } = this.props
     return (
-      <Board>
+      <div className="board">
         <Box width={1} p={10}>
           <Title>Eureka</Title>
           <Score score={ score } />
@@ -97,7 +92,7 @@ class GameBoard extends Component {
             Restart
           </Button>
         </Controls>
-      </Board>
+      </div>
     )
   }
 }

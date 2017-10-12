@@ -1,5 +1,6 @@
 import actions from './actions'
-const initialTimeLeft = 180
+
+export const initialTimeLeft = 360
 
 const initialState = {
   timer: undefined,

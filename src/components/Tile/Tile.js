@@ -37,16 +37,15 @@ class Tile extends Component {
             <linearGradient x1="0.25781251%"
                             y1="49.7500002%"
                             x2="101.257813%"
-                            y2="49.7500002%"
-                            id="linearGradient-1">
+                            y2="49.7500002%">
               <stop stopColor="#cdcdcd" offset="0%"></stop>
               <stop stopColor="#666666" offset="47.5247532%"></stop>
               <stop stopColor="#666666" offset="100%"></stop>
             </linearGradient>
           </defs>
           <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-            <g id="r-copy" transform="translate(-15.000000, -20.000000)">
-              <g id="Tile" transform="translate(15.000000, -54.000000)">
+            <g transform="translate(-15.000000, -20.000000)">
+              <g transform="translate(15.000000, -54.000000)">
                 <g strokeWidth="1" transform="translate(0.000000, 74.000000)">
                   <rect className="inner-rectangle"
                         x="0"
@@ -64,7 +63,7 @@ class Tile extends Component {
                     
                   </text>
                 </g>
-                <path d="M369.703563,445.690524 L370,445.986636 L370,101 L346,74 L346,420 L1.1937118e-12,420 L26.8543537,446.001266 L369.993318,446.006682 L369.703563,445.690524 Z" fill="url(#linearGradient-1)"></path>
+                <path d="M369.703563,445.690524 L370,445.986636 L370,101 L346,74 L346,420 L1.1937118e-12,420 L26.8543537,446.001266 L369.993318,446.006682 L369.703563,445.690524 Z" fill="#333333"></path>
               </g>
             </g>
           </g>

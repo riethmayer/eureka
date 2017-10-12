@@ -1,6 +1,8 @@
-import React, { Component } from 'react'
+import React from 'react'
 import styled from 'styled-components'
+import { initialTimeLeft as maxTime } from '../../reducers/timer'
 import moment from 'moment'
+
 const InnerProgressBar = styled.div`
 width: ${props => props.percentage}%;
 height: 20px;
@@ -20,7 +22,7 @@ float: left;
 margin-left: 555px;
 `
 const ProgressBar = ({timeLeft}) => {
-  const percentage = (1-(timeLeft / 180))*100
+  const percentage = (1-(timeLeft / maxTime))*100
   return (
     <div>
       <OuterProgressBar>

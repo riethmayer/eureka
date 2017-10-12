@@ -28,7 +28,7 @@ const checkFree = (index, row, board) => {
     case (row === 3 && index === 41):
       return rowItems(6, board).length === 0
     case (row === 5 && index === 43):
-      return rowItems(6, board).length === 0
+      return rowItems(4, board).length === 0
     case (row === 5 && index === 54):
       return rowItems(6, board).length === 0
     case (row === 6 && index === 56):
@@ -144,6 +144,7 @@ const gameBoard = (state = initialState, action = {}) => {
         }
       }
     case actions.solved:
+      console.log('solving', action.index, ...action.solved)
       return _.omit(state, action.index, ...action.solved)
     default:
       return state
