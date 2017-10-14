@@ -2,6 +2,40 @@ import React, { Component } from 'react'
 import _ from 'lodash'
 import color from './colors'
 import './tile.css'
+import styled from 'styled-components'
+
+const StyledStone = styled.div`
+border-top: 2px white solid;
+border-left: 2px white solid;
+border-right: 2px black solid;
+border-bottom: 2px black solid;
+height: 40px;
+width: 40px;
+background-color: #ccc;
+`
+
+const StyledText = styled.p`
+text-align: center;
+padding: 0;
+margin: 10px;
+vertical-align: middle;
+font-family: 'Helvetica';
+font-weight: 900;
+color: ${ props => props.tokenColor };
+`
+
+const Stone = ({token}) => {
+  const tokenColor = color(token)
+  return (
+    <StyledStone>
+      <StyledText tokenColor={ tokenColor }>
+        { token }
+      </StyledText>
+    </StyledStone>
+  )
+}
+
+
 
 class Tile extends Component {
   constructor(props) {
@@ -27,47 +61,7 @@ class Tile extends Component {
     return (
       <div onClick={onClick}
            className={ this.classes(this.props) }>
-        <svg xmlns="http//www.w3.org/2000/svg"
-             fill="gray"
-             viewBox="0 0 370 373"
-             stroke="none"
-             height="370"
-             width="373">
-          <defs>
-            <linearGradient x1="0.25781251%"
-                            y1="49.7500002%"
-                            x2="101.257813%"
-                            y2="49.7500002%">
-              <stop stopColor="#cdcdcd" offset="0%"></stop>
-              <stop stopColor="#666666" offset="47.5247532%"></stop>
-              <stop stopColor="#666666" offset="100%"></stop>
-            </linearGradient>
-          </defs>
-          <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-            <g transform="translate(-15.000000, -20.000000)">
-              <g transform="translate(15.000000, -54.000000)">
-                <g strokeWidth="1" transform="translate(0.000000, 74.000000)">
-                  <rect className="inner-rectangle"
-                        x="0"
-                        y="0"
-                        width="347"
-                        height="346"></rect>
-                  <text x="50%"
-                        y="80%"
-                        className='rect-text'
-                        alignmentBaseline="middle"
-                        textAnchor="middle" >
-                    <tspan className="inner-token" fill={color(token) || 'white'} >
-                      { token || 'nil' }
-                    </tspan>
-                    
-                  </text>
-                </g>
-                <path d="M369.703563,445.690524 L370,445.986636 L370,101 L346,74 L346,420 L1.1937118e-12,420 L26.8543537,446.001266 L369.993318,446.006682 L369.703563,445.690524 Z" fill="#333333"></path>
-              </g>
-            </g>
-          </g>
-        </svg>
+        <Stone token={token} />
       </div>
     )
   }
