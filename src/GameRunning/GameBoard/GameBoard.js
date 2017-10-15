@@ -27,7 +27,7 @@ const colors = {
 
 const Main = styled.div`
 background-color: white;
-height: 350px;
+height: 380px;
 padding: 0;
 width: 615px;
 margin: 0 auto;

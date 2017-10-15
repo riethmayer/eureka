@@ -21,74 +21,81 @@ z-index: 50
 }
 .row-1 {
   top: 40px;
+  margin-top: 5px;
 }
 .row-2 {
   top: 80px;
+  margin-top: 10px;
 }
 .row-3 {
   top: 120px;
+  margin-top: 15px;
 }
 .row-4 { /* single left */
-  top: 140px;
+  top: 157px;
 }
 .row-5 {
   top: 160px;
+  margin-top: 20px;
 }
-.row-6 {
-  top: 140px;
-}
+.row-6 { /* duo right */
+  top: 157px;
+  }
 .row-7 {
   top: 200px;
+  margin-top: 25px;
 }
 .row-8 {
   top: 240px;
+  margin-top: 30px;
 }
 .row-9 {
   top: 280px;
+  margin-top: 35px;
 }
 .row-10 { /* second layer*/
-  top: 40px;
-}
+  top: 45px;
+  }
 .row-11 {
-  top: 80px;
+  top: 90px;
 }
 .row-12 {
-  top: 120px;
+  top: 135px;
 }
 .row-13 {
-  top: 160px;
+  top: 180px;
 }
 .row-14 {
-  top: 200px;
+  top: 225px;
 }
 .row-15 {
-  top: 240px;
+  top: 270px;
 }
 .row-16 { /* third layer */
-  top: 80px;
+  top: 90px;
 }
 .row-17 {
-  top: 120px;
+  top: 135px;
 }
 .row-18 {
-  top: 160px;
+  top: 180px;
 }
 .row-19 {
-  top: 200px;
+  top: 225px;
 }
 .row-20 { /* fourth layer */
-  top: 120px;
+  top: 135px;
 }
 .row-21 {
-  top: 160px;
+  top: 180px;
 }
 .row-22 {
-  top: 140px;
+  top: 157px;
 }
 
 .column-0 {
   left: 0;
-}
+  }
 .column-1 {
   left: 40px;
 }
