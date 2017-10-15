@@ -29,9 +29,9 @@ const Main = styled.div`
 background-color: white;
 height: 380px;
 padding: 0;
-width: 615px;
+width: 680px;
 margin: 0 auto;
-padding: 20px 0 0 5px;
+padding: 20px 0 0 12px;
 `
 
 const Controls = styled(Flex)`

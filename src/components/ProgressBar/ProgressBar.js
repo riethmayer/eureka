@@ -11,10 +11,18 @@ background-color: ${props => props.percentage < 50 ? 'red' : 'green'};
 `
 const OuterProgressBar = styled.div`
 height: 20px;
-width: 620px;
+width: 680px;
 margin: 0 auto;
 background-color: #333;
 `
+const ProgressBarBorder = styled.div`
+height: 24px;
+width: 686px;
+margin: 0 auto;
+padding-top: 4px;
+background-color: #555;
+`
+
 const TimerProgressBar = styled.div`
 color: white;
 float: left;
@@ -25,13 +33,15 @@ const ProgressBar = ({timeLeft}) => {
   const percentage = ((timeLeft / maxTime))*100
   return (
     <div>
-      <OuterProgressBar>
-        <InnerProgressBar percentage={percentage} >
-          <TimerProgressBar>
-            { moment.utc(timeLeft*1000).format('mm:ss') }
-          </TimerProgressBar>
-        </InnerProgressBar>
-      </OuterProgressBar>
+      <ProgressBarBorder>
+        <OuterProgressBar>
+          <InnerProgressBar percentage={percentage} >
+            <TimerProgressBar>
+              { moment.utc(timeLeft*1000).format('mm:ss') }
+            </TimerProgressBar>
+          </InnerProgressBar>
+        </OuterProgressBar>
+      </ProgressBarBorder>
     </div>
   )
 }
