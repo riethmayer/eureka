@@ -26,7 +26,7 @@ background-color: #555;
 const TimerProgressBar = styled.div`
 color: white;
 float: left;
-margin-left: 555px;
+margin-left: 625px;
 `
 
 const ProgressBar = ({timeLeft}) => {
