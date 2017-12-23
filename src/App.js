@@ -8,7 +8,7 @@ class App extends Component {
         <h1><Link to="/">Eureka</Link></h1>
         <Link to="/game">Start a new game</Link>
       </div>
-    );
+    )
   }
 }
 

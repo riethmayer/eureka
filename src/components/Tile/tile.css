@@ -1,8 +1,15 @@
 
-.active svg .inner-rectangle {
-  fill: #efefef;
-  stroke-width: 15;
-  stroke: limegreen;
+.tile.active div  {
+  border: 1px solid limegreen;
+  border-top: 2px limegreen solid;
+  border-left: 2px limegreen solid;
+  border-right: 2px green solid;
+  border-bottom: 2px green solid;
+  background-color: #ddd;
+}
+
+.tile.active div p {
+  text-shadow: 1px 1px 2px white;
 }
 
 svg .inner-rectangle {

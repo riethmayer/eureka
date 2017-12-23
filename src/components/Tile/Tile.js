@@ -18,6 +18,7 @@ const StyledText = styled.p`
 text-align: center;
 padding: 0;
 margin: 10px;
+font-size: 2.5ex;
 vertical-align: middle;
 font-family: 'Helvetica';
 font-weight: 900;

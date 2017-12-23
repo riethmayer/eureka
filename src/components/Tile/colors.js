@@ -28,7 +28,7 @@ export const colors = {
   0: 'orchid',
   1: 'peru',
   2: 'steelblue',
-  3: 'thistle',
+  3: 'darkbrown',
   4: 'teal',
   5: 'wheat',
   6: 'turquoise',
