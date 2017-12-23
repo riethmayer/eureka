@@ -11,14 +11,14 @@ background-color: ${props => props.percentage < 50 ? 'red' : 'green'};
 `
 const OuterProgressBar = styled.div`
 height: 20px;
-width: 680px;
+width: 684px;
 margin: 0 auto;
 background-color: #333;
 `
 const ProgressBarBorder = styled.div`
 height: 24px;
-width: 686px;
-margin: 0 auto;
+width: 692px;
+margin: 10px auto;
 padding-top: 4px;
 background-color: #555;
 `

@@ -80,10 +80,10 @@ class GameBoard extends Component {
           <Title>Eureka</Title>
           <Score score={ score } />
         </Box>
-        <ProgressBar timeLeft={timeLeft} />
         <Main>
           <Turtle />
         </Main>
+        <ProgressBar timeLeft={timeLeft} />
         <Controls>
           <Button primary onClick={ pause }>
             Pause

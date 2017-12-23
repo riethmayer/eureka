@@ -6,13 +6,13 @@ export const colors = {
   e: 'purple',
   f: 'orange',
   g: 'yellow',
-  h: 'aqua',
+  h: 'royalblue',
   i: 'blueviolet',
   j: 'cadetblue',
   k: 'coral',
   l: 'cornflowerblue',
   m: 'crimson',
-  n: 'cyan',
+  n: 'rebeccapurple',
   o: 'darkblue',
   p: 'darkcyan',
   q: 'darkgreen',
@@ -31,9 +31,9 @@ export const colors = {
   3: 'darkbrown',
   4: 'teal',
   5: 'wheat',
-  6: 'turquoise',
+  6: 'firebrick',
   7: 'springgreen',
-  8: 'papayawhip',
+  8: 'darkslategray',
   9: 'olivedrab'
 }
 
