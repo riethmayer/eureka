@@ -5,10 +5,10 @@ import './tile.css'
 import styled from 'styled-components'
 
 const StyledStone = styled.div`
-border-top: 2px white solid;
-border-left: 2px white solid;
-border-right: 2px black solid;
-border-bottom: 2px black solid;
+border-top: 2px #dedede solid;
+border-left: 2px #dedede solid;
+border-right: 2px #555 solid;
+border-bottom: 2px #555 solid;
 height: 40px;
 width: 40px;
 background-color: #ccc;

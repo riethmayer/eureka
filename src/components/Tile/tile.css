@@ -8,8 +8,8 @@
   background-color: #ddd;
 }
 
-.tile.active div p {
-  text-shadow: 1px 1px 2px white;
+.tile div p {
+  text-shadow: 1px 1px 1px black, -1px -1px 1px white;
 }
 
 svg .inner-rectangle {
