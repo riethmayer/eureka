@@ -10,15 +10,15 @@ border-left: 2px #dedede solid;
 border-right: 2px #555 solid;
 border-bottom: 2px #555 solid;
 height: 40px;
-width: 40px;
+width: 30px;
 background-color: #ccc;
 `
 
 const StyledText = styled.p`
 text-align: center;
 padding: 0;
-margin: 10px;
-font-size: 2.5ex;
+margin: 7px 0;
+font-size: 3ex;
 vertical-align: middle;
 font-family: 'Helvetica';
 font-weight: 900;

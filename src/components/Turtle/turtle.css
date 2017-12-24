@@ -19,6 +19,7 @@
 .layer-4 {
 z-index: 50
 }
+
 .row-1 {
   top: 45px;
 }
@@ -90,47 +91,47 @@ z-index: 50
   left: 0;
   }
 .column-1 {
-  left: 44px;
+  left: 34px;
 }
 .column-2 {
-  left: 88px;
+  left: 68px;
 }
 .column-3 {
-  left: 132px;
+  left: 102px;
 }
 .column-4 {
-  left: 176px;
+  left: 136px;
 }
 .column-5 {
-  left: 220px;
+  left: 170px;
 }
 .column-6 {
-  left: 264px;
+  left: 204px;
 }
 .column-7 {
-  left: 308px;
+  left: 238px;
 }
 .column-8 {
-  left: 352px;
+  left: 272px;
 }
 .column-9 {
-  left: 396px;
+  left: 306px;
 }
 .column-10 {
-  left: 440px;
+  left: 340px;
 }
 .column-11 {
-  left: 484px;
+  left: 374px;
 }
 .column-12 {
-  left: 528px;
+  left: 408px;
 }
 .column-13 {
-  left: 572px;
+  left: 442px;
 }
 .column-14 { 
-  left: 616px;
+  left: 476px;
 }
 .column-15 { /* top piece */
-  left: 288px;
+  left: 224px;
 }
