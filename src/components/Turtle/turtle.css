@@ -21,117 +21,116 @@ z-index: 50
 }
 
 .row-1 {
-  top: 45px;
+  top: 4.3em;
 }
 .row-2 {
-  top: 90px;
+  top: 8.6em;
   }
 .row-3 {
-  top: 135px;
+  top: 12.9em;
 }
 .row-4 { /* single left */
-  top: 157px;
+  top: 15.05em;
 }
 .row-5 {
-  top: 180px;
+  top: 17.2em;
 }
 .row-6 { /* duo right */
-  top: 157px;
-  }
+  top: 15.05em;
+}
 .row-7 {
-  top: 225px;
+  top: 21.5em;
 }
 .row-8 {
-  top: 270px;
+  top: 25.8em;
 }
 .row-9 {
-  top: 315px;
+  top: 30.1em;
 }
 .row-10 { /* second layer*/
-  top: 45px;
-  }
+  top: 4.3em;
+}
 .row-11 {
-  top: 90px;
+  top: 8.6em;
 }
 .row-12 {
-  top: 135px;
+  top: 12.9em;
 }
 .row-13 {
-  top: 180px;
+  top: 17.2em;
 }
 .row-14 {
-  top: 225px;
+  top: 21.5em;
 }
 .row-15 {
-  top: 270px;
+  top: 25.8em;
 }
 .row-16 { /* third layer */
-  top: 90px;
+  top: 8.6em;
 }
 .row-17 {
-  top: 135px;
+  top: 12.9em;
 }
 .row-18 {
-  top: 180px;
+  top: 17.2em;
 }
 .row-19 {
-  top: 225px;
+  top: 21.5em;
 }
 .row-20 { /* fourth layer */
-  top: 135px;
+  top: 12.9em;
 }
 .row-21 {
-  top: 180px;
+  top: 17.2em;
 }
 .row-22 {
-  top: 157px;
+  top: 15.05em;
 }
-
 .column-0 {
   left: 0;
-  }
+}
 .column-1 {
-  left: 34px;
+  left: 3.26em;
 }
 .column-2 {
-  left: 68px;
+  left: 6.52em;
 }
 .column-3 {
-  left: 102px;
+  left: 9.77em;
 }
 .column-4 {
-  left: 136px;
+  left: 13.03em;
 }
 .column-5 {
-  left: 170px;
+  left: 16.28em;
 }
 .column-6 {
-  left: 204px;
+  left: 19.50em;
 }
 .column-7 {
-  left: 238px;
+  left: 22.78em;
 }
 .column-8 {
-  left: 272px;
+  left: 26.02em;
 }
 .column-9 {
-  left: 306px;
+  left: 29.28em;
 }
 .column-10 {
-  left: 340px;
+  left: 32.53em;
 }
 .column-11 {
-  left: 374px;
+  left: 35.78em;
 }
 .column-12 {
-  left: 408px;
+  left: 39.03em;
 }
 .column-13 {
-  left: 442px;
+  left: 42.3em;
 }
 .column-14 { 
-  left: 476px;
+  left: 45.57em;
 }
 .column-15 { /* top piece */
-  left: 224px;
+  left: 21.1em;
 }

@@ -1,0 +1,43 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "arrowFunctions": true,
+      "blockBindings": true,
+      "classes": true,
+      "defaultParams": true,
+      "destructuring": true,
+      "experimentalObjectRestSpread": true,
+      "forOf": true,
+      "generators": true,
+      "impliedStrict": true,
+      "jsx": true,
+      "modules": true,
+      "spread": true,
+      "templateStrings": true
+    }
+  },
+  "env": {
+    "browser": true,
+    "node": false,
+    "es6": true
+  },
+  "plugins": [ "react" ],
+  "parser": "babel-eslint",
+  "rules": {
+    "semi": [2, "never"],
+    "consistent-return": [1],
+    "key-spacing": [0],
+    "quotes": [0],
+    "new-cap": [0],
+    "no-multi-spaces": [0],
+    "no-shadow": [0],
+    "no-unused-vars": [1],
+    "no-use-before-define": [2, "nofunc"],
+    "react/jsx-no-undef": 1,
+    "react/jsx-uses-react": 1,
+    "react/jsx-uses-vars": 1,
+    "no-trailing-spaces": 1
+  }
+}
