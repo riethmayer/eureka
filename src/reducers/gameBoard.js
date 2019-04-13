@@ -116,6 +116,7 @@ const cleanup = (currentIndex) => {
       let tile = board[id]
       return tile && (tile['token'] !== token) && tile['active'] && tile['index'] !== currentIndex
     }).map(parseInt)
+    console.log("toClean",toClean)
     toClean.map((i) => dispatch(deselected(i)))
   }
 }
