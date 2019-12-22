@@ -1,6 +1,13 @@
 import React from "react";
 
-const HighScore = highScores => (
+const players = highscores => {
+  return Object.keys(highscores).map(key => {
+    const { score, player } = highscores[key];
+    return { score, player, key };
+  });
+};
+
+const HighScore = ({ highScores }) => (
   <table>
     <thead>
       <tr>
@@ -17,35 +24,13 @@ const HighScore = highScores => (
       </tr>
     </tfoot>
     <tbody>
-      {Object.keys(highScores).forEach((key, index) => {
-        console.log(highScores);
-        console.log(key);
-        console.log(index);
-        const { score, person } = highScores[key];
-        return (
-          <tr key={key}>
-            <td>{index}</td>
-            <td>{score}</td>
-            <td>{person}</td>
-          </tr>
-        );
-      })}
-
-      <tr>
-        <td>2nd</td>
-        <td>20012</td>
-        <td>Chuck Norris</td>
-      </tr>
-      <tr>
-        <td>3rd</td>
-        <td>20001</td>
-        <td>Chuck Norris</td>
-      </tr>
-      <tr>
-        <td>4th</td>
-        <td>2013</td>
-        <td>Sigrid S.</td>
-      </tr>
+      {players(highScores).map(({ key, score, player }, index) => (
+        <tr key={key}>
+          <td>{index}</td>
+          <td>{score}</td>
+          <td>{player}</td>
+        </tr>
+      ))}
     </tbody>
   </table>
 );
