@@ -3,35 +3,31 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "bluebird": "^3.5.1",
-    "co": "^4.6.0",
-    "fs": "^0.0.1-security",
-    "grid-styled": "^2.0.0-11",
-    "history": "^4.7.2",
-    "moment": "2.18.1",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-redux": "^5.0.6",
-    "react-router-dom": "^4.2.2",
-    "react-router-redux": "^4.0.8",
-    "react-scripts": "1.0.14",
-    "redux": "^3.7.2",
+    "@reduxjs/toolkit": "^1.8.5",
+    "moment": "latest",
+    "next": "^12.2.5",
+    "next-redux-wrapper": "^7.0.5",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-is": "^18.2.0",
+    "react-redux": "^8.0.2",
+    "redux": "^4.1.2",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.2.0",
-    "styled-components": "^2.2.1"
+    "redux-thunk": "^2.4.1",
+    "styled-components": "latest"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "type-check": "tsc"
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^3.2.12",
-    "@storybook/addon-links": "^3.2.12",
-    "@storybook/cli": "^3.2.12",
-    "@storybook/react": "^3.2.12"
+    "@types/next-redux-wrapper": "^3.0.0",
+    "@types/node": "^18.7.13",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.1",
+    "@types/redux-logger": "^3.0.9",
+    "typescript": "^4.8.2"
   }
 }
