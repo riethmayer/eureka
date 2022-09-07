@@ -14,7 +14,8 @@
     "redux": "^4.1.2",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.1",
-    "styled-components": "latest"
+    "styled-components": "latest",
+    "tslib": "^2.4.0"
   },
   "scripts": {
     "dev": "next dev",
@@ -28,6 +29,8 @@
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "@types/redux-logger": "^3.0.9",
+    "@types/styled-components": "^5.1.26",
+    "prettier": "^2.7.1",
     "typescript": "^4.8.2"
   }
 }

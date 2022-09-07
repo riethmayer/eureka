@@ -4,6 +4,7 @@ import {
 } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { AppState } from '@store/store';
+import { HYDRATE } from 'next-redux-wrapper';
 
 // declaring the types for our state
 export type Timer = NodeJS.Timeout | undefined
@@ -35,7 +36,7 @@ export const resumeGame = createAction<Timer>('constraints/GAME_RESUME');
 export const abortGame = createAction('constraints/GAME_ABORT');
 export const gameOver = createAction('constraints/GAME_OVER');
 
-export const constraints = createSlice({
+export const constraintsSlice = createSlice({
   name: 'constraints',
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions.
@@ -50,24 +51,23 @@ export const constraints = createSlice({
         state.timeLeft = TIME_TO_SOLVE;
         state.gameOver = false;
         state.gamePaused = false;
-        return state;
       })
       .addCase(tick, (state) => {
         if(state.timeLeft > 0) {
           state.timeLeft = state.timeLeft - 1;
         } else {
-          // game over, time's up.
+          state.timeLeft = 0;
         }
-        return state;
       })
       .addCase(pauseGame, (state) => {
         state.gamePaused = true;
+        state.gameRunning = false;
         state.timer = undefined;
-        return state;
       })
       .addCase(resumeGame, (state, action: PayloadAction<Timer>) => {
         state.timer = action.payload;
         state.gamePaused = false;
+        state.gameRunning = true;
         return state;
       })
       .addCase(abortGame, () => {
@@ -78,19 +78,17 @@ export const constraints = createSlice({
         state.gameRunning = false;
         state.timeLeft = 0;
         state.gamePaused = false;
-        state.timer = undefined; // clearInterval(state.timer);
-        return state;
       })
       .addDefaultCase((state) => state);
   },
 });
-
+ 
 // calling the above actions would be useless if we could not access the data in the state. So, we use something called a selector which allows us to select a value from the state.
 export const selectGamePaused = (state: AppState) => state.constraints.gamePaused;
 export const selectTimer = (state: AppState) => state.constraints.timer;
 export const selectTimeLeft = (state: AppState) => state.constraints.timeLeft;
 export const selectGameOver = (state: AppState) => state.constraints.gameOver;
 export const selectGameRunning = (state: AppState) => state.constraints.gameRunning;
-
+ 
 // exporting the reducer here, as we need to add this to the store
-export default constraints.reducer;
+export default constraintsSlice.reducer;

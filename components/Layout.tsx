@@ -1,7 +1,5 @@
 import { ReactNode } from 'react'
 import { createGlobalStyle } from 'styled-components'
-
-import Link from 'next/link'
 import Head from 'next/head'
 
 type Props = {

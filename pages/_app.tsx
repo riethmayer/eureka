@@ -1,15 +1,17 @@
 import { AppProps } from 'next/app';
-import { wrapper } from "@store/store";
-
+import { store } from '@store/store';
 import '../styles/turtle.css'
 import '../styles/tile.css'
+import { Provider } from 'react-redux';
 
 const App = ({
   Component, pageProps
 }: AppProps) => {
   return (
-    <Component {...pageProps} />
+    <Provider store={store}>
+      <Component {...pageProps} />
+    </Provider>
   );
 }
 
-export default wrapper.withRedux(App);
+export default App;

@@ -1,7 +1,10 @@
-import React, { Component } from 'react'
-import _ from 'lodash'
 import color from './colors'
 import styled from 'styled-components'
+import { TokenTile } from '@store/gameBoard'
+
+interface Props {
+  tokenColor: string
+}
 
 const StyledStone = styled.div`
 border-top: 2px #dedede solid;
@@ -16,7 +19,7 @@ justify-content: center;
 align-items: center;
 `
 
-const StyledText = styled.p`
+const StyledText = styled.p<Props>`
 font-family: 'Helvetica';
 font-weight: 900;
 font-size: 2.7em;
@@ -34,36 +37,30 @@ const Stone = ({token}) => {
   )
 }
 
+export type TileProps = {
+  onClick: () => void;
+  className: string;
+  id: string;
+} & Omit<TokenTile, 'index'>
 
-
-class Tile extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      active: false
-    }
-  }
-
-  classes = ({token, layer, column, row, active}) => {
-    return _.compact([
+const StyledTile: React.FC<TileProps> = (
+  {onClick, token, layer, column, row, active}
+) => {
+  const classes = [
       'tile',
       'rect',
       `layer-${layer}`,
       `column-${column}`,
       `row-${row}`,
       `${active ? 'active' : ''}`
-    ]).join(" ")
-  }
+    ].filter(Boolean).join(" ");
 
-  render() {
-    const { onClick, token } = this.props
-    return (
-      <div onClick={onClick}
-           className={ this.classes(this.props) }>
-        <Stone token={token} />
-      </div>
-    )
-  }
+  return (
+    <div onClick={onClick}
+      className={classes}>
+      <Stone token={token} />
+    </div>
+  )
 }
 
-export default Tile
+export default StyledTile

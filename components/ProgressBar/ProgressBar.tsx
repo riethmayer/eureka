@@ -1,9 +1,12 @@
-import React from 'react'
 import styled from 'styled-components'
 import { initialTimeLeft as maxTime } from '../../reducers/timer'
 import moment from 'moment'
 
-const InnerProgressBar = styled.div`
+interface Props {
+  percentage: number
+}
+
+const InnerProgressBar = styled.div<Props>`
 width: ${props => props.percentage}%;
 height: 20px;
 margin: 0 0 10px 0;

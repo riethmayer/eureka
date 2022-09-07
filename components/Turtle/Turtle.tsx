@@ -1,45 +1,31 @@
-import { useSelector } from 'react-redux'
-import { clicked } from '@actions/index'
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import Tile from '../Tile/Tile'
-import { wrapper } from '@store/store'
-import { selectBoard } from '@store/gameBoard'
-
+import { clicked, selectBoard } from '@store/gameBoard'
 
 const Turtle = () => {
-  const board = useSelector(selectBoard);
-  const tile = (i: number) => {
-    const {
-      token,
-      index,
-      active,
-      row,
-      column,
-      layer
-    } = board[i]
-    return(
-      <Tile token={ token }
+  const board = useAppSelector(selectBoard);
+  const dispatch = useAppDispatch();
+
+
+  return(
+    <div className="turtle">
+      { 
+        Object.keys(board).map((idx) => {
+          const { active, column, layer, row, token, index} = board[idx];
+          return <Tile 
+            token={ token }
             row={ row }
             column={ column }
             layer={ layer }
             active={ active }
             className={`${token}`}
             id={`tile_${index}`}
-            onClick={ () => clicked(index) }
+            onClick={ () => dispatch(clicked(index)) }
             key={ index } />
-    )
-  }
-
-  return(
-    <div className="turtle">
-      { Object.keys(board).map((index) => { return tile(index) } )}
+        })
+      }
     </div>
   )
 }
 
-const mapStateToProps = ({board}) => {
-  return({
-    board
-  });
-}
-
-export default wrapper.withRedux(Turtle)
+export default Turtle

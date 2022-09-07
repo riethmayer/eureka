@@ -1,5 +1,3 @@
-import React from 'react'
-
 const TimeLeft = ({timeLeft, pause}) => {
   return (
     <div>

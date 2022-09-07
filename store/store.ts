@@ -1,47 +1,31 @@
-import { Action, AnyAction, combineReducers, configureStore, ThunkAction } from "@reduxjs/toolkit"
-import { constraints } from "./constraints";
-import { createWrapper, HYDRATE, Context } from "next-redux-wrapper";
+import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit"
+import constraintsReducer, { ConstraintsState } from "./constraints";
+import gameBoardReducer, { TokenTileMap } from "./gameBoard";
+import scoreReducer from "./score";
 import logger from "redux-logger";
-import { gameBoard } from "./gameBoard";
-import { ThunkMiddleware } from "redux-thunk";
-import { CurriedGetDefaultMiddleware } from "@reduxjs/toolkit/dist/getDefaultMiddleware";
+// import {createWrapper, Context, HYDRATE} from 'next-redux-wrapper';
+
+export interface State {
+  gameboard: TokenTileMap;
+  constraints: ConstraintsState;
+  score: number;
+}
 
 // Redux implementation
-const combineReducer = combineReducers({
-  [constraints.name]: constraints.reducer,
-  [gameBoard.name]: gameBoard.reducer
+export const store = configureStore({
+  reducer: {
+    constraints: constraintsReducer,
+    gameBoard: gameBoardReducer,
+    score: scoreReducer,
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+  devTools: process.env.NODE_ENV !== "production",
 })
 
-const reducer = (state: ReturnType<typeof combineReducer>, action: AnyAction) => {
-  if (action.type === HYDRATE) {
-    const nextState = {
-      ...state, // use previous state
-      ...action.payload, // apply delta from hydration
-    }
-    return nextState
-  } else {
-    return combineReducer(state, action)
-  }
-}
-
-const makeStore = () => {
-  const s = configureStore({
-    reducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
-    devTools: process.env.NODE_ENV !== "production",
-  })
-  return s;
-}
-
-export type AppStore = ReturnType<typeof makeStore>;
+export type AppStore = typeof store;
 export type AppState = ReturnType<AppStore["getState"]>;
-export type AppDispatch = ReturnType<AppStore["dispatch"]>;
+export type AppDispatch = AppStore["dispatch"];
+export type AppThunk = ThunkAction<void, AppState, unknown, Action<string>>;
 
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  AppState,
-  unknown,
-  Action<string>
->;
 
-export const wrapper = createWrapper(makeStore, { debug: true });
+export default store;

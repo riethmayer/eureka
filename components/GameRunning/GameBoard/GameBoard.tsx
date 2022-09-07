@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '@store/hooks'
 import Turtle from '@components/Turtle/Turtle'
-import { clicked } from '@store/gameBoard'
 import styled from 'styled-components'
 import ProgressBar from '@components/ProgressBar/ProgressBar'
+import { abortGame, pauseGame, resumeGame, selectGamePaused, selectTimeLeft, selectTimer, startGame, tick } from '@store/constraints'
 
 const colors = {
   primary: 'papayawhip',
@@ -12,6 +12,10 @@ const colors = {
   light: '#efefef'
 }
 
+type ButtonProps = {
+  primary?: boolean;
+  secondary?: boolean;
+}
 
 const MyBoard = styled.div`
 font-size: 1.2em;
@@ -26,7 +30,6 @@ width: 49.5em;
 padding: 0;
 margin: 0 auto;
 padding: 20px 0 0 12px;
-
 `
 
 const Controls = styled.div`
@@ -36,7 +39,7 @@ margin: 0 auto;
 display: flex;
 `
 
-const Button = styled.button`
+const Button = styled.button<ButtonProps>`
 text-align: center;
 margin: 1px 1px;
 font-size: 3ex;
@@ -65,13 +68,33 @@ const Score = ({ score }) => {
   )
 }
 
+const GameBoard = () => {
+  const timeLeft = useAppSelector(selectTimeLeft)
+  const timer = useAppSelector(selectTimer);
+  const paused = useAppSelector(selectGamePaused)
+  const score = 0;
+  const dispatch = useAppDispatch();
 
-class GameBoard extends Component {
-  render() {
-    const { timeLeft, pause, start, score } = this.props
-    return (
+  const pause = () => {
+    clearInterval(timer);
+    dispatch(pauseGame());
+  }
+
+  const resume = () => {
+    const interval = setInterval(() => dispatch(tick()), 1000)
+    dispatch(resumeGame(interval))
+  }
+
+  const restart = () => {
+    clearInterval(timer);
+    dispatch(abortGame())
+    const interval = setInterval(() => dispatch(tick()), 1000)
+    dispatch(startGame(interval))
+  }
+
+  return (
       <MyBoard>
-        <div width={1} p={10}>
+        <div>
           <Title>Eureka</Title>
           <Score score={ score } />
         </div>
@@ -80,23 +103,20 @@ class GameBoard extends Component {
         </Main>
         <ProgressBar timeLeft={timeLeft} />
         <Controls>
-          <Button primary onClick={ pause }>
-            Pause
-          </Button>
-          <Button secondary onClick={ start }>
+          { paused
+            ? <Button primary onClick={resume}>
+                Resume
+              </Button>
+            : <Button primary onClick={pause}>
+                Pause
+              </Button>
+          }
+          <Button secondary onClick={restart}>
             Restart
           </Button>
         </Controls>
       </MyBoard>
     )
   }
-}
 
-const mapStateToProps = ({board, score}) => {
-  return({
-    board: board,
-    score: score
-  });
-}
-
-export default connect(mapStateToProps, { clicked })(GameBoard)
+export default GameBoard
