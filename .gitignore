@@ -2,11 +2,11 @@
 node_modules
 jspm_packages
 
-# Serverless directories
-.serverless
-
 # build
 /build
+
+# next.js
+.next
 
 # misc
 .DS_Store
