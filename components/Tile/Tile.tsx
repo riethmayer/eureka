@@ -1,4 +1,4 @@
-import color from './colors'
+import colour from './Colours'
 import styled from 'styled-components'
 import { TokenTile } from '@store/gameBoard'
 
@@ -27,7 +27,7 @@ color: ${ props => props.tokenColor };
 `
 
 const Stone = ({token}) => {
-  const tokenColor = color(token)
+  const tokenColor = colour(token)
   return (
     <StyledStone>
       <StyledText tokenColor={ tokenColor }>

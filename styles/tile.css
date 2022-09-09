@@ -1,4 +1,4 @@
-.tile.active div  {
+.tile.active div {
   border: 1px solid limegreen;
   border-top: 2px limegreen solid;
   border-left: 2px limegreen solid;
@@ -28,9 +28,8 @@ svg .inner-rectangle {
   width: 100%;
 }
 
-
 .rect-text .inner-token {
-  font-family: 'Rubik', sans-serif;
+  font-family: "Rubik", sans-serif;
   font-weight: 900;
   font-size: 300px;
   stroke: #444;

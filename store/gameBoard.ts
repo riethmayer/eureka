@@ -8,7 +8,7 @@ import { startGame } from './constraints';
 import { scoredPair } from './score';
 
 const tokens = ['0','1','2','3','4','5','6','7','8','9','A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'] as const;
-type Token = typeof tokens[number];
+export type Token = typeof tokens[number];
 
 const allTokens = [...tokens, ...tokens, ...tokens, ...tokens] as const; // 2 pairs of each token
 

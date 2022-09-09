@@ -1,3 +1,5 @@
+// @refresh reset
+// why when I change the store.ts file, /game becomes blank?
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit"
 import constraintsReducer, { ConstraintsState } from "./constraints";
 import gameBoardReducer, { TokenTileMap } from "./gameBoard";
@@ -5,12 +7,11 @@ import scoreReducer from "./score";
 import logger from "redux-logger";
 // import {createWrapper, Context, HYDRATE} from 'next-redux-wrapper';
 
-export interface State {
-  gameboard: TokenTileMap;
-  constraints: ConstraintsState;
-  score: number;
-}
-
+// export interface State {
+//   gameboard: TokenTileMap;
+//   constraints: ConstraintsState;
+//   score: number;
+// }
 // Redux implementation
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export type AppStore = typeof store;
 export type AppState = ReturnType<AppStore["getState"]>;
 export type AppDispatch = AppStore["dispatch"];
 export type AppThunk = ThunkAction<void, AppState, unknown, Action<string>>;
+
 
 
 export default store;

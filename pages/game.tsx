@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { abortGame, selectGameOver, selectGamePaused, selectGameRunning, selectTimeLeft, selectTimer } from '@store/constraints';
 import { startGame, tick, resumeGame } from '@store/constraints';
 import { useEffect } from 'react';
+import { store } from '@store/store';
 
 const Game: NextPage = () => {
   const gameRunning = useAppSelector(selectGameRunning);
@@ -25,7 +26,7 @@ const Game: NextPage = () => {
     clearInterval(timer);
     dispatch(abortGame())
   }
-  
+ 
   const resume = () => {
     const interval = setInterval(() => dispatch(tick()), 1000);
     dispatch(resumeGame(interval));
@@ -36,7 +37,7 @@ const Game: NextPage = () => {
     return () => {
       abort()
     }
-  }, [])
+  }, [store])
 
   return (
     <div>

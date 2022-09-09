@@ -4,6 +4,7 @@ import Turtle from '@components/Turtle/Turtle'
 import styled from 'styled-components'
 import ProgressBar from '@components/ProgressBar/ProgressBar'
 import { abortGame, pauseGame, resumeGame, selectGamePaused, selectTimeLeft, selectTimer, startGame, tick } from '@store/constraints'
+import { selectScore } from '@store/score'
 
 const colors = {
   primary: 'papayawhip',
@@ -72,7 +73,7 @@ const GameBoard = () => {
   const timeLeft = useAppSelector(selectTimeLeft)
   const timer = useAppSelector(selectTimer);
   const paused = useAppSelector(selectGamePaused)
-  const score = 0;
+  const score = useAppSelector(selectScore);
   const dispatch = useAppDispatch();
 
   const pause = () => {

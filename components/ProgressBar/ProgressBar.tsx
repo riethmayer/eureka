@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import { initialTimeLeft as maxTime } from '../../reducers/timer'
 import moment from 'moment'
+import { TIME_TO_SOLVE as maxTime } from '@store/constraints';
 
 interface Props {
   percentage: number

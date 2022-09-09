@@ -4,7 +4,6 @@ import {
 } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { AppState } from '@store/store';
-import { HYDRATE } from 'next-redux-wrapper';
 
 // declaring the types for our state
 export type Timer = NodeJS.Timeout | undefined
@@ -19,7 +18,7 @@ export type ConstraintsState = {
 
 // initial state
 const INITIAL_TIME = 0
-const TIME_TO_SOLVE = 400
+export const TIME_TO_SOLVE = 400
 const initialState : ConstraintsState = {
   timer: undefined,
   gameRunning: false,
@@ -30,7 +29,7 @@ const initialState : ConstraintsState = {
 
 // actions (constraints)
 export const startGame = createAction<Timer>('constraints/GAME_START');
-export const tick = createAction('constraints/TICK');
+export const ticked = createAction('constraints/TICKED');
 export const pauseGame = createAction('constraints/GAME_PAUSE');
 export const resumeGame = createAction<Timer>('constraints/GAME_RESUME');
 export const abortGame = createAction('constraints/GAME_ABORT');
@@ -52,7 +51,7 @@ export const constraintsSlice = createSlice({
         state.gameOver = false;
         state.gamePaused = false;
       })
-      .addCase(tick, (state) => {
+      .addCase(ticked, (state) => {
         if(state.timeLeft > 0) {
           state.timeLeft = state.timeLeft - 1;
         } else {
@@ -89,6 +88,19 @@ export const selectTimer = (state: AppState) => state.constraints.timer;
 export const selectTimeLeft = (state: AppState) => state.constraints.timeLeft;
 export const selectGameOver = (state: AppState) => state.constraints.gameOver;
 export const selectGameRunning = (state: AppState) => state.constraints.gameRunning;
- 
+
+
+export const checkGameFinished = () => async (dispatch, getState) => {
+  const { constraints: { timeLeft }} = getState();
+  if(timeLeft <= 0) {
+    dispatch(gameOver())
+  }
+}
+
+export const tick = () => async (dispatch) => {
+  dispatch(ticked())
+  dispatch(checkGameFinished())
+}
+
 // exporting the reducer here, as we need to add this to the store
 export default constraintsSlice.reducer;
