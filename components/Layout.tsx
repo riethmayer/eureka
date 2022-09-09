@@ -19,7 +19,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `
 const Layout = ({ children, title = 'Eureka' }: Props) => (
-  <div>
+  <>
     <Head>
       <title>{title}</title>
       <meta charSet="utf-8" />
@@ -27,7 +27,7 @@ const Layout = ({ children, title = 'Eureka' }: Props) => (
     </Head>
     <GlobalStyle />
     {children}
-  </div>
+  </>
 )
 
 export default Layout

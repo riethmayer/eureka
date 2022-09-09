@@ -1,7 +1,6 @@
 import { AppProps } from 'next/app';
 import { store } from '@store/store';
-import '../styles/turtle.css'
-import '../styles/tile.css'
+import '../styles/global.css'
 import { Provider, useStore } from 'react-redux';
 import { useEffect } from 'react';
  

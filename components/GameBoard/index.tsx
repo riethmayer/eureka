@@ -55,6 +55,7 @@ background-color: ${(props) => (props.primary && colors.primary) || (props.secon
 const Title = styled.h1`
 color: white;
 text-align: center;
+margin: 0;
 `
 const ScoreValue = styled.h2`
 color: white;
