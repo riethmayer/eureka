@@ -36,7 +36,7 @@ margin-left: 625px;
 const ProgressBar = ({timeLeft}) => {
   const percentage = ((timeLeft / maxTime))*100
   return (
-    <div>
+    <>
       <ProgressBarBorder>
         <OuterProgressBar>
           <InnerProgressBar percentage={percentage} >
@@ -46,7 +46,7 @@ const ProgressBar = ({timeLeft}) => {
           </InnerProgressBar>
         </OuterProgressBar>
       </ProgressBarBorder>
-    </div>
+    </>
   )
 }
 

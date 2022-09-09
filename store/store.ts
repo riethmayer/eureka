@@ -5,14 +5,7 @@ import constraintsReducer, { ConstraintsState } from "./constraints";
 import gameBoardReducer, { TokenTileMap } from "./gameBoard";
 import scoreReducer from "./score";
 import logger from "redux-logger";
-// import {createWrapper, Context, HYDRATE} from 'next-redux-wrapper';
 
-// export interface State {
-//   gameboard: TokenTileMap;
-//   constraints: ConstraintsState;
-//   score: number;
-// }
-// Redux implementation
 export const store = configureStore({
   reducer: {
     constraints: constraintsReducer,
