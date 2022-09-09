@@ -75,7 +75,7 @@ const tileConfig = {
   39:  {index: 39, layer: 0, row: 3, column: 10 },
   40:  {index: 40, layer: 0, row: 3, column: 11 },
   41:  {index: 41, layer: 0, row: 3, column: 12 },
-  42:  {index: 42, layer: 6, row: 4, column: 0 },
+  42:  {index: 42, layer: 6, row: 4, column: 0 },  // most left tile
   43:  {index: 43, layer: 0, row: 5, column: 1 },
   44:  {index: 44, layer: 0, row: 5, column: 2 },
   45:  {index: 45, layer: 0, row: 5, column: 3 },
@@ -88,8 +88,8 @@ const tileConfig = {
   52:  {index: 52, layer: 0, row: 5, column: 10 },
   53:  {index: 53, layer: 0, row: 5, column: 11 },
   54:  {index: 54, layer: 0, row: 5, column: 12 },
-  55:  {index: 55, layer: 0, row: 6, column: 13 },
-  56:  {index: 56, layer: 0, row: 6, column: 14 },
+  55:  {index: 55, layer: 0, row: 6, column: 13 }, // two most right tiles
+  56:  {index: 56, layer: 0, row: 6, column: 14 }, // two most right tiles
   57:  {index: 57, layer: 0, row: 7, column: 2 },
   58:  {index: 58, layer: 0, row: 7, column: 3 },
   59:  {index: 59, layer: 0, row: 7, column: 4 },
@@ -176,7 +176,7 @@ const tileConfig = {
   140: {index: 140, layer: 3, row: 20, column: 7 },
   141: {index: 141, layer: 3, row: 21, column: 6 },
   142: {index: 142, layer: 3, row: 21, column: 7 },
-  143: {index: 143, layer: 4, row: 22, column: 15 },
+  143: {index: 143, layer: 4, row: 22, column: 15 }, // top tile
 } as const;
 
 
