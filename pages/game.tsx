@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { abortGame, selectGameOver, selectGamePaused, selectGameRunning, selectTimeLeft, selectTimer } from '@store/constraints';
 import { startGame, tick, resumeGame } from '@store/constraints';
 import { useEffect } from 'react';
-import { store } from '@store/store';
 import Layout from '@components/Layout';
 import GameBoard from '@components/GameBoard';
 
@@ -17,16 +16,6 @@ const Game: NextPage = () => {
   const timer = useAppSelector(selectTimer);
   const dispatch = useAppDispatch();
 
-  const start = () => {
-    if(timer) { clearInterval(timer) }
-    const interval = setInterval(() => dispatch(tick()), 1000)
-    return dispatch(startGame(interval));
-  }
-
-  const abort = () => {
-    clearInterval(timer);
-    dispatch(abortGame())
-  }
  
   const resume = () => {
     const interval = setInterval(() => dispatch(tick()), 1000);
@@ -34,11 +23,22 @@ const Game: NextPage = () => {
   }
 
   useEffect(() => {
+    const start = () => {
+      if(timer) { clearInterval(timer) }
+      const interval = setInterval(() => dispatch(tick()), 1000)
+      return dispatch(startGame(interval));
+    }
+  
+    const abort = () => {
+      clearInterval(timer);
+      dispatch(abortGame())
+    }
+  
     start()
     return () => {
       abort()
     }
-  }, [store])
+  }, [dispatch, timer])
 
   return (
     <Layout title="Eureka - Good luck!">
