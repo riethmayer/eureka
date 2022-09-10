@@ -4,12 +4,12 @@ import { AppState } from "./store";
 const initialState = 0;
 
 export const scoreSlice = createSlice({
-  name: 'score',
+  name: "score",
   initialState,
   reducers: {
     scoredPair(state) {
       return state + 2;
-    }
+    },
   },
 });
 

@@ -1,11 +1,11 @@
-import { ReactNode } from 'react'
-import { createGlobalStyle } from 'styled-components'
-import Head from 'next/head'
+import { ReactNode } from "react";
+import { createGlobalStyle } from "styled-components";
+import Head from "next/head";
 
 type Props = {
-  children?: ReactNode
-  title?: string
-}
+  children?: ReactNode;
+  title?: string;
+};
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -17,8 +17,8 @@ const GlobalStyle = createGlobalStyle`
     font-weight: 900;
     font-size: 3ex;
   }
-`
-const Layout = ({ children, title = 'Eureka' }: Props) => (
+`;
+const Layout = ({ children, title = "Eureka" }: Props) => (
   <>
     <Head>
       <title>{title}</title>
@@ -28,6 +28,6 @@ const Layout = ({ children, title = 'Eureka' }: Props) => (
     <GlobalStyle />
     {children}
   </>
-)
+);
 
-export default Layout
+export default Layout;

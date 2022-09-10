@@ -1,12 +1,10 @@
-const TimeLeft = ({timeLeft, pause}) => {
+const TimeLeft = ({ timeLeft, pause }) => {
   return (
     <>
-      <p>
-        Time left {timeLeft}
-      </p>
+      <p>Time left {timeLeft}</p>
       <button onClick={pause}>Pause</button>
     </>
-  )
-}
+  );
+};
 
-export default TimeLeft
+export default TimeLeft;
