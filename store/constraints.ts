@@ -15,7 +15,7 @@ export type ConstraintsState = {
 
 // initial state
 const INITIAL_TIME = 0;
-export const TIME_TO_SOLVE = 2;
+export const TIME_TO_SOLVE = 400;
 const initialState: ConstraintsState = {
   timer: undefined,
   gameRunning: false,

@@ -46,7 +46,7 @@ const Game: NextPage = () => {
     return () => {
       abort();
     };
-  }, [dispatch, timer]);
+  }, []);
 
   return (
     <Layout title="Eureka - Good luck!">
