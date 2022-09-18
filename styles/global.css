@@ -1,10 +1,14 @@
-html,
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  background-color: "black";
+}
+
 body {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  width: 100vw;
-  box-sizing: border-box;
+  background-color: "black";
+  font-family: "Rubik", sans-serif;
 }
 
 .tile.active div {

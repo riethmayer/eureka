@@ -1,6 +1,7 @@
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { AppState } from "@store/store";
+import Router from "next/router";
 
 // declaring the types for our state
 export type Timer = NodeJS.Timeout | undefined;
@@ -20,7 +21,7 @@ const initialState: ConstraintsState = {
   timer: undefined,
   gameRunning: false,
   timeLeft: INITIAL_TIME,
-  gameOver: false,
+  gameOver: true,
   gamePaused: false,
 };
 
@@ -88,6 +89,25 @@ export const selectGameOver = (state: AppState) => state.constraints.gameOver;
 export const selectGameRunning = (state: AppState) =>
   state.constraints.gameRunning;
 
+export const pause = () => async (dispatch, getState) => {
+  const timer = selectTimer(getState());
+  clearInterval(timer);
+  dispatch(pauseGame());
+};
+
+export const resume = () => async (dispatch) => {
+  const interval = setInterval(() => dispatch(tick()), 1000);
+  dispatch(resumeGame(interval));
+};
+
+export const restart = () => async (dispatch, getState) => {
+  const timer = selectTimer(getState());
+  clearInterval(timer);
+  dispatch(abortGame());
+  const interval = setInterval(() => dispatch(tick()), 1000);
+  dispatch(startGame(interval));
+};
+
 export const checkGameFinished = () => async (dispatch, getState) => {
   const {
     constraints: { timeLeft },
@@ -96,6 +116,7 @@ export const checkGameFinished = () => async (dispatch, getState) => {
     const timer = selectTimer(getState());
     clearInterval(timer);
     dispatch(gameOver());
+    Router.push("/highscore");
   }
 };
 
