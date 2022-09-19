@@ -4,6 +4,7 @@ import { useStytchUser, useStytch } from "@stytch/nextjs";
 
 const OAUTH_TOKEN = "oauth";
 const MAGIC_LINKS_TOKEN = "magic_links";
+const TWENTY_FOUR_HOURS = 24 * 60;
 
 const Authenticate = () => {
   const { user, isInitialized } = useStytchUser();
@@ -15,11 +16,11 @@ const Authenticate = () => {
     const token = router?.query?.token?.toString();
     if (token && stytch_token_type === OAUTH_TOKEN) {
       stytch.oauth.authenticate(token, {
-        session_duration_minutes: 30,
+        session_duration_minutes: TWENTY_FOUR_HOURS,
       });
     } else if (token && stytch_token_type === MAGIC_LINKS_TOKEN) {
       stytch.magicLinks.authenticate(token, {
-        session_duration_minutes: 30,
+        session_duration_minutes: TWENTY_FOUR_HOURS,
       });
     }
   }, [router, stytch]);
@@ -29,7 +30,7 @@ const Authenticate = () => {
       return;
     }
     if (user) {
-      router.replace("/profile");
+      router.replace("/");
     }
   }, [router, user, isInitialized]);
 
