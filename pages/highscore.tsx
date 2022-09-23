@@ -2,13 +2,33 @@ import Link from "next/link";
 import type { NextPage } from "next";
 import { useStytchUser } from "@stytch/nextjs";
 import Button from "@components/common/Button";
-import GameControl from "@components/GameControl";
 import Layout from "@components/Layout";
 import { Recipes } from "@lib/recipeData";
 import LoginMethodCard from "@components/Authentication/LoginMethodCard";
+import { useEffect, useState } from "react";
+
+type Score = {
+  name: string;
+  score: number;
+  id: number;
+};
 
 const Highscore: NextPage = () => {
   const { user } = useStytchUser();
+  const [highscores, setHighscores] = useState<Score[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/v1/highscores")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setHighscores(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        setHighscores([]);
+      });
+  }, []);
 
   return (
     <Layout title="Highscore">
@@ -25,18 +45,17 @@ const Highscore: NextPage = () => {
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-gray-200">
-                <td className="border px-4 py-2 text-center">Mark</td>
-                <td className="border px-4 py-2 text-center">10</td>
-              </tr>
-              <tr className="bg-gray-100">
-                <td className="border px-4 py-2 text-center">Mark</td>
-                <td className="border px-4 py-2 text-center">10</td>
-              </tr>
-              <tr className="bg-gray-200">
-                <td className="border px-4 py-2 text-center">Mark</td>
-                <td className="border px-4 py-2 text-center">10</td>
-              </tr>
+              {highscores.map((score, index) => (
+                <tr
+                  key={score.id}
+                  className={index % 2 ? `bg-gray-200` : `bg-gray-100`}
+                >
+                  <td className="border px-4 py-2 text-center">{score.name}</td>
+                  <td className="border px-4 py-2 text-center">
+                    {score.score}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
