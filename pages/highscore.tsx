@@ -4,7 +4,6 @@ import { useStytchUser } from "@stytch/nextjs";
 import Button from "@components/common/Button";
 import Layout from "@components/Layout";
 import { Recipes } from "@lib/recipeData";
-import LoginMethodCard from "@components/Authentication/LoginMethodCard";
 import { useEffect, useState } from "react";
 
 type Score = {
@@ -18,7 +17,7 @@ const Highscore: NextPage = () => {
   const [highscores, setHighscores] = useState<Score[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/v1/highscores")
+    fetch("/api/highscore")
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
@@ -60,18 +59,6 @@ const Highscore: NextPage = () => {
           </table>
         </div>
         <div className="relative bg-slate-200 mt-8 rounded-xl px-10 py-4">
-          {user ? (
-            <div>{JSON.stringify(user)}</div>
-          ) : (
-            <>
-              <div className="flex mt-6 just-around flex-wrap">
-                {Object.values(Recipes).map((recipe) => (
-                  <LoginMethodCard key={recipe.id} recipe={recipe} />
-                ))}
-              </div>
-              No user
-            </>
-          )}
           <Link href="/game">
             <Button>New Game</Button>
           </Link>

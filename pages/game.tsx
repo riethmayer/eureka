@@ -14,6 +14,8 @@ import { useEffect } from "react";
 import Layout from "@components/Layout";
 import GameBoard from "@components/GameBoard";
 import GameControl from "@components/GameControl";
+import { useStytchUser } from "@stytch/nextjs";
+import { useRouter } from "next/router";
 
 const Game: NextPage = () => {
   const gameRunning = useAppSelector(selectGameRunning);
@@ -21,6 +23,21 @@ const Game: NextPage = () => {
   const gamePaused = useAppSelector(selectGamePaused);
   const timer = useAppSelector(selectTimer);
   const dispatch = useAppDispatch();
+  const { user, isInitialized } = useStytchUser();
+  const router = useRouter();
+
+  const start = () => {
+    if (timer) {
+      clearInterval(timer);
+    }
+    const interval = setInterval(() => dispatch(tick()), 1000);
+    return dispatch(startGame(interval));
+  };
+
+  const abort = () => {
+    clearInterval(timer);
+    dispatch(abortGame());
+  };
 
   const resume = () => {
     const interval = setInterval(() => dispatch(tick()), 1000);
@@ -28,24 +45,18 @@ const Game: NextPage = () => {
   };
 
   useEffect(() => {
-    const start = () => {
-      if (timer) {
-        clearInterval(timer);
-      }
-      const interval = setInterval(() => dispatch(tick()), 1000);
-      return dispatch(startGame(interval));
-    };
+    if (isInitialized && !user) {
+      router.replace("/");
+    }
 
-    const abort = () => {
-      clearInterval(timer);
-      dispatch(abortGame());
-    };
+    if (isInitialized && user) {
+      start();
+    }
 
-    start();
     return () => {
       abort();
     };
-  }, []);
+  }, [user, isInitialized, router]);
 
   return (
     <Layout title="Eureka - Good luck!">

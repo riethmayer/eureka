@@ -1,4 +1,4 @@
-import LoginOrSignup from "@components/Authentication/EurekaLoginOrSignup";
+import LoginOrSignup from "@components/Authentication/LoginOrSignup";
 import Button, { ButtonType } from "@components/common/Button";
 import EurekaLogo from "@components/EurekaLogo";
 import { useStytch, useStytchUser } from "@stytch/nextjs";
@@ -27,7 +27,7 @@ const IndexPage = () => {
           </div>
         </>
       )}
-      {user && (
+      {isInitialized && user && (
         <div className="flex flex-row align-middle">
           <Link href="/game">
             <Button variant={ButtonType.play}>Start New Game</Button>

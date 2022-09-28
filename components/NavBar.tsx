@@ -1,19 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import eurekaLogo from "/public/Eureka-logo.svg";
-import { useAppDispatch, useAppSelector } from "@store/hooks";
-import {
-  pause,
-  resume,
-  restart,
-  selectGameOver,
-  selectGameRunning,
-  selectTimeLeft,
-  startGame,
-} from "@store/constraints";
+import { useAppSelector } from "@store/hooks";
+import { selectTimeLeft } from "@store/constraints";
 import { TIME_TO_SOLVE as maxTime } from "@store/constraints";
 import { selectScore } from "@store/score";
-import GameControl from "./GameControl";
 import EurekaLogo from "./EurekaLogo";
 import { useStytchUser } from "@stytch/nextjs";
 
@@ -21,7 +10,7 @@ function NavBar() {
   const timeLeft = useAppSelector(selectTimeLeft);
   const percentage = (timeLeft / maxTime) * 100;
   const score = useAppSelector(selectScore);
-  const { user, isInitialized } = useStytchUser();
+  const { user } = useStytchUser();
   const [picUrl, setPic] = useState(null);
 
   const ProfilePicture = () => {
@@ -59,7 +48,7 @@ function NavBar() {
 
         <div className="flex items-center text-gray-700">
           <a style={styles.link} href="/highscore">
-            {score} Punkte
+            {score} Points
           </a>
           <ProfilePicture />
         </div>
