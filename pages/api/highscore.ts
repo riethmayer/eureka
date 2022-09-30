@@ -14,19 +14,9 @@ type HighScore = {
   created_at: string;
 };
 
-type SessionData = {
-  session_id: string;
-  user_id: string;
-  started_at: Date;
-  last_accessed_at: Date;
-  expires_at: Date;
-  session_token: string;
-  session_jwt: string;
-};
-
 export async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Array<HighScore> | ErrorData | SessionData>
+  res: NextApiResponse<Array<HighScore> | ErrorData>
 ) {
   const cookies = new Cookies(req, res);
   const storedSession = cookies.get("stytch_session");
@@ -35,16 +25,26 @@ export async function handler(
   }
   try {
     const client = loadStytch();
-    const { session, session_jwt, session_token } =
-      await client.sessions.authenticate({
-        session_token: storedSession,
-      });
+
+    await client.sessions.authenticate({
+      session_token: storedSession,
+    }); // throws if session is invalid
 
     const result = await fetch("http://localhost:3001/api/v1/highscores");
     const highscores = await result.json();
 
     return res.status(200).json(highscores);
   } catch (error) {
+    if (error.code === "ECONNREFUSED") {
+      // from rails
+      const errorString = "Server not available";
+      return res.status(500).json({ errorString });
+    }
+    if (error.error_type === "session_not_found") {
+      // from stytch
+      const errorString = error.error_message;
+      return res.status(401).json({ errorString });
+    }
     const errorString = JSON.stringify(error);
     return res.status(400).json({ errorString });
   }

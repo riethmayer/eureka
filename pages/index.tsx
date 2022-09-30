@@ -27,6 +27,7 @@ const IndexPage = () => {
           </div>
         </>
       )}
+
       {isInitialized && user && (
         <div className="flex flex-row align-middle">
           <Link href="/game">
