@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import Tile from "../Tile/Tile";
 import { clicked, selectBoard } from "@store/gameBoard";
-import GameControl from "@components/GameControl";
 
 const Turtle = () => {
   const board = useAppSelector(selectBoard);

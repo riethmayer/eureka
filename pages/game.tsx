@@ -13,7 +13,6 @@ import { startGame, tick, resumeGame } from "@store/constraints";
 import { useEffect } from "react";
 import Layout from "@components/Layout";
 import GameBoard from "@components/GameBoard";
-import GameControl from "@components/GameControl";
 import { useStytchUser } from "@stytch/nextjs";
 import { useRouter } from "next/router";
 
@@ -61,7 +60,6 @@ const Game: NextPage = () => {
   return (
     <Layout title="Eureka - Good luck!">
       <div className="relative">
-        <GameControl />
         {gameRunning && <GameBoard />}
         {gameOver && <GameOver />}
         {gamePaused && <GamePaused resume={resume} />}

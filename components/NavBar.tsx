@@ -5,6 +5,7 @@ import { TIME_TO_SOLVE as maxTime } from "@store/constraints";
 import { selectScore } from "@store/score";
 import EurekaLogo from "./EurekaLogo";
 import { useStytchUser } from "@stytch/nextjs";
+import GameControl from "./GameControl";
 
 function NavBar() {
   const timeLeft = useAppSelector(selectTimeLeft);
@@ -47,6 +48,7 @@ function NavBar() {
         </div>
 
         <div className="flex items-center text-gray-700">
+          <GameControl />
           <a style={styles.link} href="/highscore">
             {score} Points
           </a>
