@@ -19,7 +19,7 @@ const GameControl = () => {
     .substr(14, 5);
 
   return (
-    <div className="absolute top-0 right-10">
+    <>
       {gameOver ? (
         <Button variant={ButtonType.play} handler={() => dispatch(startGame())}>
           Play
@@ -43,7 +43,7 @@ const GameControl = () => {
           )}
         </>
       )}
-    </div>
+    </>
   );
 };
 

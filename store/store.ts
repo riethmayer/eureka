@@ -1,8 +1,8 @@
 // @refresh reset
 // why when I change the store.ts file, /game becomes blank?
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
-import constraintsReducer, { ConstraintsState } from "./constraints";
-import gameBoardReducer, { TokenTileMap } from "./gameBoard";
+import constraintsReducer from "./constraints";
+import gameBoardReducer from "./gameBoard";
 import scoreReducer from "./score";
 import logger from "redux-logger";
 

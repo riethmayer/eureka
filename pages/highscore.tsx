@@ -1,14 +1,39 @@
 import Link from "next/link";
 import type { NextPage } from "next";
 import { useStytchUser } from "@stytch/nextjs";
-import Button from "@components/common/Button";
-import GameControl from "@components/GameControl";
+import Button, { ButtonType } from "@components/common/Button";
 import Layout from "@components/Layout";
 import { Recipes } from "@lib/recipeData";
-import LoginMethodCard from "@components/Authentication/LoginMethodCard";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+
+type Score = {
+  name: string;
+  score: number;
+  id: number;
+};
 
 const Highscore: NextPage = () => {
   const { user } = useStytchUser();
+  const [highscores, setHighscores] = useState<Score[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      fetch("/api/highscore")
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setHighscores(data);
+        })
+        .catch((err) => {
+          console.log(err);
+          setHighscores([]);
+        });
+    } else {
+      router.push("/");
+    }
+  }, [user]);
 
   return (
     <Layout title="Highscore">
@@ -25,36 +50,23 @@ const Highscore: NextPage = () => {
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-gray-200">
-                <td className="border px-4 py-2 text-center">Mark</td>
-                <td className="border px-4 py-2 text-center">10</td>
-              </tr>
-              <tr className="bg-gray-100">
-                <td className="border px-4 py-2 text-center">Mark</td>
-                <td className="border px-4 py-2 text-center">10</td>
-              </tr>
-              <tr className="bg-gray-200">
-                <td className="border px-4 py-2 text-center">Mark</td>
-                <td className="border px-4 py-2 text-center">10</td>
-              </tr>
+              {highscores.map((score, index) => (
+                <tr
+                  key={score.id}
+                  className={index % 2 ? `bg-gray-200` : `bg-gray-100`}
+                >
+                  <td className="border px-4 py-2 text-center">{score.name}</td>
+                  <td className="border px-4 py-2 text-center">
+                    {score.score}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
         <div className="relative bg-slate-200 mt-8 rounded-xl px-10 py-4">
-          {user ? (
-            <div>{JSON.stringify(user)}</div>
-          ) : (
-            <>
-              <div className="flex mt-6 just-around flex-wrap">
-                {Object.values(Recipes).map((recipe) => (
-                  <LoginMethodCard key={recipe.id} recipe={recipe} />
-                ))}
-              </div>
-              No user
-            </>
-          )}
           <Link href="/game">
-            <Button>New Game</Button>
+            <Button variant={ButtonType.play}>Start New Game</Button>
           </Link>
         </div>
       </div>

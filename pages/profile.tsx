@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useStytchUser, useStytch, useStytchSession } from "@stytch/nextjs";
-import CodeBlock from "../components/common/CodeBlock";
+import CodeBlock from "@components/common/CodeBlock";
 
 const Profile = () => {
   const { user, isInitialized } = useStytchUser();

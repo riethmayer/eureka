@@ -7,8 +7,7 @@ import { createStytchUIClient } from "@stytch/nextjs/ui";
 import "../styles/global.css";
 
 const stytch = createStytchUIClient(
-  process.env.NEXT_PUBLIC_STYTCH_PUBLIC_TOKEN ||
-    "public-token-test-58e12127-462f-428c-a521-6eaaca2e8e90"
+  process.env.NEXT_PUBLIC_STYTCH_PUBLIC_TOKEN || ""
 );
 
 const App = ({ Component, pageProps }: AppProps) => {

@@ -1,3 +1,4 @@
+import { getDomainFromWindow } from "@lib/urlUtils";
 import { StytchLogin } from "@stytch/nextjs";
 import {
   OAuthProviders,
@@ -5,6 +6,7 @@ import {
   Products,
   StytchLoginConfig,
 } from "@stytch/vanilla-js";
+import { SESSION_DURATION } from "pages/authenticate";
 
 const LoginOrSignup = () => {
   const stytchProps: StytchLoginConfig = {
@@ -19,11 +21,11 @@ const LoginOrSignup = () => {
       ],
     },
     emailMagicLinksOptions: {
-      loginRedirectURL: "/",
-      signupRedirectURL: "/",
+      loginRedirectURL: getDomainFromWindow() + "/authenticate",
+      signupRedirectURL: getDomainFromWindow() + "/authenticate",
+      loginExpirationMinutes: SESSION_DURATION,
+      signupExpirationMinutes: SESSION_DURATION,
       createUserAsPending: false,
-      loginExpirationMinutes: 30,
-      signupExpirationMinutes: 30,
     },
   };
 

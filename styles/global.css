@@ -75,9 +75,6 @@ svg .inner-rectangle {
 .tile.layer-6 {
 }
 
-.turtle {
-  position: relative;
-}
 .turtle .tile {
   position: absolute;
 }
@@ -97,77 +94,10 @@ svg .inner-rectangle {
   z-index: 50;
 }
 
-.row-1 {
-  top: 4.3em;
+.row-0 {
+  top: 0;
 }
-.row-2 {
-  top: 8.6em;
-}
-.row-3 {
-  top: 12.9em;
-}
-.row-4 {
-  /* single left */
-  top: 15.05em;
-}
-.row-5 {
-  top: 17.2em;
-}
-.row-6 {
-  /* duo right */
-  top: 15.05em;
-}
-.row-7 {
-  top: 21.5em;
-}
-.row-8 {
-  top: 25.8em;
-}
-.row-9 {
-  top: 30.1em;
-}
-.row-10 {
-  /* second layer*/
-  top: 4.3em;
-}
-.row-11 {
-  top: 8.6em;
-}
-.row-12 {
-  top: 12.9em;
-}
-.row-13 {
-  top: 17.2em;
-}
-.row-14 {
-  top: 21.5em;
-}
-.row-15 {
-  top: 25.8em;
-}
-.row-16 {
-  /* third layer */
-  top: 8.6em;
-}
-.row-17 {
-  top: 12.9em;
-}
-.row-18 {
-  top: 17.2em;
-}
-.row-19 {
-  top: 21.5em;
-}
-.row-20 {
-  /* fourth layer */
-  top: 12.9em;
-}
-.row-21 {
-  top: 17.2em;
-}
-.row-22 {
-  top: 15.05em;
-}
+
 .column-0 {
   left: 0;
 }

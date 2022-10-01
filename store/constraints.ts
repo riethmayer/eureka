@@ -1,6 +1,7 @@
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { AppState } from "@store/store";
+import { resetScore, selectScore } from "@store/score";
 import Router from "next/router";
 
 // declaring the types for our state
@@ -114,11 +115,35 @@ export const checkGameFinished = () => async (dispatch, getState) => {
   } = getState();
   if (timeLeft <= 0) {
     const timer = selectTimer(getState());
+    const score = selectScore(getState());
     clearInterval(timer);
     dispatch(gameOver());
+    dispatch(recordHighscore(score));
+    dispatch(resetScore());
     Router.push("/highscore");
   }
 };
+
+export const recordHighscore =
+  (score: number) => async (dispatch, getState) => {
+    const name = "Jan R."; // selectName(getState());
+    try {
+      fetch("http://localhost:3001/api/v1/highscores", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          highscore: {
+            name,
+            score,
+          },
+        }),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
 export const tick = () => async (dispatch) => {
   dispatch(ticked());
