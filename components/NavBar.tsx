@@ -6,6 +6,7 @@ import { selectScore } from "@store/score";
 import EurekaLogo from "./EurekaLogo";
 import { useStytchUser } from "@stytch/nextjs";
 import GameControl from "./GameControl";
+import Image from "next/image";
 
 function NavBar() {
   const timeLeft = useAppSelector(selectTimeLeft);
@@ -30,10 +31,16 @@ function NavBar() {
 
     return (
       <div className="flex items-center justify-center mr-8">
-        <img
-          className="w-12 h-12 rounded-full border-white border-2 shadow-sm hover:border-yellow-400 hover:shadow-lg shadow-black"
-          src={picUrl}
-        />
+        {picUrl && (
+          <Image
+            src={picUrl}
+            className="w-12 h-12 rounded-full border-white border-2 shadow-sm hover:border-yellow-400 hover:shadow-lg shadow-black"
+            width={48}
+            height={48}
+            alt="Profile Picture"
+            referrerPolicy="no-referrer"
+          />
+        )}
       </div>
     );
   };
