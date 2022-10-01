@@ -1,10 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "lib": [
-      "dom",
-      "ES2017",
-    ],
+    "lib": ["dom", "ES2017"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -19,29 +16,13 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@store/*": [
-        "store/*"
-      ],
-      "@components/*": [
-        "components/*"
-      ],
-      "@utils/*": [
-        "utils/*"
-      ],
-      "@reducers/*": [
-        "reducers/*"
-      ],
-      "@actions/*": [
-        "actions/*"
-      ],
+      "@store/*": ["store/*"],
+      "@components/*": ["components/*"],
+      "@lib/*": ["lib/*"],
+      "@reducers/*": ["reducers/*"],
+      "@actions/*": ["actions/*"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-, "next.config.js"  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "next.config.js"],
+  "exclude": ["node_modules"]
 }

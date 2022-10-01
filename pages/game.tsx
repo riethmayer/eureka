@@ -1,20 +1,19 @@
 import type { NextPage } from "next";
 import GameOver from "@components/GameOver/GameOver";
 import GamePaused from "@components/GamePaused";
-
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import {
   abortGame,
   selectGameOver,
   selectGamePaused,
   selectGameRunning,
-  selectTimeLeft,
   selectTimer,
 } from "@store/constraints";
 import { startGame, tick, resumeGame } from "@store/constraints";
 import { useEffect } from "react";
 import Layout from "@components/Layout";
 import GameBoard from "@components/GameBoard";
+import GameControl from "@components/GameControl";
 
 const Game: NextPage = () => {
   const gameRunning = useAppSelector(selectGameRunning);
@@ -50,9 +49,12 @@ const Game: NextPage = () => {
 
   return (
     <Layout title="Eureka - Good luck!">
-      {gameRunning && <GameBoard />}
-      {gameOver && <GameOver />}
-      {gamePaused && <GamePaused resume={resume} />}
+      <div className="relative">
+        <GameControl />
+        {gameRunning && <GameBoard />}
+        {gameOver && <GameOver />}
+        {gamePaused && <GamePaused resume={resume} />}
+      </div>
     </Layout>
   );
 };

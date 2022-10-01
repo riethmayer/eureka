@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { createGlobalStyle } from "styled-components";
 import Head from "next/head";
+import NavBar from "./NavBar";
 
 type Props = {
   children?: ReactNode;
@@ -8,10 +9,7 @@ type Props = {
 };
 
 const GlobalStyle = createGlobalStyle`
-  body {
-    font-family: 'Rubik', sans-serif;
-  }
-  
+ 
   .tile-text {
     font-family: 'Rubik', sans-serif;
     font-weight: 900;
@@ -26,6 +24,7 @@ const Layout = ({ children, title = "Eureka" }: Props) => (
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     </Head>
     <GlobalStyle />
+    <NavBar />
     {children}
   </>
 );
