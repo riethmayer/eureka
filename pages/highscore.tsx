@@ -1,10 +1,11 @@
 import Link from "next/link";
 import type { NextPage } from "next";
 import { useStytchUser } from "@stytch/nextjs";
-import Button from "@components/common/Button";
+import Button, { ButtonType } from "@components/common/Button";
 import Layout from "@components/Layout";
 import { Recipes } from "@lib/recipeData";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 type Score = {
   name: string;
@@ -15,19 +16,24 @@ type Score = {
 const Highscore: NextPage = () => {
   const { user } = useStytchUser();
   const [highscores, setHighscores] = useState<Score[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
-    fetch("/api/highscore")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setHighscores(data);
-      })
-      .catch((err) => {
-        console.log(err);
-        setHighscores([]);
-      });
-  }, []);
+    if (user) {
+      fetch("/api/highscore")
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setHighscores(data);
+        })
+        .catch((err) => {
+          console.log(err);
+          setHighscores([]);
+        });
+    } else {
+      router.push("/");
+    }
+  }, [user]);
 
   return (
     <Layout title="Highscore">
@@ -60,7 +66,7 @@ const Highscore: NextPage = () => {
         </div>
         <div className="relative bg-slate-200 mt-8 rounded-xl px-10 py-4">
           <Link href="/game">
-            <Button>New Game</Button>
+            <Button variant={ButtonType.play}>Start New Game</Button>
           </Link>
         </div>
       </div>
