@@ -1,49 +1,27 @@
 import colour from "./Colours";
-import styled from "styled-components";
 import { TokenTile } from "@store/gameBoard";
 
 interface Props {
   tokenColor: string;
 }
 
-const StyledStone = styled.div`
-  border-top: 2px #dedede solid;
-  border-left: 2px #dedede solid;
-  border-right: 2px #555 solid;
-  border-bottom: 2px #555 solid;
-  height: 4em;
-  width: 3em;
-  background-color: #ccc;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const StyledText = styled.p<Props>`
-  font-family: "Helvetica";
-  font-weight: 900;
-  font-size: 2.7em;
-  color: ${(props) => props.tokenColor};
-`;
-
-const Stone = ({ token }) => {
-  const tokenColor = colour(token);
-  return (
-    <StyledStone>
-      <StyledText tokenColor={tokenColor}>{token}</StyledText>
-    </StyledStone>
-  );
-};
-
 export type TileProps = {
   onClick: () => void;
   className: string;
-  id: string;
+  id: number;
 } & Omit<TokenTile, "index">;
+
+const top = (row, layer, id) => {
+  const tileHeight = 5.1;
+  // crooked tiles are 0.5 higher than the rest
+  const crookedFactor = [42, 55, 56, 143].includes(id) ? 0.5 : 0;
+  return tileHeight * (layer + row - crookedFactor);
+};
 
 const StyledTile: React.FC<TileProps> = ({
   onClick,
   token,
+  id,
   layer,
   column,
   row,
@@ -60,9 +38,30 @@ const StyledTile: React.FC<TileProps> = ({
     .filter(Boolean)
     .join(" ");
 
+  const tokenColor = colour(token);
   return (
-    <div onClick={onClick} className={classes}>
-      <Stone token={token} />
+    <div
+      id={`tile_${id}`}
+      onClick={onClick}
+      className={classes}
+      style={{
+        top: `${top(row, layer, id)}rem`,
+        // display: layer < 5 ? "block" : "none",
+      }}
+    >
+      <div
+        className="w-16 h-20 text-6xl font-bold border-2 
+          border-t-gray-200 border-r-gray-800 border-b-gray-800 border-l-gray-200 
+          bg-gray-300 drop-shadow-md shadow-black flex justify-center items-center"
+        style={{
+          // width: "calc(100vw / 15)",
+          // height: "calc(100vw / 8)",
+          color: tokenColor,
+          textShadow: "1px 1px 1px black, -1px -1px 1px white",
+        }}
+      >
+        {token}
+      </div>
     </div>
   );
 };

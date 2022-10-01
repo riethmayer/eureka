@@ -109,108 +109,108 @@ const tileConfig = {
   39: { index: 39, layer: 0, row: 3, column: 10 },
   40: { index: 40, layer: 0, row: 3, column: 11 },
   41: { index: 41, layer: 0, row: 3, column: 12 },
-  42: { index: 42, layer: 6, row: 4, column: 0 }, // most left tile
-  43: { index: 43, layer: 0, row: 5, column: 1 },
-  44: { index: 44, layer: 0, row: 5, column: 2 },
-  45: { index: 45, layer: 0, row: 5, column: 3 },
-  46: { index: 46, layer: 0, row: 5, column: 4 },
-  47: { index: 47, layer: 0, row: 5, column: 5 },
-  48: { index: 48, layer: 0, row: 5, column: 6 },
-  49: { index: 49, layer: 0, row: 5, column: 7 },
-  50: { index: 50, layer: 0, row: 5, column: 8 },
-  51: { index: 51, layer: 0, row: 5, column: 9 },
-  52: { index: 52, layer: 0, row: 5, column: 10 },
-  53: { index: 53, layer: 0, row: 5, column: 11 },
-  54: { index: 54, layer: 0, row: 5, column: 12 },
-  55: { index: 55, layer: 0, row: 6, column: 13 }, // two most right tiles
-  56: { index: 56, layer: 0, row: 6, column: 14 }, // two most right tiles
-  57: { index: 57, layer: 0, row: 7, column: 2 },
-  58: { index: 58, layer: 0, row: 7, column: 3 },
-  59: { index: 59, layer: 0, row: 7, column: 4 },
-  60: { index: 60, layer: 0, row: 7, column: 5 },
-  61: { index: 61, layer: 0, row: 7, column: 6 },
-  62: { index: 62, layer: 0, row: 7, column: 7 },
-  63: { index: 63, layer: 0, row: 7, column: 8 },
-  64: { index: 64, layer: 0, row: 7, column: 9 },
-  65: { index: 65, layer: 0, row: 7, column: 10 },
-  66: { index: 66, layer: 0, row: 7, column: 11 },
-  67: { index: 67, layer: 0, row: 8, column: 3 },
-  68: { index: 68, layer: 0, row: 8, column: 4 },
-  69: { index: 69, layer: 0, row: 8, column: 5 },
-  70: { index: 70, layer: 0, row: 8, column: 6 },
-  71: { index: 71, layer: 0, row: 8, column: 7 },
-  72: { index: 72, layer: 0, row: 8, column: 8 },
-  73: { index: 73, layer: 0, row: 8, column: 9 },
-  74: { index: 74, layer: 0, row: 8, column: 10 },
-  75: { index: 75, layer: 0, row: 9, column: 1 },
-  76: { index: 76, layer: 0, row: 9, column: 2 },
-  77: { index: 77, layer: 0, row: 9, column: 3 },
-  78: { index: 78, layer: 0, row: 9, column: 4 },
-  79: { index: 79, layer: 0, row: 9, column: 5 },
-  80: { index: 80, layer: 0, row: 9, column: 6 },
-  81: { index: 81, layer: 0, row: 9, column: 7 },
-  82: { index: 82, layer: 0, row: 9, column: 8 },
-  83: { index: 83, layer: 0, row: 9, column: 9 },
-  84: { index: 84, layer: 0, row: 9, column: 10 },
-  85: { index: 85, layer: 0, row: 9, column: 11 },
-  86: { index: 86, layer: 0, row: 9, column: 12 },
-  87: { index: 87, layer: 1, row: 10, column: 4 },
-  88: { index: 88, layer: 1, row: 10, column: 5 },
-  89: { index: 89, layer: 1, row: 10, column: 6 },
-  90: { index: 90, layer: 1, row: 10, column: 7 },
-  91: { index: 91, layer: 1, row: 10, column: 8 },
-  92: { index: 92, layer: 1, row: 10, column: 9 },
-  93: { index: 93, layer: 1, row: 11, column: 4 },
-  94: { index: 94, layer: 1, row: 11, column: 5 },
-  95: { index: 95, layer: 1, row: 11, column: 6 },
-  96: { index: 96, layer: 1, row: 11, column: 7 },
-  97: { index: 97, layer: 1, row: 11, column: 8 },
-  98: { index: 98, layer: 1, row: 11, column: 9 },
-  99: { index: 99, layer: 1, row: 12, column: 4 },
-  100: { index: 100, layer: 1, row: 12, column: 5 },
-  101: { index: 101, layer: 1, row: 12, column: 6 },
-  102: { index: 102, layer: 1, row: 12, column: 7 },
-  103: { index: 103, layer: 1, row: 12, column: 8 },
-  104: { index: 104, layer: 1, row: 12, column: 9 },
-  105: { index: 105, layer: 1, row: 13, column: 4 },
-  106: { index: 106, layer: 1, row: 13, column: 5 },
-  107: { index: 107, layer: 1, row: 13, column: 6 },
-  108: { index: 108, layer: 1, row: 13, column: 7 },
-  109: { index: 109, layer: 1, row: 13, column: 8 },
-  110: { index: 110, layer: 1, row: 13, column: 9 },
-  111: { index: 111, layer: 1, row: 14, column: 4 },
-  112: { index: 112, layer: 1, row: 14, column: 5 },
-  113: { index: 113, layer: 1, row: 14, column: 6 },
-  114: { index: 114, layer: 1, row: 14, column: 7 },
-  115: { index: 115, layer: 1, row: 14, column: 8 },
-  116: { index: 116, layer: 1, row: 14, column: 9 },
-  117: { index: 117, layer: 1, row: 15, column: 4 },
-  118: { index: 118, layer: 1, row: 15, column: 5 },
-  119: { index: 119, layer: 1, row: 15, column: 6 },
-  120: { index: 120, layer: 1, row: 15, column: 7 },
-  121: { index: 121, layer: 1, row: 15, column: 8 },
-  122: { index: 122, layer: 1, row: 15, column: 9 },
-  123: { index: 123, layer: 2, row: 16, column: 5 },
-  124: { index: 124, layer: 2, row: 16, column: 6 },
-  125: { index: 125, layer: 2, row: 16, column: 7 },
-  126: { index: 126, layer: 2, row: 16, column: 8 },
-  127: { index: 127, layer: 2, row: 17, column: 5 },
-  128: { index: 128, layer: 2, row: 17, column: 6 },
-  129: { index: 129, layer: 2, row: 17, column: 7 },
-  130: { index: 130, layer: 2, row: 17, column: 8 },
-  131: { index: 131, layer: 2, row: 18, column: 5 },
-  132: { index: 132, layer: 2, row: 18, column: 6 },
-  133: { index: 133, layer: 2, row: 18, column: 7 },
-  134: { index: 134, layer: 2, row: 18, column: 8 },
-  135: { index: 135, layer: 2, row: 19, column: 5 },
-  136: { index: 136, layer: 2, row: 19, column: 6 },
-  137: { index: 137, layer: 2, row: 19, column: 7 },
-  138: { index: 138, layer: 2, row: 19, column: 8 },
-  139: { index: 139, layer: 3, row: 20, column: 6 },
-  140: { index: 140, layer: 3, row: 20, column: 7 },
-  141: { index: 141, layer: 3, row: 21, column: 6 },
-  142: { index: 142, layer: 3, row: 21, column: 7 },
-  143: { index: 143, layer: 4, row: 22, column: 15 }, // top tile
+  42: { index: 42, layer: 0, row: 4, column: 0 }, // most left tile
+  43: { index: 43, layer: 0, row: 4, column: 1 },
+  44: { index: 44, layer: 0, row: 4, column: 2 },
+  45: { index: 45, layer: 0, row: 4, column: 3 },
+  46: { index: 46, layer: 0, row: 4, column: 4 },
+  47: { index: 47, layer: 0, row: 4, column: 5 },
+  48: { index: 48, layer: 0, row: 4, column: 6 },
+  49: { index: 49, layer: 0, row: 4, column: 7 },
+  50: { index: 50, layer: 0, row: 4, column: 8 },
+  51: { index: 51, layer: 0, row: 4, column: 9 },
+  52: { index: 52, layer: 0, row: 4, column: 10 },
+  53: { index: 53, layer: 0, row: 4, column: 11 },
+  54: { index: 54, layer: 0, row: 4, column: 12 },
+  55: { index: 55, layer: 0, row: 4, column: 13 }, // two most right tiles
+  56: { index: 56, layer: 0, row: 4, column: 14 }, // two most right tiles
+  57: { index: 57, layer: 0, row: 5, column: 2 },
+  58: { index: 58, layer: 0, row: 5, column: 3 },
+  59: { index: 59, layer: 0, row: 5, column: 4 },
+  60: { index: 60, layer: 0, row: 5, column: 5 },
+  61: { index: 61, layer: 0, row: 5, column: 6 },
+  62: { index: 62, layer: 0, row: 5, column: 7 },
+  63: { index: 63, layer: 0, row: 5, column: 8 },
+  64: { index: 64, layer: 0, row: 5, column: 9 },
+  65: { index: 65, layer: 0, row: 5, column: 10 },
+  66: { index: 66, layer: 0, row: 5, column: 11 },
+  67: { index: 67, layer: 0, row: 6, column: 3 },
+  68: { index: 68, layer: 0, row: 6, column: 4 },
+  69: { index: 69, layer: 0, row: 6, column: 5 },
+  70: { index: 70, layer: 0, row: 6, column: 6 },
+  71: { index: 71, layer: 0, row: 6, column: 7 },
+  72: { index: 72, layer: 0, row: 6, column: 8 },
+  73: { index: 73, layer: 0, row: 6, column: 9 },
+  74: { index: 74, layer: 0, row: 6, column: 10 },
+  75: { index: 75, layer: 0, row: 7, column: 1 },
+  76: { index: 76, layer: 0, row: 7, column: 2 },
+  77: { index: 77, layer: 0, row: 7, column: 3 },
+  78: { index: 78, layer: 0, row: 7, column: 4 },
+  79: { index: 79, layer: 0, row: 7, column: 5 },
+  80: { index: 80, layer: 0, row: 7, column: 6 },
+  81: { index: 81, layer: 0, row: 7, column: 7 },
+  82: { index: 82, layer: 0, row: 7, column: 8 },
+  83: { index: 83, layer: 0, row: 7, column: 9 },
+  84: { index: 84, layer: 0, row: 7, column: 10 },
+  85: { index: 85, layer: 0, row: 7, column: 11 },
+  86: { index: 86, layer: 0, row: 7, column: 12 },
+  87: { index: 87, layer: 1, row: 0, column: 4 },
+  88: { index: 88, layer: 1, row: 0, column: 5 },
+  89: { index: 89, layer: 1, row: 0, column: 6 },
+  90: { index: 90, layer: 1, row: 0, column: 7 },
+  91: { index: 91, layer: 1, row: 0, column: 8 },
+  92: { index: 92, layer: 1, row: 0, column: 9 },
+  93: { index: 93, layer: 1, row: 1, column: 4 },
+  94: { index: 94, layer: 1, row: 1, column: 5 },
+  95: { index: 95, layer: 1, row: 1, column: 6 },
+  96: { index: 96, layer: 1, row: 1, column: 7 },
+  97: { index: 97, layer: 1, row: 1, column: 8 },
+  98: { index: 98, layer: 1, row: 1, column: 9 },
+  99: { index: 99, layer: 1, row: 2, column: 4 },
+  100: { index: 100, layer: 1, row: 2, column: 5 },
+  101: { index: 101, layer: 1, row: 2, column: 6 },
+  102: { index: 102, layer: 1, row: 2, column: 7 },
+  103: { index: 103, layer: 1, row: 2, column: 8 },
+  104: { index: 104, layer: 1, row: 2, column: 9 },
+  105: { index: 105, layer: 1, row: 3, column: 4 },
+  106: { index: 106, layer: 1, row: 3, column: 5 },
+  107: { index: 107, layer: 1, row: 3, column: 6 },
+  108: { index: 108, layer: 1, row: 3, column: 7 },
+  109: { index: 109, layer: 1, row: 3, column: 8 },
+  110: { index: 110, layer: 1, row: 3, column: 9 },
+  111: { index: 111, layer: 1, row: 4, column: 4 },
+  112: { index: 112, layer: 1, row: 4, column: 5 },
+  113: { index: 113, layer: 1, row: 4, column: 6 },
+  114: { index: 114, layer: 1, row: 4, column: 7 },
+  115: { index: 115, layer: 1, row: 4, column: 8 },
+  116: { index: 116, layer: 1, row: 4, column: 9 },
+  117: { index: 117, layer: 1, row: 5, column: 4 },
+  118: { index: 118, layer: 1, row: 5, column: 5 },
+  119: { index: 119, layer: 1, row: 5, column: 6 },
+  120: { index: 120, layer: 1, row: 5, column: 7 },
+  121: { index: 121, layer: 1, row: 5, column: 8 },
+  122: { index: 122, layer: 1, row: 5, column: 9 },
+  123: { index: 123, layer: 2, row: 0, column: 5 },
+  124: { index: 124, layer: 2, row: 0, column: 6 },
+  125: { index: 125, layer: 2, row: 0, column: 7 },
+  126: { index: 126, layer: 2, row: 0, column: 8 },
+  127: { index: 127, layer: 2, row: 1, column: 5 },
+  128: { index: 128, layer: 2, row: 1, column: 6 },
+  129: { index: 129, layer: 2, row: 1, column: 7 },
+  130: { index: 130, layer: 2, row: 1, column: 8 },
+  131: { index: 131, layer: 2, row: 2, column: 5 },
+  132: { index: 132, layer: 2, row: 2, column: 6 },
+  133: { index: 133, layer: 2, row: 2, column: 7 },
+  134: { index: 134, layer: 2, row: 2, column: 8 },
+  135: { index: 135, layer: 2, row: 3, column: 5 },
+  136: { index: 136, layer: 2, row: 3, column: 6 },
+  137: { index: 137, layer: 2, row: 3, column: 7 },
+  138: { index: 138, layer: 2, row: 3, column: 8 },
+  139: { index: 139, layer: 3, row: 0, column: 6 },
+  140: { index: 140, layer: 3, row: 0, column: 7 },
+  141: { index: 141, layer: 3, row: 1, column: 6 },
+  142: { index: 142, layer: 3, row: 1, column: 7 },
+  143: { index: 143, layer: 4, row: 0, column: 15 }, // top tile
 } as const;
 
 const buildTiles = (): TokenTileMap => {
@@ -285,8 +285,9 @@ export const freeTile =
   (clickedIndex): AppThunk =>
   async (dispatch, getState) => {
     const { gameBoard } = getState();
-    const { index, row, active, token } = gameBoard[clickedIndex];
-    if (tileAllowedForSelection(index, row, gameBoard)) {
+    const { index, row, active, token, layer } = gameBoard[clickedIndex];
+    console.log("clicked tile", index, clickedIndex, row, layer);
+    if (tileAllowedForSelection(index, gameBoard)) {
       dispatch(selected(index));
       dispatch(solveOrCleanup(index));
     } else {
@@ -315,33 +316,43 @@ const solveOrCleanup =
     });
   };
 
-const tileAllowedForSelection = (index, row, board) => {
-  const rowItems = (row, board) => {
+const tileAllowedForSelection = (index: number, board: TokenTileMap) => {
+  const { row, layer } = board[index];
+  const rowItems = (row, layer) => {
     return Object.keys(board)
       .filter((i) => {
-        return board[i].row === row;
+        return board[i].row === row && board[i].layer == layer;
       })
       .map((i) => parseInt(i, 10));
   };
+  console.log(index, row);
 
-  const items = rowItems(row, board);
   switch (true) {
-    case row === 3 && index === 30:
-      return rowItems(4, board).length === 0;
-    case row === 3 && index === 41:
-      return rowItems(6, board).length === 0;
-    case row === 5 && index === 43:
-      return rowItems(4, board).length === 0;
-    case row === 5 && index === 54:
-      return rowItems(6, board).length === 0;
-    case row === 6 && index === 56:
+    // layer 0
+    // see Excalidraw diagram for level 0 edge cases
+    // 30 == left-side top-left
+    case index === 30:
+      return board[42] === undefined;
+    // 41 == right-side top-right
+    case index === 41:
+      return board[55] === undefined;
+    // 42 == left-side left crooked
+    case index === 42 || index === 56:
+      // outermost crooked items, just for documentation sake
       return true;
-    case row === 6 && index === 55:
-      return rowItems(6, board).length === 1; // is last element in its row
-    case row === 20 || row === 21:
-      /* 4 tiles below the top tile only clickable after top tile is gone */
-      return rowItems(22, board).length === 0;
+    // 43 == left-side top-right
+    case index === 43:
+      return board[42] === undefined;
+    // 54 == right-side bottom-right
+    case index === 54:
+      return board[55] === undefined;
+    case index === 55: // right-side left crooked
+      return board[56] === undefined;
+    // layer 3
+    case [139, 141, 142, 140].includes(index):
+      return board[143] === undefined;
     default:
+      const items = rowItems(row, layer);
       return index === items[items.length - 1] || index === items[0];
   }
 };

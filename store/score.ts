@@ -10,9 +10,12 @@ export const scoreSlice = createSlice({
     scoredPair(state) {
       return state + 2;
     },
+    resetScore() {
+      return initialState;
+    },
   },
 });
 
-export const { scoredPair } = scoreSlice.actions;
+export const { scoredPair, resetScore } = scoreSlice.actions;
 export const selectScore = (state: AppState) => state.score;
 export default scoreSlice.reducer;

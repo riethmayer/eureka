@@ -1,28 +1,24 @@
 import Turtle from "@components/Turtle/Turtle";
-import styled from "styled-components";
 
-const MyBoard = styled.div`
-  font-size: 1.2em;
-  background-color: #333;
-  width: 100%;
-`;
-
-const Main = styled.div`
-  background-color: white;
-  height: 35.5em;
-  width: 49.5em;
-  padding: 0;
-  margin: 0 auto;
-  padding: 20px 0 0 12px;
-`;
-
+/**
+ * 8 tiles high.
+ * 15 tiles wide.
+ * Absolute positioning doesn't allow for a grid nor flexbox.
+ * w-16 is 4rem.
+ * h-20 is 5rem.
+ * Responsiveness of tile size would be:
+ * width: "calc(100vw / 15)"
+ * height: "calc(100vw / 8)"
+ * The position of the tile would need be calculated based on device dimensions.
+ */
 const GameBoard = () => {
   return (
-    <MyBoard>
-      <Main>
-        <Turtle />
-      </Main>
-    </MyBoard>
+    <div
+      className="text-xl m-auto relative"
+      style={{ height: "calc(8.1*5rem)", width: "calc(15.25*4rem)" }}
+    >
+      <Turtle />
+    </div>
   );
 };
 
