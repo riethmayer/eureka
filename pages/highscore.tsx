@@ -3,7 +3,6 @@ import type { NextPage } from "next";
 import { useStytchUser } from "@stytch/nextjs";
 import Button, { ButtonType } from "@components/common/Button";
 import Layout from "@components/Layout";
-import { Recipes } from "@lib/recipeData";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
@@ -66,7 +65,9 @@ const Highscore: NextPage = () => {
         </div>
         <div className="relative bg-slate-200 mt-8 rounded-xl px-10 py-4">
           <Link href="/game">
-            <Button variant={ButtonType.play}>Start New Game</Button>
+            <a>
+              <Button variant={ButtonType.play}>Start New Game</Button>
+            </a>
           </Link>
         </div>
       </div>

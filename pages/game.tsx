@@ -1,4 +1,3 @@
-import type { NextPage } from "next";
 import GameOver from "@components/GameOver/GameOver";
 import GamePaused from "@components/GamePaused";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
@@ -16,7 +15,7 @@ import GameBoard from "@components/GameBoard";
 import { useStytchUser } from "@stytch/nextjs";
 import { useRouter } from "next/router";
 
-const Game: NextPage = () => {
+const Game = () => {
   const gameRunning = useAppSelector(selectGameRunning);
   const gameOver = useAppSelector(selectGameOver);
   const gamePaused = useAppSelector(selectGamePaused);
@@ -25,25 +24,25 @@ const Game: NextPage = () => {
   const { user, isInitialized } = useStytchUser();
   const router = useRouter();
 
-  const start = () => {
-    if (timer) {
-      clearInterval(timer);
-    }
-    const interval = setInterval(() => dispatch(tick()), 1000);
-    return dispatch(startGame(interval));
-  };
-
-  const abort = () => {
-    clearInterval(timer);
-    dispatch(abortGame());
-  };
-
   const resume = () => {
     const interval = setInterval(() => dispatch(tick()), 1000);
     dispatch(resumeGame(interval));
   };
 
   useEffect(() => {
+    const start = () => {
+      if (timer) {
+        clearInterval(timer);
+      }
+      const interval = setInterval(() => dispatch(tick()), 1000);
+      return dispatch(startGame(interval));
+    };
+
+    const abort = () => {
+      clearInterval(timer);
+      dispatch(abortGame());
+    };
+
     if (isInitialized && !user) {
       router.replace("/");
     }
@@ -58,13 +57,15 @@ const Game: NextPage = () => {
   }, [user, isInitialized, router]);
 
   return (
-    <Layout title="Eureka - Good luck!">
-      <div className="relative">
-        {gameRunning && <GameBoard />}
-        {gameOver && <GameOver />}
-        {gamePaused && <GamePaused resume={resume} />}
-      </div>
-    </Layout>
+    <>
+      <Layout title="Eureka - Good luck!">
+        <div className="relative">
+          {gameRunning && <GameBoard />}
+          {gameOver && <GameOver />}
+          {gamePaused && <GamePaused resume={resume} />}
+        </div>
+      </Layout>
+    </>
   );
 };
 

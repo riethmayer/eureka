@@ -10,6 +10,6 @@ You can install everything via `./bin/setup`
 
 You start the game with `yarn start` and open `localhost:3000`.
 
-# Storybook
+# Documentation
 
-You can see used components with `yarn run storybook` and open http://localhost:9009.
+![Documentation](Eureka.png "Excalidraw documentation")
