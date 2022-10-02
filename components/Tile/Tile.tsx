@@ -54,8 +54,6 @@ const StyledTile: React.FC<TileProps> = ({
           border-t-gray-200 border-r-gray-800 border-b-gray-800 border-l-gray-200 
           bg-gray-300 drop-shadow-md shadow-black flex justify-center items-center"
         style={{
-          // width: "calc(100vw / 15)",
-          // height: "calc(100vw / 8)",
           color: tokenColor,
           textShadow: "1px 1px 1px black, -1px -1px 1px white",
         }}
