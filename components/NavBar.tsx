@@ -7,6 +7,7 @@ import EurekaLogo from "./EurekaLogo";
 import { useStytchUser } from "@stytch/nextjs";
 import GameControl from "./GameControl";
 import Image from "next/image";
+import Link from "next/link";
 
 function NavBar() {
   const timeLeft = useAppSelector(selectTimeLeft);
@@ -27,7 +28,7 @@ function NavBar() {
           setPic(null);
         }
       }
-    }, [user]);
+    }, []);
 
     return (
       <div className="flex items-center justify-center mr-8">
@@ -49,16 +50,18 @@ function NavBar() {
     <>
       <div className="flex w-full items-center bg-gray-300 justify-between px-2 py-4">
         <div className="flex items-center text-gray-700">
-          <a href="/" className="px-1 ml-8">
-            <EurekaLogo variant="small" />
-          </a>
+          <Link href="/">
+            <a className="px-1 ml-8">
+              <EurekaLogo variant="small" />
+            </a>
+          </Link>
         </div>
 
         <div className="flex items-center text-gray-700">
           <GameControl />
-          <a style={styles.link} href="/highscore">
-            {score} Points
-          </a>
+          <Link href="/highscore">
+            <a style={styles.link}>{score} Points</a>
+          </Link>
           <ProfilePicture />
         </div>
       </div>

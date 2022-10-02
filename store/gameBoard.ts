@@ -349,7 +349,7 @@ const tileAllowedForSelection = (index: number, board: TokenTileMap) => {
     case index === 55: // right-side left crooked
       return board[56] === undefined;
     // layer 3
-    case [139, 141, 142, 140].includes(index):
+    case [139, 140, 141, 142].includes(index):
       return board[143] === undefined;
     default:
       const items = rowItems(row, layer);
