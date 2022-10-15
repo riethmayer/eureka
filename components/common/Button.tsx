@@ -67,7 +67,7 @@ interface Props {
 
 const Button = ({ variant, handler, children, ...props }: Props, ref) => (
   <button
-    className="flex text-white py-4 px-8 font-semibold rounded-lg ease-in-out delay-150 bg-[#75147C] hover:-translate-y-1 hover:scale-110 hover:bg-[#0000F5] duration-300"
+    className="flex text-white py-4 px-8 font-semibold rounded-lg ease-in-out bg-[#6b2070] hover:-transform-y-1 hover:scale-110 hover:bg-[#8f2297] duration-300"
     onClick={handler}
     {...props}
   >
