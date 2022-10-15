@@ -4,6 +4,7 @@ import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import constraintsReducer from "./constraints";
 import gameBoardReducer from "./gameBoard";
 import scoreReducer from "./score";
+import levelReducer from "./level"
 import logger from "redux-logger";
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     constraints: constraintsReducer,
     gameBoard: gameBoardReducer,
     score: scoreReducer,
+    level: levelReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
   devTools: process.env.NODE_ENV !== "production",

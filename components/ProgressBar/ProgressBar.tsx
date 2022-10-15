@@ -8,7 +8,7 @@ interface Props {
 
 const InnerProgressBar = styled.div<Props>`
   width: ${(props) => props.percentage}%;
-  height: 20px;
+  height: 2rem;
   margin: 0 0 10px 0;
   background-color: ${(props) => (props.percentage < 50 ? "red" : "green")};
 `;

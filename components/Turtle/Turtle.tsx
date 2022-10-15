@@ -7,7 +7,7 @@ const Turtle = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="turtle mt-3">
+    <div className="turtle mt-4">
       <div>
         {Object.keys(board).map((idx) => {
           const { active, column, layer, row, token, index } = board[idx];

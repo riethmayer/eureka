@@ -10,6 +10,7 @@ type Score = {
   name: string;
   score: number;
   id: number;
+  level: number;
 };
 
 const Highscore: NextPage = () => {
@@ -58,6 +59,7 @@ const Highscore: NextPage = () => {
                   <td className="border px-4 py-2 text-center">
                     {score.score}
                   </td>
+                  <td className="border px-4 py-2 text-center">{score.level}</td>
                 </tr>
               ))}
             </tbody>

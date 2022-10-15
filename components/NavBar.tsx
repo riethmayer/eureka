@@ -3,6 +3,7 @@ import { useAppSelector } from "@store/hooks";
 import { selectTimeLeft } from "@store/constraints";
 import { TIME_TO_SOLVE as maxTime } from "@store/constraints";
 import { selectScore } from "@store/score";
+import level, { selectLevel } from "@store/level";
 import EurekaLogo from "./EurekaLogo";
 import { useStytchUser } from "@stytch/nextjs";
 import GameControl from "./GameControl";
@@ -13,6 +14,7 @@ function NavBar() {
   const timeLeft = useAppSelector(selectTimeLeft);
   const percentage = (timeLeft / maxTime) * 100;
   const score = useAppSelector(selectScore);
+  const level = useAppSelector(selectLevel);
   const { user } = useStytchUser();
   const [picUrl, setPic] = useState(null);
 
@@ -62,12 +64,13 @@ function NavBar() {
           <Link href="/highscore">
             <a style={styles.link}>{score} Points</a>
           </Link>
+          <div className="flex items-center text-gray-700">Level: {level}</div>
           <ProfilePicture />
         </div>
       </div>
       <div className="bg-gray-700">
         <div
-          className={`${percentage <= 50 ? "bg-red-700" : "bg-green-600"} h-1`}
+          className={`${percentage <= 50 ? "bg-red-700" : "bg-green-600"} h-2`}
           style={{ width: `${percentage}%` }}
         ></div>
       </div>

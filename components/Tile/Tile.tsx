@@ -52,7 +52,7 @@ const StyledTile: React.FC<TileProps> = ({
       <div
         className="w-16 h-20 text-6xl font-bold border-2 
           border-t-gray-200 border-r-gray-800 border-b-gray-800 border-l-gray-200 
-          bg-gray-300 drop-shadow-md shadow-black flex justify-center items-center"
+          bg-gray-300 drop-shadow-md shadow-black flex justify-center items-center hover:cursor-pointer"
         style={{
           color: tokenColor,
           textShadow: "1px 1px 1px black, -1px -1px 1px white",

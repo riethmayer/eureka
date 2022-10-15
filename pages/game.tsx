@@ -62,7 +62,6 @@ const Game = () => {
         <div className="relative">
           {gameRunning && <GameBoard />}
           {gameOver && <GameOver />}
-          {gamePaused && <GamePaused resume={resume} />}
         </div>
       </Layout>
     </>
