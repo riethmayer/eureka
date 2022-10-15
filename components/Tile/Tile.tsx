@@ -50,8 +50,8 @@ const StyledTile: React.FC<TileProps> = ({
       }}
     >
       <div
-        className="w-16 h-20 text-6xl font-bold border-2 
-          border-t-gray-200 border-r-gray-800 border-b-gray-800 border-l-gray-200 
+        className="w-16 h-20 text-6xl font-bold border-4 
+          border-t-gray-200 border-r-gray-600 border-b-gray-700 border-l-gray-300 
           bg-gray-300 drop-shadow-md shadow-black flex justify-center items-center hover:cursor-pointer"
         style={{
           color: tokenColor,

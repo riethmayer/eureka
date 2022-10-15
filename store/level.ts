@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AppState } from "./store";
 
-const initialState = 1;
+const initialState: number = 1;
 
 export const levelSlice = createSlice({
   name: "level",
