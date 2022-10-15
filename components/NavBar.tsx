@@ -64,7 +64,7 @@ function NavBar() {
           <Link href="/highscore">
             <a style={styles.link}>{score} Points</a>
           </Link>
-          <div className="flex items-center text-gray-700">Level: {level}</div>
+          <div className="flex items-center text-gray-700" style={styles.link2}>Level {level}</div>
           <ProfilePicture />
         </div>
       </div>
@@ -87,6 +87,13 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "0 3rem",
     textDecoration: "none",
   },
+  link2: {
+    fontSize: "20px",
+    fontWeight: 500,
+    lineHeight: "30px",
+    padding: "0 3rem",
+    textDecoration: "none",
+  }
 };
 
 export default NavBar;
