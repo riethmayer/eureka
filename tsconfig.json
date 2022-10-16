@@ -20,7 +20,8 @@
       "@components/*": ["components/*"],
       "@lib/*": ["lib/*"],
       "@reducers/*": ["reducers/*"],
-      "@actions/*": ["actions/*"]
+      "@actions/*": ["actions/*"],
+      "@api/*": ["pages/api/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "next.config.js"],

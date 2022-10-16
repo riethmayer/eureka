@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@prisma/client": "4.4.0",
     "@reduxjs/toolkit": "^1.8.5",
     "@stytch/nextjs": "^0.4.2",
     "@stytch/vanilla-js": "^0.3.2",
@@ -10,6 +11,7 @@
     "moment": "latest",
     "next": "^12.2.5",
     "next-redux-wrapper": "^7.0.5",
+    "next-superjson": "^0.0.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-is": "^18.2.0",
@@ -19,6 +21,7 @@
     "redux-thunk": "^2.4.1",
     "styled-components": "latest",
     "stytch": "^5.12.1",
+    "superjson": "^1.10.1",
     "tslib": "^2.4.0"
   },
   "scripts": {
@@ -43,6 +46,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "postcss": "^8.4.16",
     "prettier": "^2.7.1",
+    "prisma": "4.4.0",
     "tailwindcss": "^3.1.8",
     "typescript": "^4.8.2"
   },

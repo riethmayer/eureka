@@ -4,6 +4,7 @@ import { AppState } from "@store/store";
 import { resetScore, selectScore } from "@store/score";
 import { resetLevel, selectLevel } from "./level";
 import Router from "next/router";
+import { submitHighscore } from "@api/highscore";
 
 // declaring the types for our state
 export type Timer = NodeJS.Timeout | undefined;
@@ -120,7 +121,7 @@ export const checkGameFinished = () => async (dispatch, getState) => {
     const level = selectLevel(getState());
     clearInterval(timer);
     dispatch(gameOver());
-    dispatch(recordHighscore(score));
+    dispatch(recordHighscore(score, level));
     dispatch(resetScore());
     dispatch(resetLevel());
     Router.push("/highscore");
@@ -129,24 +130,8 @@ export const checkGameFinished = () => async (dispatch, getState) => {
 
 export const recordHighscore =
   (score: number, level: number) => async (dispatch, getState) => {
-    const name = "Jan R."; // selectName(getState());
-    try {
-      fetch("http://localhost:3001/api/v1/highscores", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          highscore: {
-            name,
-            score,
-            level,
-          },
-        }),
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    const name = "Jan R."; // TODO: selectName(getState());
+    submitHighscore({ name, score, level });
   };
 
 export const tick = () => async (dispatch) => {
