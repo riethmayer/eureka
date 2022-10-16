@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Button, { ButtonType } from "@components/common/Button";
 import Layout from "@components/Layout";
 import { Highscore } from "@prisma/client";
@@ -55,7 +55,7 @@ const HighscorePage: NextPage = ({ highscores }: Props) => {
   );
 };
 
-export const getServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const highscores = await getHighScores();
   return { props: { highscores } };
 };
