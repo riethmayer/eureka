@@ -43,10 +43,10 @@ button {
 }
 
 .tile.active div {
-  border-top: 4px limegreen solid;
-  border-left: 4px limegreen solid;
-  border-right: 4px green solid;
-  border-bottom: 4px green solid;
+  border-top: 4px rgb(0, 100, 0) solid; 
+  border-left: 4px green solid;
+  border-right: 4px limegreen solid;
+  border-bottom: 4px rgb(75, 240, 75) solid;
   background-color: #555;
 }
 
@@ -77,6 +77,10 @@ svg .inner-rectangle {
   font-size: 300px;
   stroke: #444;
   stroke-width: 10;
+}
+
+.relative {
+  top: 7vh;
 }
 
 .active .inner-token {
