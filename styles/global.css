@@ -18,6 +18,12 @@ button {
   box-shadow: 0.5rem 0.5rem 2rem black;
 }
 
+.tile-text {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 900;
+  font-size: 3ex;
+}
+
 .tile.layer-0 div {
   background-color: #999;
 }

@@ -4,7 +4,9 @@ Eureka is one of many names for the game [**Mahjong Solitaire**](https://en.wiki
 
 # Installation
 
-You can install everything via `./bin/setup`
+- Use yarn to install packages
+- [install the pscale client](https://github.com/planetscale/cli#installation)
+- create your own database (free) to run locally and add DATABASE_URL to .env
 
 # Usage
 

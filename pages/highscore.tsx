@@ -1,40 +1,16 @@
 import Link from "next/link";
-import type { NextPage } from "next";
-import { useStytchUser } from "@stytch/nextjs";
+import type { GetServerSideProps, NextPage } from "next";
 import Button, { ButtonType } from "@components/common/Button";
 import Layout from "@components/Layout";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { Highscore } from "@prisma/client";
+import { getHighScores } from "@api/highscore";
 
-type Score = {
-  name: string;
-  score: number;
-  id: number;
-  level: number;
+type Props = {
+  highscores: Array<Highscore>;
+  children?: React.ReactNode;
 };
 
-const Highscore: NextPage = () => {
-  const { user } = useStytchUser();
-  const [highscores, setHighscores] = useState<Score[]>([]);
-  const router = useRouter();
-
-  useEffect(() => {
-    if (user) {
-      fetch("/api/highscore")
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          setHighscores(data);
-        })
-        .catch((err) => {
-          console.log(err);
-          setHighscores([]);
-        });
-    } else {
-      router.push("/");
-    }
-  }, [user]);
-
+const HighscorePage: NextPage = ({ highscores }: Props) => {
   return (
     <Layout title="Highscore">
       <div className="flex mt-8 flex-col justify-top h-screen w-screen items-center">
@@ -59,7 +35,9 @@ const Highscore: NextPage = () => {
                   <td className="border px-4 py-2 text-center">
                     {score.score}
                   </td>
-                  <td className="border px-4 py-2 text-center">{score.level}</td>
+                  <td className="border px-4 py-2 text-center">
+                    {score.level}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -77,4 +55,9 @@ const Highscore: NextPage = () => {
   );
 };
 
-export default Highscore;
+export const getServerSideProps: GetServerSideProps = async () => {
+  const highscores = await getHighScores();
+  return { props: { highscores } };
+};
+
+export default HighscorePage;

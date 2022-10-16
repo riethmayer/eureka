@@ -2,10 +2,12 @@
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-  distDir: "build",
+  reactStrictMode: true,
   images: {
     domains: ["lh3.googleusercontent.com"],
   },
 };
 
-module.exports = nextConfig;
+const { withSuperjson } = require("next-superjson");
+
+module.exports = withSuperjson()(nextConfig);

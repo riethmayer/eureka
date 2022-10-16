@@ -1,5 +1,4 @@
 import GameOver from "@components/GameOver/GameOver";
-import GamePaused from "@components/GamePaused";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import {
   abortGame,
