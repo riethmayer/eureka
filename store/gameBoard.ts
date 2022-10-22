@@ -1,8 +1,9 @@
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { AppState, AppThunk } from "@store/store";
-import { startGame } from "./constraints";
+import { startGame, checkLevelCleared } from "./constraints";
 import { scoredPair } from "./score";
+import { subtractTiles } from "./tilesLeft";
 
 const tokens = [
   "0",
@@ -238,7 +239,7 @@ export const deselected = createAction<number>("gameBoard/DESELECTED");
 export const clickedInvalidTile = createAction<number>(
   "gameBoard/CLICKED_INVALID_TILE"
 );
-export const solved = createAction<number>("gameBoard/SOLVE");
+export const solved = createAction<number>("gameBoard/SOLVED");
 
 export const gameBoard = createSlice({
   name: "gameBoard",
@@ -310,6 +311,8 @@ const solveOrCleanup =
         dispatch(solved(currentIndex));
         dispatch(solved(index));
         dispatch(scoredPair());
+        dispatch(subtractTiles());
+        dispatch(checkLevelCleared());
       } else {
         dispatch(deselected(index));
       }

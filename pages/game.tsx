@@ -1,4 +1,5 @@
 import GameOver from "@components/GameOver/GameOver";
+import LevelUp from "@components/LevelUp/LevelUp";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import {
   abortGame,
@@ -6,6 +7,7 @@ import {
   selectGamePaused,
   selectGameRunning,
   selectTimer,
+  selectLevelClear
 } from "@store/constraints";
 import { startGame, tick, resumeGame } from "@store/constraints";
 import { useEffect } from "react";
@@ -18,6 +20,7 @@ const Game = () => {
   const gameRunning = useAppSelector(selectGameRunning);
   const gameOver = useAppSelector(selectGameOver);
   const gamePaused = useAppSelector(selectGamePaused);
+  const levelCleared = useAppSelector(selectLevelClear);
   const timer = useAppSelector(selectTimer);
   const dispatch = useAppDispatch();
   const { user, isInitialized } = useStytchUser();
@@ -61,6 +64,7 @@ const Game = () => {
         <div className="relative">
           {gameRunning && <GameBoard />}
           {gameOver && <GameOver />}
+          {levelCleared && <LevelCleared />}
         </div>
       </Layout>
     </>

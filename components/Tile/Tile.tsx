@@ -27,7 +27,7 @@ const StyledTile: React.FC<TileProps> = ({
   row,
   active,
 }) => {
-  const classes = [
+  const classes: string = [
     "tile",
     "rect",
     `layer-${layer}`,
@@ -49,16 +49,18 @@ const StyledTile: React.FC<TileProps> = ({
         // display: layer < 5 ? "block" : "none",
       }}
     >
-      <div
-        className="w-16 h-20 text-6xl font-bold border-4 
-          border-t-gray-300 border-r-gray-600 border-b-gray-700 border-l-gray-400 
-           drop-shadow-md shadow-black flex justify-center items-center hover:cursor-pointer"
-        style={{
-          color: tokenColor,
-          textShadow: "1px 1px 1px black, -1px -1px 1px white",
-        }}
-      >
-        {token}
+      <div className="w-16 h-20">
+        <div
+          className="w-16 h-20 text-6xl font-bold border-4 
+              border-t-gray-300 border-r-gray-600 border-b-gray-700 border-l-gray-400 
+              flex justify-center items-center hover:cursor-pointer"
+          style={{
+            color: tokenColor,
+            textShadow: "1px 1px 1px black, -1px -1px 1px white",
+          }}
+        >
+          {token}
+        </div>
       </div>
     </div>
   );
