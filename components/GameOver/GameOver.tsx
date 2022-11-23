@@ -8,7 +8,7 @@ const GameOver = () => {
   const restart = () => {
     clearInterval(timer);
     const interval = setInterval(() => dispatch(tick()), 1000);
-    return dispatch(startGame(interval));
+    dispatch(startGame(interval));
   };
 
   return (

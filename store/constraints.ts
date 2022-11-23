@@ -25,7 +25,7 @@ const initialState: ConstraintsState = {
   timer: undefined,
   gameRunning: false,
   timeLeft: INITIAL_TIME,
-  gameOver: true,
+  gameOver: false,
   gamePaused: false,
   levelClear: false,
 };
@@ -37,7 +37,7 @@ export const pauseGame = createAction("constraints/GAME_PAUSE");
 export const resumeGame = createAction<Timer>("constraints/GAME_RESUME");
 export const abortGame = createAction("constraints/GAME_ABORT");
 export const gameOver = createAction("constraints/GAME_OVER");
-export const levelCleared = createAction("constraints/LEVEL_CLEARED")
+export const levelCleared = createAction("constraints/LEVEL_CLEARED");
 
 export const constraintsSlice = createSlice({
   name: "constraints",
@@ -51,7 +51,7 @@ export const constraintsSlice = createSlice({
       .addCase(startGame, (state, action: PayloadAction<Timer>) => {
         state.timer = action.payload;
         state.gameRunning = true;
-        state.timeLeft = TIME_TO_SOLVE;
+        state.timeLeft = state.timeLeft + TIME_TO_SOLVE;
         state.gameOver = false;
         state.gamePaused = false;
         state.levelClear = false;
@@ -81,13 +81,11 @@ export const constraintsSlice = createSlice({
         state.gameOver = true;
         state.gameRunning = false;
         state.timeLeft = 0;
-        state.gamePaused = false;
       })
       .addCase(levelCleared, (state) => {
         state.levelClear = true;
         state.gameRunning = false;
-        state.timeLeft = 0; // TODO: Store remaining time to add in next level;
-        state.gamePaused = false;
+        state.timer = undefined;
       })
       .addDefaultCase((state) => state);
   },
@@ -123,18 +121,18 @@ export const restart = () => async (dispatch, getState) => {
   dispatch(startGame(interval));
 };
 
-export const checkGameFinished = () => async (dispatch, getState) => {
+export const checkRunOutOfTime = () => async (dispatch, getState) => {
   const {
-    constraints: { timeLeft, tilesLeft },
+    constraints: { timeLeft },
   } = getState();
-  if (timeLeft <= 0 && tilesLeft > 0) {
+  if (timeLeft <= 0) {
     const timer = selectTimer(getState());
     const score = selectScore(getState());
     const level = selectLevel(getState());
     clearInterval(timer);
     dispatch(gameOver());
     dispatch(recordHighscore(score, level));
-    dispatch(resetTiles())
+    dispatch(resetTiles());
     dispatch(resetScore());
     dispatch(resetLevel());
     Router.push("/highscore");
@@ -145,13 +143,13 @@ export const checkLevelCleared = () => async (dispatch, getState) => {
   const {
     constraints: { timer, tilesLeft },
   } = getState();
-  if (tilesLeft === 0 && !selectLevelClear(getState())) {
-    clearInterval(timer); //TODO: add time left to new timer;
+  if (tilesLeft <= 0) {
+    clearInterval(timer);
     dispatch(resetTiles());
     dispatch(increaseLevel());
     dispatch(levelCleared());
   }
-}
+};
 
 export const recordHighscore =
   (score: number, level: number) => async (dispatch, getState) => {
@@ -165,7 +163,12 @@ export const recordHighscore =
 
 export const tick = () => async (dispatch) => {
   dispatch(ticked());
-  dispatch(checkGameFinished());
+  dispatch(checkRunOutOfTime());
+};
+
+export const startNextLevel = async (dispatch, getState) => {
+  const timer = setInterval(() => dispatch(tick()), 1000);
+  dispatch(startGame(timer));
 };
 
 // exporting the reducer here, as we need to add this to the store

@@ -45,9 +45,7 @@ const HighscorePage: NextPage = ({ highscores }: Props) => {
         </div>
         <div className="relative bg-slate-200 mt-8 rounded-xl px-10 py-4">
           <Link href="/game">
-            <a>
-              <Button variant={ButtonType.play}>Start New Game</Button>
-            </a>
+            <Button variant={ButtonType.play}>Start New Game</Button>
           </Link>
         </div>
       </div>

@@ -6,7 +6,7 @@ import {
   selectGameRunning,
   selectTimeLeft,
   startGame,
-  selectLevelClear
+  selectLevelClear,
 } from "@store/constraints";
 import Button, { ButtonType } from "@components/common/Button";
 import LevelUp from "./LevelUp/LevelUp";
@@ -30,7 +30,10 @@ const GameControl = () => {
       ) : (
         <>
           {gameOver ? (
-            <Button variant={ButtonType.play} handler={() => dispatch(startGame())}>
+            <Button
+              variant={ButtonType.play}
+              handler={() => dispatch(startGame())}
+            >
               Play
             </Button>
           ) : (

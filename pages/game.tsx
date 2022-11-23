@@ -7,9 +7,9 @@ import {
   selectGamePaused,
   selectGameRunning,
   selectTimer,
-  selectLevelClear
+  selectLevelClear,
 } from "@store/constraints";
-import { startGame, tick, resumeGame } from "@store/constraints";
+import { startGame, tick } from "@store/constraints";
 import { useEffect } from "react";
 import Layout from "@components/Layout";
 import GameBoard from "@components/GameBoard";
@@ -25,11 +25,6 @@ const Game = () => {
   const dispatch = useAppDispatch();
   const { user, isInitialized } = useStytchUser();
   const router = useRouter();
-
-  const resume = () => {
-    const interval = setInterval(() => dispatch(tick()), 1000);
-    dispatch(resumeGame(interval));
-  };
 
   useEffect(() => {
     const start = () => {
@@ -56,6 +51,7 @@ const Game = () => {
     return () => {
       abort();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isInitialized, router]);
 
   return (
@@ -64,7 +60,7 @@ const Game = () => {
         <div className="relative">
           {gameRunning && <GameBoard />}
           {gameOver && <GameOver />}
-          {levelCleared && <LevelCleared />}
+          {levelCleared && <LevelUp />}
         </div>
       </Layout>
     </>
