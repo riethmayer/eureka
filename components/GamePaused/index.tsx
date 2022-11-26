@@ -1,8 +1,13 @@
-const GamePaused = ({ resume }) => {
+import { resumeGame } from "@store/constraints";
+import { useAppDispatch } from "@store/hooks";
+
+const GamePaused = () => {
+  const dispatch = useAppDispatch();
+
   return (
     <div>
       <h1>PAUSE</h1>
-      <button onClick={resume}>Resume Game</button>
+      <button onClick={() => dispatch(resumeGame)}>Resume Game</button>
     </div>
   );
 };

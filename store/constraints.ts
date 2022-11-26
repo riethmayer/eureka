@@ -1,14 +1,13 @@
 import { createAction, createSlice } from "@reduxjs/toolkit";
+import Router from "next/router";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { AppState } from "@store/store";
 import { resetScore, selectScore } from "@store/score";
 import { increaseLevel, resetLevel, selectLevel } from "@store/level";
-import Router from "next/router";
 import { resetTiles } from "./tilesLeft";
 
-// declaring the types for our state
 export type Timer = NodeJS.Timeout | undefined;
-
+// declaring the types for our state
 export type ConstraintsState = {
   timer: Timer;
   gameRunning: boolean;
@@ -31,13 +30,15 @@ const initialState: ConstraintsState = {
 };
 
 // actions (constraints)
-export const startGame = createAction<Timer>("constraints/GAME_START");
+export const startGame = createAction("constraints/GAME_START");
 export const ticked = createAction("constraints/TICKED");
 export const pauseGame = createAction("constraints/GAME_PAUSE");
-export const resumeGame = createAction<Timer>("constraints/GAME_RESUME");
+export const resumeGame = createAction("constraints/GAME_RESUME");
 export const abortGame = createAction("constraints/GAME_ABORT");
 export const gameOver = createAction("constraints/GAME_OVER");
 export const levelCleared = createAction("constraints/LEVEL_CLEARED");
+export const startTimer = createAction<Timer>("constraints/START_TIMER");
+export const stopTimer = createAction("constraints/STOP_TIMER");
 
 export const constraintsSlice = createSlice({
   name: "constraints",
@@ -48,8 +49,8 @@ export const constraintsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(startGame, (state, action: PayloadAction<Timer>) => {
-        state.timer = action.payload;
+      .addCase(startGame, (state) => {
+        console.log("startGame", state);
         state.gameRunning = true;
         state.timeLeft = state.timeLeft + TIME_TO_SOLVE;
         state.gameOver = false;
@@ -66,13 +67,10 @@ export const constraintsSlice = createSlice({
       .addCase(pauseGame, (state) => {
         state.gamePaused = true;
         state.gameRunning = false;
-        state.timer = undefined;
       })
-      .addCase(resumeGame, (state, action: PayloadAction<Timer>) => {
-        state.timer = action.payload;
+      .addCase(resumeGame, (state) => {
         state.gamePaused = false;
         state.gameRunning = true;
-        return state;
       })
       .addCase(abortGame, () => {
         return initialState;
@@ -85,6 +83,11 @@ export const constraintsSlice = createSlice({
       .addCase(levelCleared, (state) => {
         state.levelClear = true;
         state.gameRunning = false;
+      })
+      .addCase(startTimer, (state, action: PayloadAction<Timer>) => {
+        state.timer = action.payload;
+      })
+      .addCase(stopTimer, (state) => {
         state.timer = undefined;
       })
       .addDefaultCase((state) => state);
@@ -94,42 +97,60 @@ export const constraintsSlice = createSlice({
 // calling the above actions would be useless if we could not access the data in the state. So, we use something called a selector which allows us to select a value from the state.
 export const selectGamePaused = (state: AppState) =>
   state.constraints.gamePaused;
-export const selectTimer = (state: AppState) => state.constraints.timer;
 export const selectTimeLeft = (state: AppState) => state.constraints.timeLeft;
 export const selectGameOver = (state: AppState) => state.constraints.gameOver;
 export const selectGameRunning = (state: AppState) =>
   state.constraints.gameRunning;
 export const selectLevelClear = (state: AppState) =>
   state.constraints.levelClear;
+export const selectTimer = (state: AppState) => state.constraints.timer;
 
-export const pause = () => async (dispatch, getState) => {
+export const start = () => async (dispatch, getState) => {
   const timer = selectTimer(getState());
-  clearInterval(timer);
-  dispatch(pauseGame());
+  if (timer) {
+    clearInterval(timer);
+  }
+  dispatch(abortGame());
+  dispatch(startGame());
+  dispatch(startTimer(setInterval(() => dispatch(ticked()), 1000)));
 };
 
-export const resume = () => async (dispatch) => {
-  const interval = setInterval(() => dispatch(tick()), 1000);
-  dispatch(resumeGame(interval));
+export const pause = () => async (dispatch, getState) => {
+  dispatch(pauseGame());
+  const timer = selectTimer(getState());
+  if (timer) {
+    clearInterval(timer);
+  }
+  dispatch(stopTimer());
+};
+
+export const resume = () => async (dispatch, getState) => {
+  dispatch(resumeGame());
+  dispatch(startTimer(setInterval(() => dispatch(ticked()), 1000)));
 };
 
 export const restart = () => async (dispatch, getState) => {
   const timer = selectTimer(getState());
-  clearInterval(timer);
+  if (timer) {
+    dispatch(stopTimer());
+    clearInterval(timer);
+  }
   dispatch(abortGame());
-  const interval = setInterval(() => dispatch(tick()), 1000);
-  dispatch(startGame(interval));
+  dispatch(startGame());
+  dispatch(startTimer(setInterval(() => dispatch(ticked()), 1000)));
 };
 
 export const checkRunOutOfTime = () => async (dispatch, getState) => {
   const {
-    constraints: { timeLeft },
+    constraints: { timeLeft, timer },
   } = getState();
   if (timeLeft <= 0) {
-    const timer = selectTimer(getState());
     const score = selectScore(getState());
     const level = selectLevel(getState());
-    clearInterval(timer);
+    if (timer) {
+      dispatch(stopTimer());
+      clearInterval(timer);
+    }
     dispatch(gameOver());
     dispatch(recordHighscore(score, level));
     dispatch(resetTiles());
@@ -141,10 +162,14 @@ export const checkRunOutOfTime = () => async (dispatch, getState) => {
 
 export const checkLevelCleared = () => async (dispatch, getState) => {
   const {
-    constraints: { timer, tilesLeft },
+    constraints: { tilesLeft },
   } = getState();
   if (tilesLeft <= 0) {
-    clearInterval(timer);
+    const timer = selectTimer(getState());
+    if (timer) {
+      dispatch(stopTimer());
+      clearInterval(timer);
+    }
     dispatch(resetTiles());
     dispatch(increaseLevel());
     dispatch(levelCleared());
@@ -167,8 +192,8 @@ export const tick = () => async (dispatch) => {
 };
 
 export const startNextLevel = async (dispatch, getState) => {
-  const timer = setInterval(() => dispatch(tick()), 1000);
-  dispatch(startGame(timer));
+  dispatch(startGame());
+  dispatch(startTimer(setInterval(() => dispatch(tick()), 1000)));
 };
 
 // exporting the reducer here, as we need to add this to the store

@@ -42,6 +42,7 @@ function NavBar() {
             height={48}
             alt="Profile Picture"
             referrerPolicy="no-referrer"
+            priority
           />
         )}
       </div>

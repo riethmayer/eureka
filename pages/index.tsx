@@ -9,6 +9,7 @@ const IndexPage = () => {
   const { user, isInitialized } = useStytchUser();
   const stytch = useStytch();
   const router = useRouter();
+
   const signOut = async () => {
     try {
       await stytch.session.revoke();
@@ -37,7 +38,12 @@ const IndexPage = () => {
       {isInitialized && user && (
         <div className="flex flex-row align-middle">
           <Link href="/game">
-            <Button variant={ButtonType.play}>Start New Game</Button>
+            <Button
+              variant={ButtonType.play}
+              handler={() => router.replace("/game")}
+            >
+              Start New Game
+            </Button>
           </Link>
           <button className="text-yellow-50 mt-8 ml-4" onClick={signOut}>
             Or sign out

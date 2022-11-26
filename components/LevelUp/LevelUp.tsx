@@ -1,15 +1,6 @@
-import {
-  selectTimer,
-  startGame,
-  tick,
-  selectLevelClear,
-  selectTimeLeft,
-  startNextLevel,
-} from "@store/constraints";
+import { startNextLevel } from "@store/constraints";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { selectLevel } from "@store/level";
-import { selectScore } from "@store/score";
-import { useState } from "react";
 
 const LevelUp = () => {
   const dispatch = useAppDispatch();
