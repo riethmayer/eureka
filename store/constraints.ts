@@ -112,7 +112,7 @@ export const start = () => async (dispatch, getState) => {
   }
   dispatch(abortGame());
   dispatch(startGame());
-  dispatch(startTimer(setInterval(() => dispatch(ticked()), 1000)));
+  dispatch(startTimer(setInterval(() => dispatch(tick()), 1000)));
 };
 
 export const pause = () => async (dispatch, getState) => {
@@ -126,7 +126,7 @@ export const pause = () => async (dispatch, getState) => {
 
 export const resume = () => async (dispatch, getState) => {
   dispatch(resumeGame());
-  dispatch(startTimer(setInterval(() => dispatch(ticked()), 1000)));
+  dispatch(startTimer(setInterval(() => dispatch(tick()), 1000)));
 };
 
 export const restart = () => async (dispatch, getState) => {
@@ -137,7 +137,7 @@ export const restart = () => async (dispatch, getState) => {
   }
   dispatch(abortGame());
   dispatch(startGame());
-  dispatch(startTimer(setInterval(() => dispatch(ticked()), 1000)));
+  dispatch(startTimer(setInterval(() => dispatch(tick()), 1000)));
 };
 
 export const checkRunOutOfTime = () => async (dispatch, getState) => {
@@ -145,6 +145,7 @@ export const checkRunOutOfTime = () => async (dispatch, getState) => {
     constraints: { timeLeft, timer },
   } = getState();
   if (timeLeft <= 0) {
+    console.log("timeLeft", timeLeft);
     const score = selectScore(getState());
     const level = selectLevel(getState());
     if (timer) {
@@ -186,6 +187,10 @@ export const recordHighscore =
     });
   };
 
+/**
+ * Careful, tick is not ticked.
+ * @returns undefined
+ */
 export const tick = () => async (dispatch) => {
   dispatch(ticked());
   dispatch(checkRunOutOfTime());
