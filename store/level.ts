@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { levelCleared, startNextLevel } from "./constraints";
 import { AppState } from "./store";
 
 const initialState: number = 1;
@@ -13,6 +14,14 @@ export const levelSlice = createSlice({
     resetLevel() {
       return initialState;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(levelCleared, (state) => {
+      return state + 1;
+    }),
+      builder.addDefaultCase((state) => {
+        return state;
+      });
   },
 });
 

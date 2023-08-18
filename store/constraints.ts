@@ -110,6 +110,7 @@ export const start = () => async (dispatch, getState) => {
   if (timer) {
     clearInterval(timer);
   }
+  dispatch(resetTiles());
   dispatch(abortGame());
   dispatch(startGame());
   dispatch(startTimer(setInterval(() => dispatch(tick()), 1000)));
