@@ -42,6 +42,7 @@ function NavBar() {
             height={48}
             alt="Profile Picture"
             referrerPolicy="no-referrer"
+            priority
           />
         )}
       </div>
@@ -52,17 +53,15 @@ function NavBar() {
     <>
       <div className="flex w-full items-center bg-gray-300 justify-between px-2 py-4">
         <div className="flex items-center text-gray-700">
-          <Link href="/">
-            <a className="px-1 ml-8">
-              <EurekaLogo variant="small" />
-            </a>
+          <Link href="/" className="px-1 ml-8">
+            <EurekaLogo variant="small" />
           </Link>
         </div>
 
         <div className="flex items-center text-gray-700">
           <GameControl />
-          <Link href="/highscore">
-            <a style={styles.link}>{score} Points</a>
+          <Link href="/highscore" style={styles.link}>
+            {score} Points
           </Link>
           <div className="flex items-center text-gray-700" style={styles.text}>
             Level {level}

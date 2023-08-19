@@ -5,41 +5,52 @@ import {
   selectGameOver,
   selectGameRunning,
   selectTimeLeft,
-  startGame,
+  start,
+  selectLevelClear,
 } from "@store/constraints";
 import Button, { ButtonType } from "@components/common/Button";
+import LevelUp from "./LevelUp/LevelUp";
 
 const GameControl = () => {
   const dispatch = useAppDispatch();
   const gameOver = useAppSelector(selectGameOver);
   const timeLeft = useAppSelector(selectTimeLeft);
   const gameRunning = useAppSelector(selectGameRunning);
+  const levelCleared = useAppSelector(selectLevelClear);
   const timeLeftFormatted = new Date(timeLeft * 1000)
     .toISOString()
-    .substr(14, 5);
+    .substr(14, 5); // FIXME: replace
 
   return (
     <>
-      {gameOver ? (
-        <Button variant={ButtonType.play} handler={() => dispatch(startGame())}>
-          Play
+      {levelCleared ? (
+        <Button variant={ButtonType.play} handler={() => dispatch(LevelUp())}>
+          Continue
         </Button>
       ) : (
         <>
-          {gameRunning ? (
-            <Button
-              variant={ButtonType.pause}
-              handler={() => dispatch(pause())}
-            >
-              {timeLeftFormatted}
+          {gameOver ? (
+            <Button variant={ButtonType.play} handler={() => dispatch(start())}>
+              Play
             </Button>
           ) : (
-            <Button
-              variant={ButtonType.resume}
-              handler={() => dispatch(resume())}
-            >
-              Resume
-            </Button>
+            <>
+              {gameRunning ? (
+                <Button
+                  variant={ButtonType.pause}
+                  handler={() => dispatch(pause())}
+                >
+                  {timeLeftFormatted}
+                </Button>
+              ) : (
+                <Button
+                  variant={ButtonType.resume}
+                  handler={() => dispatch(resume())}
+                >
+                  Resume
+                </Button>
+              )}
+            </>
           )}
         </>
       )}

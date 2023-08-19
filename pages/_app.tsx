@@ -11,8 +11,6 @@ const stytch = createStytchUIClient(
 );
 
 const App = ({ Component, pageProps }: AppProps) => {
-  console.log("rendering app");
-
   return (
     <StytchProvider stytch={stytch}>
       <Provider store={store}>
