@@ -163,9 +163,7 @@ export const checkRunOutOfTime = () => async (dispatch, getState) => {
 };
 
 export const checkLevelCleared = () => async (dispatch, getState) => {
-  const {
-    constraints: { tilesLeft },
-  } = getState();
+  const { tilesLeft } = getState();
   if (tilesLeft <= 0) {
     const timer = selectTimer(getState());
     if (timer) {
@@ -195,6 +193,7 @@ export const recordHighscore =
 export const tick = () => async (dispatch) => {
   dispatch(ticked());
   dispatch(checkRunOutOfTime());
+  dispatch(checkLevelCleared());
 };
 
 export const startNextLevel = async (dispatch, getState) => {
