@@ -19,7 +19,7 @@ const GameControl = () => {
   const levelCleared = useAppSelector(selectLevelClear);
   const timeLeftFormatted = new Date(timeLeft * 1000)
     .toISOString()
-    .substr(14, 5);
+    .substr(14, 5); // FIXME: replace
 
   return (
     <>
