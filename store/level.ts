@@ -9,9 +9,6 @@ export const levelSlice = createSlice({
   name: "level",
   initialState,
   reducers: {
-    increaseLevel(state) {
-      return state + 1;
-    },
     resetLevel() {
       return initialState;
     },
@@ -26,6 +23,6 @@ export const levelSlice = createSlice({
   },
 });
 
-export const { increaseLevel, resetLevel } = levelSlice.actions;
+export const { resetLevel } = levelSlice.actions;
 export const selectLevel = (state: AppState) => state.level;
 export default levelSlice.reducer;

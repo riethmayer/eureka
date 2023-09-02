@@ -9,7 +9,6 @@ import {
   selectLevelClear,
 } from "@store/controls";
 import Button, { ButtonType } from "@components/common/Button";
-import LevelUp from "./LevelUp/LevelUp";
 
 const GameControl = () => {
   const dispatch = useAppDispatch();
@@ -24,7 +23,7 @@ const GameControl = () => {
   return (
     <>
       {levelCleared ? (
-        <Button variant={ButtonType.play} handler={() => dispatch(LevelUp())}>
+        <Button variant={ButtonType.play} handler={() => dispatch(start())}>
           Continue
         </Button>
       ) : (

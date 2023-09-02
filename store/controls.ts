@@ -3,12 +3,7 @@ import Router from "next/router";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { AppState, AppThunk } from "@store/store";
 import { resetScore, selectScore } from "@store/score";
-import {
-  increaseLevel,
-  levelCleared,
-  resetLevel,
-  selectLevel,
-} from "@store/level";
+import { levelCleared, resetLevel, selectLevel } from "@store/level";
 import { resetTiles } from "./tilesLeft";
 
 export type Timer = NodeJS.Timeout | undefined;
@@ -110,12 +105,15 @@ export const selectTimer = (state: AppState) => state.controls.timer;
 
 export const start = (): AppThunk => async (dispatch, getState) => {
   const timer = selectTimer(getState());
+  const levelCleared = selectLevelClear(getState());
   if (timer) {
     clearInterval(timer);
   }
   dispatch(resetTiles());
-  dispatch(abortGame());
-  dispatch(resetScore());
+  if (!levelCleared) {
+    dispatch(abortGame());
+    dispatch(resetScore());
+  }
   dispatch(startGame());
   dispatch(startTimer(setInterval(() => dispatch(tick()), 1000)));
 };
@@ -176,7 +174,6 @@ export const checkLevelCleared = (): AppThunk => async (dispatch, getState) => {
       clearInterval(timer);
     }
     dispatch(resetTiles());
-    dispatch(increaseLevel());
     dispatch(levelCleared());
   }
 };
