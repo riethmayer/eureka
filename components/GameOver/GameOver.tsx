@@ -1,4 +1,4 @@
-import { start } from "@store/constraints";
+import { start } from "@store/controls";
 import { useAppDispatch } from "@store/hooks";
 
 const GameOver = () => {

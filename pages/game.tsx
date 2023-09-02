@@ -7,7 +7,7 @@ import {
   selectGameRunning,
   selectLevelClear,
   start,
-} from "@store/constraints";
+} from "@store/controls";
 import { useEffect } from "react";
 import Layout from "@components/Layout";
 import GameBoard from "@components/GameBoard";

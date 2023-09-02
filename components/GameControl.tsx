@@ -7,7 +7,7 @@ import {
   selectTimeLeft,
   start,
   selectLevelClear,
-} from "@store/constraints";
+} from "@store/controls";
 import Button, { ButtonType } from "@components/common/Button";
 import LevelUp from "./LevelUp/LevelUp";
 

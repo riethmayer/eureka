@@ -1,6 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { levelCleared, startNextLevel } from "./constraints";
+import { createAction, createSlice } from "@reduxjs/toolkit";
 import { AppState } from "./store";
+
+export const levelCleared = createAction("constraints/LEVEL_CLEARED");
 
 const initialState: number = 1;
 

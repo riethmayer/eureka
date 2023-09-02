@@ -1,4 +1,4 @@
-import { resumeGame } from "@store/constraints";
+import { resumeGame } from "@store/controls";
 import { useAppDispatch } from "@store/hooks";
 
 const GamePaused = () => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "@store/hooks";
-import { selectTimeLeft } from "@store/constraints";
-import { TIME_TO_SOLVE as maxTime } from "@store/constraints";
+import { selectTimeLeft } from "@store/controls";
+import { TIME_TO_SOLVE as maxTime } from "@store/controls";
 import { selectScore } from "@store/score";
 import level, { selectLevel } from "@store/level";
 import EurekaLogo from "./EurekaLogo";

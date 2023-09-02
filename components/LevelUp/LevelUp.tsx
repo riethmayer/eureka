@@ -1,4 +1,4 @@
-import { startNextLevel } from "@store/constraints";
+import { startNextLevel } from "@store/controls";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { selectLevel } from "@store/level";
 

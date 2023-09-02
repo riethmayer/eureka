@@ -1,7 +1,7 @@
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { AppState, AppThunk } from "@store/store";
-import { startGame, checkLevelCleared } from "./constraints";
+import { startGame, checkLevelCleared } from "./controls";
 import { scoredPair } from "./score";
 import { subtractTiles } from "./tilesLeft";
 
