@@ -115,6 +115,7 @@ export const start = (): AppThunk => async (dispatch, getState) => {
   }
   dispatch(resetTiles());
   dispatch(abortGame());
+  dispatch(resetScore());
   dispatch(startGame());
   dispatch(startTimer(setInterval(() => dispatch(tick()), 1000)));
 };
