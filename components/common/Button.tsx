@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef } from "react";
+import { ButtonHTMLAttributes, ReactNode, forwardRef } from "react";
 
 export enum ButtonType {
   "default",
@@ -59,15 +59,14 @@ const icons = {
   ),
 };
 
-interface Props {
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonType;
   handler?: () => void;
-  children?: ReactNode;
 }
 
 const Button = ({ variant, handler, children, ...props }: Props, ref) => (
   <button
-    className="flex text-white py-4 px-8 font-semibold rounded-lg ease-in-out bg-[#6b2070] hover:-transform-y-1 hover:scale-110 hover:bg-[#8f2297] duration-300"
+    className="flex w-52 justify-center text-white py-4 px-8 font-semibold rounded-lg ease-in-out bg-[#6b2070] hover:-transform-y-1 hover:scale-110 hover:bg-[#8f2297] duration-300"
     onClick={handler}
     {...props}
   >

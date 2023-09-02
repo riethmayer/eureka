@@ -1,13 +1,16 @@
-import { resumeGame } from "@store/controls";
+import Button, { ButtonType } from "@components/common/Button";
+import { resume } from "@store/controls";
 import { useAppDispatch } from "@store/hooks";
 
 const GamePaused = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div>
-      <h1>PAUSE</h1>
-      <button onClick={() => dispatch(resumeGame)}>Resume Game</button>
+    <div className=" flex flex-col align-middle items-center">
+      <h1 className="my-12 text-white text-5xl">PAUSE</h1>
+      <Button variant={ButtonType.resume} onClick={() => dispatch(resume())}>
+        Resume
+      </Button>
     </div>
   );
 };

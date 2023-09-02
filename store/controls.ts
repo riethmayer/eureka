@@ -168,7 +168,6 @@ export const checkRunOutOfTime = (): AppThunk => async (dispatch, getState) => {
 
 export const checkLevelCleared = (): AppThunk => async (dispatch, getState) => {
   const { tilesLeft } = getState();
-  console.log(tilesLeft, "foo");
   if (tilesLeft <= 0) {
     const timer = selectTimer(getState());
     if (timer) {

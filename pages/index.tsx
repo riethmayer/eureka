@@ -42,7 +42,7 @@ const IndexPage = () => {
               variant={ButtonType.play}
               handler={() => router.replace("/game")}
             >
-              Start New Game
+              Start
             </Button>
           </Link>
           <button className="text-yellow-50 mt-8 ml-4" onClick={signOut}>

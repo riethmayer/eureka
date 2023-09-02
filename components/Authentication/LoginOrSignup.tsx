@@ -15,8 +15,7 @@ const LoginOrSignup = () => {
       providers: [
         {
           type: OAuthProviders.Google,
-          one_tap: true,
-          position: OneTapPositions.embedded,
+          one_tap: false,
         },
       ],
     },

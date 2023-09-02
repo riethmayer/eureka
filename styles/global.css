@@ -14,10 +14,6 @@ body {
   user-select: none;
 }
 
-button {
-  box-shadow: 0.5rem 0.5rem 2rem black;
-}
-
 .tile-text {
   font-family: 'Rubik', sans-serif;
   font-weight: 900;
@@ -45,11 +41,11 @@ button {
 }
 
 .tile.active div {
-  border-top: 4px rgb(0, 100, 0) solid; 
-  border-left: 4px green solid;
-  border-right: 4px limegreen solid;
-  border-bottom: 4px rgb(75, 240, 75) solid;
-  background-color: #555;
+  border-bottom: 4px rgb(0, 100, 0) solid; 
+  border-right: 4px green solid;
+  border-left: 4px limegreen solid;
+  border-top: 4px rgb(75, 240, 75) solid;
+  background-color: limegreen;
 }
 
 .tile div p {
