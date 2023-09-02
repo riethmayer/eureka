@@ -43,7 +43,7 @@ const tokens = [
   "Y",
   "Z",
 ] as const;
-export type Token = typeof tokens[number];
+export type Token = (typeof tokens)[number];
 
 const allTokens = [...tokens, ...tokens, ...tokens, ...tokens] as const; // 2 pairs of each token
 
