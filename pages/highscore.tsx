@@ -15,7 +15,7 @@ const HighscorePage: NextPage = ({ highscores }: Props) => {
     <Layout title="Highscore">
       <div className="flex mt-8 flex-col justify-top h-screen w-screen items-center">
         <div className="w-[50%] rounded-xl border-8 border-red-300">
-          <h1 className="text-xl text-white bg-purple-700 w-full text-center font-extrabold py-2">
+          <h1 className="text-5xl text-white bg-purple-700 w-full text-center font-extrabold py-2">
             Highscore
           </h1>
           <table className="table-auto w-full">
@@ -45,7 +45,7 @@ const HighscorePage: NextPage = ({ highscores }: Props) => {
         </div>
         <div className="relative bg-slate-200 mt-8 rounded-xl px-10 py-4">
           <Link href="/game">
-            <Button variant={ButtonType.play}>Start New Game</Button>
+            <Button variant={ButtonType.play}>Start New</Button>
           </Link>
         </div>
       </div>
