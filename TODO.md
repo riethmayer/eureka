@@ -6,4 +6,3 @@
   - [ ] re-initialise gameboard and tilesLeft
 - [ ] Services workers: add again
 - [ ] Make tilesLeft dependent on gameBoard state
-- [ ]
