@@ -1,13 +1,18 @@
-/**
- * @type {import('next').NextConfig}
- */
+// @ts-check
+
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  images: {
-    domains: ["lh3.googleusercontent.com"],
-  },
-};
-
-const { withSuperjson } = require("next-superjson");
-
-module.exports = withSuperjson()(nextConfig);
+    images: {
+      remotePatterns: [
+        {
+          protocol: "https",
+          hostname: "*.googleusercontent.com",
+          port: "",
+          pathname: "**",
+        }
+      ],
+    },
+}
+ 
+module.exports = nextConfig
