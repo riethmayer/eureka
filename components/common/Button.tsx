@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, ReactNode, forwardRef } from "react";
+import { ButtonHTMLAttributes, forwardRef } from "react";
 
 export enum ButtonType {
   "default",
