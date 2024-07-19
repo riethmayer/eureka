@@ -5,7 +5,6 @@ import { TIME_TO_SOLVE as maxTime } from "@store/controls";
 import { selectScore } from "@store/score";
 import level, { selectLevel } from "@store/level";
 import EurekaLogo from "./EurekaLogo";
-import { useStytchUser } from "@stytch/nextjs";
 import GameControl from "./GameControl";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,23 +14,9 @@ function NavBar() {
   const percentage = (timeLeft / maxTime) * 100;
   const score = useAppSelector(selectScore);
   const level = useAppSelector(selectLevel);
-  const { user } = useStytchUser();
   const [picUrl, setPic] = useState(null);
 
   const ProfilePicture = () => {
-    useEffect(() => {
-      if (user) {
-        const profilePicture = user.providers.find(
-          (p) => p.profile_picture_url !== undefined
-        )?.profile_picture_url;
-        if (profilePicture) {
-          setPic(profilePicture);
-        } else {
-          setPic(null);
-        }
-      }
-    }, []);
-
     return (
       <div className="flex items-center justify-center mr-8">
         {picUrl && (

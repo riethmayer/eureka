@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, forwardRef } from "react";
+import { ButtonHTMLAttributes } from "react";
 
 export enum ButtonType {
   "default",
@@ -60,11 +60,11 @@ const icons = {
 };
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonType;
+  variant: ButtonType;
   handler?: () => void;
 }
 
-const Button = ({ variant, handler, children, ...props }: Props, ref) => (
+const Button = ({ variant, handler, children, ...props }: Props) => (
   <button
     className="flex w-52 justify-center text-white py-4 px-8 font-semibold rounded-lg ease-in-out bg-[#6b2070] hover:-transform-y-1 hover:scale-110 hover:bg-[#8f2297] duration-300"
     onClick={handler}
@@ -75,4 +75,4 @@ const Button = ({ variant, handler, children, ...props }: Props, ref) => (
   </button>
 );
 
-export default forwardRef(Button);
+export default Button;

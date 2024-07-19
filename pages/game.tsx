@@ -11,7 +11,6 @@ import {
 import { useEffect } from "react";
 import Layout from "@components/Layout";
 import GameBoard from "@components/GameBoard";
-import { useStytchUser } from "@stytch/nextjs";
 import { useRouter } from "next/router";
 import GamePaused from "@components/GamePaused";
 
@@ -20,20 +19,12 @@ const Game = () => {
   const gameOver = useAppSelector(selectGameOver);
   const gamePaused = useAppSelector(selectGamePaused);
   const levelCleared = useAppSelector(selectLevelClear);
-  const { user, isInitialized } = useStytchUser();
   const router = useRouter();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!isInitialized) {
-      return;
-    }
-
-    if (isInitialized && !user) {
-      router.replace("/");
-    }
     dispatch(start());
-  }, [user, isInitialized, router, dispatch]);
+  }, [router, dispatch]);
 
   return (
     <>

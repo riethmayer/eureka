@@ -1,3 +1,4 @@
+"use client";
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import Router from "next/router";
 import type { PayloadAction } from "@reduxjs/toolkit";
