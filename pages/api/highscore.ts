@@ -1,7 +1,5 @@
-// This API route logs a user out.
 import type { NextApiRequest, NextApiResponse } from "next";
 import Cookies from "cookies";
-import loadStytch from "@lib/loadStytch";
 import { Highscore } from "@prisma/client";
 import prisma from "@lib/prisma";
 
@@ -47,41 +45,18 @@ export async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Array<Highscore> | Highscore | ErrorData>
 ) {
-  const cookies = new Cookies(req, res);
-  const storedSession = cookies.get("stytch_session");
-  if (!storedSession) {
-    return res.status(401).json({ errorString: "No session provided" });
+  if (req.method === "GET") {
+    const highscores = await getHighScores();
+    return res.status(200).json(highscores);
   }
 
-  try {
-    const client = loadStytch();
-
-    await client.sessions.authenticate({
-      session_token: storedSession,
-    }); // throws if session is invalid
-
-    if (req.method === "GET") {
-      const highscores = await getHighScores();
-      return res.status(200).json(highscores);
-    }
-
-    if (req.method === "POST") {
-      const { name, score, level } = req.body;
-      const highscore = await submitHighscore({ name, score, level });
-      return res.status(201).json(highscore);
-    }
-
-    // PUT / DELETE are not supported
-    return res.status(404).json({ errorString: "Not found" });
-  } catch (error) {
-    // from stytch
-    if (error.error_type === "session_not_found") {
-      const errorString = error.error_message;
-      return res.status(401).json({ errorString });
-    }
-    const errorString = JSON.stringify(error);
-    return res.status(400).json({ errorString });
+  if (req.method === "POST") {
+    const { name, score, level } = req.body;
+    const highscore = await submitHighscore({ name, score, level });
+    return res.status(201).json(highscore);
   }
+
+  return res.status(404).json({ errorString: "Not found" });
 }
 
 export default handler;
