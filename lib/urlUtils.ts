@@ -1,6 +1,7 @@
 import { NextIncomingMessage } from "next/dist/server/request-meta";
 
-// Helper functions to account for the fact this applications is deployed on many different domains via Vercel, and on localhost
+// Helper functions to account for the fact this applications is deployed on 
+// many different domains via Vercel, and on localhost.
 
 // Use on the frontend (React components) to get domain
 export const getDomainFromWindow = () => {

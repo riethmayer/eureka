@@ -1,16 +1,22 @@
 import Link from "next/link";
-import type { GetServerSideProps, NextPage } from "next";
+import type { GetServerSideProps } from "next";
 import Button, { ButtonType } from "@components/common/Button";
 import Layout from "@components/Layout";
-import { Highscore } from "@prisma/client";
 import { getHighScores } from "@api/highscore";
 
+type Score = {
+  id: number;
+  name: string;
+  score: number;
+  level: number;
+}
+
 type Props = {
-  highscores: Array<Highscore>;
+  highscores: Array<Score>;
   children?: React.ReactNode;
 };
 
-const HighscorePage: NextPage = ({ highscores }: Props) => {
+const HighscorePage = ({ highscores }: Props) => {
   return (
     <Layout title="Highscore">
       <div className="flex mt-8 flex-col justify-top h-screen w-screen items-center">
@@ -23,6 +29,7 @@ const HighscorePage: NextPage = ({ highscores }: Props) => {
               <tr className="bg-yellow-200 font-black text-blue-700 uppercase">
                 <th className="px-4 py-2">Name</th>
                 <th className="px-4 py-2">Score</th>
+                <th className="px-4 py-2">Level</th>
               </tr>
             </thead>
             <tbody>
