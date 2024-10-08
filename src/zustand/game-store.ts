@@ -2,12 +2,12 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { postHighscore } from "@/utils/post-highscore";
 import type { GameBoard } from "@/types/game-board";
-// import initializeGameBoard from "@/utils/init-gameboard";
-import { initializeTestGameBoard as initializeGameBoard } from "@/utils/init-gameboard";
+import initializeGameBoard from "@/utils/init-gameboard";
+// import { initializeTestGameBoard as initializeGameBoard } from "@/utils/init-gameboard";
 export type Timer = ReturnType<typeof globalThis.setInterval> | null;
 
 export const EVERY_SECOND = 1000;
-export const TIME_TO_SOLVE = 4;
+export const TIME_TO_SOLVE = 800; // 800 is the original value we believe
 
 export type State = {
   timer: Timer;
@@ -79,7 +79,6 @@ export const useGameStore = create<GameState>()(
       set((state) => {
         if (!state.timer) {
           return {
-            ...state,
             timer: globalThis.setInterval(() => get().step(), EVERY_SECOND),
           };
         }
@@ -222,8 +221,6 @@ export const useGameStore = create<GameState>()(
     },
 
     levelCleared: () => {
-      // TODO: this needs to be refactored to handle multiple levels
-      // TODO: this needs to take into consideration the game board
       get().pause();
       set((state) => ({
         levelClear: true,
@@ -236,7 +233,7 @@ export const useGameStore = create<GameState>()(
     isLevelClear: () => get().levelClear,
 
     continueNextLevel: () => {
-      set((state) => ({
+      set(() => ({
         levelClear: false,
         timer: globalThis.setInterval(() => get().step(), EVERY_SECOND),
       }));

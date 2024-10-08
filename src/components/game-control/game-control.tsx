@@ -8,8 +8,8 @@ import { useGameStore } from "@/zustand/game-store";
 
 const GameControl = () => {
   const pathname = usePathname();
-  const isGameRunning = useGameStore((state) => state.isGameRunning());
   const isLevelClear = useGameStore((state) => state.isLevelClear());
+  const isGameRunning = useGameStore((state) => state.isGameRunning());
 
   const actions: Record<string, React.FC> = {
     "/play": isLevelClear

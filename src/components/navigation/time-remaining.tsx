@@ -1,8 +1,5 @@
 "use client";
-import { useEffect } from "react";
-
 import { useGameStore, unsubscribe } from "@/zustand/game-store";
-import { is } from "drizzle-orm";
 
 const TimeRemaining = () => {
   const formattedTimeRemaining = useGameStore((state) =>
