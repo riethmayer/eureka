@@ -1,4 +1,5 @@
-import Turtle from "@components/turtle-base/Turtle";
+"use client";
+import Turtle from "@/components/turtle-base/Turtle";
 
 /**
  * 8 tiles high.

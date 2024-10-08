@@ -19,27 +19,7 @@
     "incremental": true,
     "baseUrl": "./src",
     "paths": {
-      "@store/*": [
-        "store/*"
-      ],
-      "@components/*": [
-        "components/*"
-      ],
-      "@lib/*": [
-        "lib/*"
-      ],
-      "@reducers/*": [
-        "reducers/*"
-      ],
-      "@actions/*": [
-        "actions/*"
-      ],
-      "@api/*": [
-        "pages/api/*"
-      ],
-      "@db/*": [
-        "db/*"
-      ],
+      "@/*": ["*"]
     },
     "plugins": [
       {

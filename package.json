@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@libsql/client": "^0.14.0",
+    "@paralleldrive/cuid2": "^2.2.2",
     "@reduxjs/toolkit": "^2.2.1",
     "cookies": "^0.9.1",
     "drizzle-orm": "^0.33.0",
@@ -16,7 +17,9 @@
     "redux": "^5.0.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^3.1.0",
-    "tslib": "^2.6.2"
+    "tslib": "^2.6.2",
+    "zukeeper": "^1.0.2",
+    "zustand": "^5.0.0-rc.2"
   },
   "scripts": {
     "dev": "next dev",
@@ -29,14 +32,19 @@
     "migrate": "drizzle-kit migrate"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/react-hooks": "^8.0.1",
     "@types/cookies": "^0.7.7",
     "@types/hoist-non-react-statics": "^3.3.5",
     "@types/node": "^20.11.20",
     "@types/react": "^18.2.58",
     "@types/react-dom": "^18.2.19",
     "@types/redux-logger": "^3.0.9",
+    "@types/testing-library__react-hooks": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
+    "@vitest/coverage-v8": "^2.1.2",
     "autoprefixer": "^10.4.17",
     "drizzle-kit": "^0.24.2",
     "eslint": "^8",
@@ -45,6 +53,7 @@
     "eslint-import-resolver-node": "^0.3.9",
     "eslint-import-resolver-typescript": "^3.6.3",
     "eslint-plugin-check-file": "^2.8.0",
+    "jsdom": "^25.0.1",
     "postcss": "^8",
     "prettier": "^3",
     "react-testing-library": "^8.0.1",

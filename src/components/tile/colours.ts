@@ -1,4 +1,4 @@
-import { Token } from "@store/game-board";
+import { Token } from "@/types/game-board";
 
 export const colors: Record<Token, string> = {
   A: "blue",
@@ -39,6 +39,6 @@ export const colors: Record<Token, string> = {
   "9": "olivedrab",
 } as const;
 
-export type ColourType = typeof colors[Token];
+export type ColourType = (typeof colors)[Token];
 export const colour = (key: Token) => colors[key];
 export default colour;

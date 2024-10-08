@@ -1,16 +1,16 @@
-import { useAppDispatch, useAppSelector } from "@store/hooks";
-import Tile from "../tile/my-Tile";
-import { clicked, selectBoard } from "@store/game-board";
+"use client";
+import Tile from "@/components/tile";
+import { useGameStore } from "@/zustand/game-store";
 
 const Turtle = () => {
-  const board = useAppSelector(selectBoard);
-  const dispatch = useAppDispatch();
+  const board = useGameStore((state) => state.gameBoard);
+  const clicked = useGameStore((state) => state.clicked);
 
   return (
     <div className="turtle mt-4">
       <div>
         {Object.keys(board).map((idx) => {
-          const { active, column, layer, row, token, index } = board[idx];
+          const { active, column, layer, row, token } = board[idx];
           return (
             <Tile
               token={token}
@@ -19,9 +19,9 @@ const Turtle = () => {
               layer={layer}
               active={active}
               className={`${token}`}
-              id={index}
-              onClick={() => dispatch(clicked(index))}
-              key={index}
+              id={idx}
+              onClick={() => clicked(idx)}
+              key={idx}
             />
           );
         })}

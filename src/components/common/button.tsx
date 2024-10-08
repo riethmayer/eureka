@@ -1,10 +1,8 @@
-import { ReactNode } from "react";
-
 export enum ButtonType {
-  "default",
-  "play",
-  "pause",
-  "resume",
+  default = "default",
+  play = "play",
+  pause = "pause",
+  resume = "resume",
 }
 
 const icons = {
@@ -59,16 +57,16 @@ const icons = {
   ),
 };
 
-interface Props {
-  children?: ReactNode;
-  variant: ButtonType;
-  handler?: () => void;
-}
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant: keyof typeof icons;
+  children: React.ReactNode;
+};
 
-const Button = ({ variant, handler, children, ...props }: Props) => (
+export const Button = (
+  { variant, children, ...props }: Props,
+) => (
   <button
     className="flex w-52 justify-center text-white py-4 px-8 font-semibold rounded-lg ease-in-out bg-[#6b2070] hover:-transform-y-1 hover:scale-110 hover:bg-[#8f2297] duration-300"
-    onClick={handler}
     {...props}
   >
     {icons[variant]}
