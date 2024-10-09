@@ -20,5 +20,3 @@ src/db/*.sql
 src/db/*.sql-shm
 src/db/*.sql-wal
 
-# yarn
-.yarn
