@@ -14,7 +14,7 @@ export default function RootLayout({
     <html lang="en" className="bg-slate-800 h-full">
       <body className="h-full">
         <Navigation />
-        {children}
+        <main>{children}</main>
       </body>
     </html>
   );
