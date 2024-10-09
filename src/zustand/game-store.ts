@@ -52,7 +52,7 @@ const initialState: State = {
   maxTime: TIME_TO_SOLVE,
   timeRemaining: TIME_TO_SOLVE,
   levelClear: false,
-  gameBoard: initializeGameBoard(),
+  gameBoard: {},
   gameOver: false,
   score: 0,
   level: 1,
@@ -105,6 +105,7 @@ export const useGameStore = create<GameState>()(
     start: () => {
       set((prev) => ({
         ...initialState,
+        gameBoard: initializeGameBoard(),
         name: prev.name,
         timer:
           prev.timer ||
