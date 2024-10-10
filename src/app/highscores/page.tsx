@@ -2,6 +2,8 @@ import Link from "next/link";
 import getHighscores from "@/db/select-highscores";
 import Button, { ButtonType } from "@/components/common/button";
 
+export const dynamic = "force-dynamic";
+
 const HighscoresController = async () => {
   const highscores = await getHighscores();
   return (
