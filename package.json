@@ -24,9 +24,9 @@
   },
   "scripts": {
     "dotenvx": "dotenvx",
-    "dev": "dotenvx run -- next dev",
-    "build": "dotenvx run -- next build",
-    "start": "dotenvx run -- next start",
+    "dev": "dotenvx run --verbose -- next dev",
+    "build": "dotenvx run --verbose -- next build",
+    "start": "dotenvx run --verbose -- next start",
     "type-check": "tsc",
     "lint": "next lint",
     "test": "vitest",
