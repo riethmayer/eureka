@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1728566691400,
+      "tag": "0000_fuzzy_thunderbolt",
+      "breakpoints": true
+    }
+  ]
 }

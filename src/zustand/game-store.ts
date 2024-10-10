@@ -2,12 +2,12 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { postHighscore } from "@/utils/post-highscore";
 import type { GameBoard } from "@/types/game-board";
-import initializeGameBoard from "@/utils/init-gameboard";
-// import { initializeTestGameBoard as initializeGameBoard } from "@/utils/init-gameboard";
+// import initializeGameBoard from "@/utils/init-gameboard";
+import { initializeTestGameBoard as initializeGameBoard } from "@/utils/init-gameboard";
 export type Timer = ReturnType<typeof globalThis.setInterval> | null;
 
 export const EVERY_SECOND = 1000;
-export const TIME_TO_SOLVE = 800; // 800 is the original value we believe
+export const TIME_TO_SOLVE = 4; // 800 is the original value we believe
 
 export type State = {
   timer: Timer;

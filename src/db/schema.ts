@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { createId } from "@paralleldrive/cuid2";
+// import { createId } from "@paralleldrive/cuid2";
 
 export const highscores = sqliteTable("highscores", {
   id: integer("id", { mode: "number" }).primaryKey(),
