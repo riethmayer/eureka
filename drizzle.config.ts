@@ -1,4 +1,7 @@
 import type { Config } from "drizzle-kit";
+console.log(
+  `Connecting to database from drizzle.config.ts: ${process.env.TURSO_DATABASE_URL}`
+);
 export default {
   schema: "./src/db/schema.ts",
   driver: "turso",
