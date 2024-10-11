@@ -3,11 +3,19 @@ import Button, { ButtonType } from "@/components/common/button";
 import EurekaLogo from "@/components/eureka-logo";
 import Link from "next/link";
 import { useGameStore } from "@/zustand/game-store";
-import { FC } from "react";
+import { useEffect } from "react";
+import { getCookie } from "@/utils/cookie-utils";
 
-const IndexPage: FC = () => {
+const IndexPage: React.FC = () => {
   const { start } = useGameStore();
   const { name, changeName } = useGameStore();
+
+  useEffect(() => {
+    const storedName = getCookie("userName");
+    if (storedName) {
+      changeName(storedName);
+    }
+  }, [changeName]);
 
   return (
     <div className="flex flex-col justify-center py-12 items-center">
