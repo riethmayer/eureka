@@ -1,4 +1,5 @@
 import insertHighscore from "@/db/insert-highscore";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 interface HighscoreRequest {
@@ -40,6 +41,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
 
     const highscores = await insertHighscore(payload);
+    await revalidatePath("/highscores");
+
     return NextResponse.json(highscores, { status: 201 });
   } catch (error) {
     console.error("Error processing request:", error);

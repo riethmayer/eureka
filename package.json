@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@dotenvx/dotenvx": "^1.16.1",
     "@libsql/client": "^0.14.0",
     "@paralleldrive/cuid2": "^2.2.2",
     "@reduxjs/toolkit": "^2.2.1",
@@ -23,11 +22,9 @@
     "zustand": "^5.0.0-rc.2"
   },
   "scripts": {
-    "dotenvx": "dotenvx",
-    "dev": "dotenvx run --verbose -f .env -- next dev",
-    "build:dev": "dotenvx run --verbose -f .env -- next build",
-    "build": "dotenvx run --verbose -f .env.production -- next build",
-    "start": "dotenvx run --verbose -f .env.production -- next start",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "type-check": "tsc",
     "lint": "next lint",
     "test": "vitest",
