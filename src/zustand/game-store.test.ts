@@ -26,7 +26,7 @@ describe("useGameStore", () => {
     expect(result.current.score).toBe(0);
     expect(result.current.level).toBe(1);
     expect(result.current.timer).toBe(null);
-    expect(result.current.name).toBe("unknown");
+    expect(result.current.name).toBe("");
   });
 
   it("starts the game correctly", () => {

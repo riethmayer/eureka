@@ -7,6 +7,7 @@ import { FC } from "react";
 
 const IndexPage: FC = () => {
   const { start } = useGameStore();
+  const { name, changeName } = useGameStore();
 
   return (
     <div className="flex flex-col justify-center py-12 items-center">
@@ -14,6 +15,17 @@ const IndexPage: FC = () => {
       <h1 className="text-center py-4 text-yellow-50">
         Eureka, a mahjong style solitaire game.
       </h1>
+      <p className="mb-4">
+        <span className="text-white mr-2">Enter your name:</span>
+        <input
+          maxLength={24}
+          type="text"
+          placeholder="for highscores only"
+          value={name}
+          onChange={(e) => changeName(e.target.value)}
+          className="border-2 border-gray-200 rounded-md bg-inherit border-none p-1 text-white focus:ring-4 focus:ring-yellow-500 focus:outline-none"
+        />
+      </p>
       <div className="flex flex-row align-middle">
         <Link href="/play">
           <Button variant={ButtonType.play} onClick={() => start()}>

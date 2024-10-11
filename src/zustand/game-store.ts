@@ -56,7 +56,7 @@ const initialState: State = {
   gameOver: false,
   score: 0,
   level: 1,
-  name: "unknown",
+  name: "",
 };
 
 export const useGameStore = create<GameState>()(
@@ -244,7 +244,7 @@ export const useGameStore = create<GameState>()(
       set(() => ({ gameOver: true }));
       try {
         await postHighscore({
-          name: get().name,
+          name: get().name || "unknown",
           score: get().score,
           level: get().level,
         });
