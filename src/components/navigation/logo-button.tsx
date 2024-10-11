@@ -4,9 +4,9 @@ import Link from "next/link";
 import EurekaLogo from "../eureka-logo";
 
 const LogoButton = () => {
-  const pause = useGameStore((state) => state.pause);
+  const withdraw = useGameStore((state) => state.withdraw);
   return (
-    <Link href="/" className="px-1 ml-8" onClick={() => pause()}>
+    <Link href="/" className="px-1 ml-8" onClick={() => withdraw()}>
       <EurekaLogo variant="small" />
     </Link>
   );

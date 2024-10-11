@@ -17,7 +17,7 @@ body {
 .tile-text {
   font-family: 'Rubik', sans-serif;
   font-weight: 900;
-  font-size: 3ex;
+  font-size: 1ex;
 }
 
 .tile.layer-0 div {

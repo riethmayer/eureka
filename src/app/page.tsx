@@ -23,7 +23,7 @@ const IndexPage: FC = () => {
           placeholder="for highscores only"
           value={name}
           onChange={(e) => changeName(e.target.value)}
-          className="border-2 border-gray-200 rounded-md bg-inherit border-none p-1 text-white focus:ring-4 focus:ring-yellow-500 focus:outline-none"
+          className="border-2 border-gray-200 rounded-md bg-inherit border-none p-1 inline-flex text-white focus:ring-4 focus:ring-yellow-500 focus:outline-none"
         />
       </p>
       <div className="flex flex-row align-middle">

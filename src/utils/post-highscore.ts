@@ -9,6 +9,9 @@ export const postHighscore = async ({
   score,
   level,
 }: PostHighScoreProps) => {
+  if (score < 2) {
+    return;
+  }
   await fetch("/api/highscore", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
