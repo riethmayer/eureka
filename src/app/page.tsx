@@ -3,19 +3,28 @@ import Button, { ButtonType } from "@/components/common/button";
 import EurekaLogo from "@/components/eureka-logo";
 import Link from "next/link";
 import { useGameStore } from "@/zustand/game-store";
-import { useEffect } from "react";
-import { getCookie } from "@/utils/cookie-utils";
+import { useEffect, useRef } from "react";
+import { getCookie, setCookie } from "@/utils/cookie-utils";
 
 const IndexPage: React.FC = () => {
   const { start } = useGameStore();
-  const { name, changeName } = useGameStore();
+  const { changeName } = useGameStore();
+  const name = useGameStore((state) => state.name);
+  const hasRunOnce = useRef(false);
 
+  // Load the user's name from the cookie.
   useEffect(() => {
     const storedName = getCookie("userName");
-    if (storedName) {
+    if (storedName && !hasRunOnce.current) {
       changeName(storedName);
     }
+    hasRunOnce.current = true;
   }, [changeName]);
+
+  // Save the user's changed name to the cookie.
+  useEffect(() => {
+    setCookie("userName", name);
+  }, [name]);
 
   return (
     <div className="flex flex-col justify-center py-12 items-center">
