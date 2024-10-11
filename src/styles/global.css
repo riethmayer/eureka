@@ -179,3 +179,13 @@ svg .inner-rectangle {
   /* top piece */
   left: 21.1em;
 }
+
+/* Add this to your global CSS file or a CSS module */
+.loader {
+  @apply border-[16px] border-solid border-gray-200 border-t-purple-700 rounded-full w-32 h-32 animate-spin;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

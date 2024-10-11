@@ -24,7 +24,7 @@ const HighscoresController = async () => {
           <tbody>
             {highscores.map((score, index) => (
               <tr
-                key={score.id}
+                key={index}
                 className={index % 2 ? `bg-gray-200` : `bg-gray-100`}
               >
                 <td className="border px-4 py-2 text-center">{score.rank}</td>
