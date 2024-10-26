@@ -173,7 +173,6 @@ describe("useGameStore", () => {
 
   it("pause action is idempotent", () => {
     const { result } = renderHook(() => useGameStore());
-    let timer = result.current.timer;
 
     act(() => {
       result.current.start();

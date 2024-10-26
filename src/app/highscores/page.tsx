@@ -1,6 +1,5 @@
-import Link from "next/link";
-import getHighscores from "@/db/select-highscores";
-import Button, { ButtonType } from "@/components/common/button";
+import getHighscores from "@/db/select-game";
+import { PlayButton } from "@/components/common/button";
 
 export const dynamic = "force-dynamic";
 
@@ -37,9 +36,7 @@ const HighscoresController = async () => {
         </table>
       </div>
       <div className="relative bg-slate-200 mt-8 rounded-xl px-10 py-4">
-        <Link href="/play">
-          <Button variant={ButtonType.play}>Start New</Button>
-        </Link>
+        <PlayButton />
       </div>
     </div>
   );

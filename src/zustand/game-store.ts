@@ -3,7 +3,6 @@ import { devtools } from "zustand/middleware";
 import { postHighscore } from "@/utils/post-highscore";
 import type { GameBoard } from "@/types/game-board";
 import { initializeGameBoard } from "@/utils/init-gameboard";
-import { getCookie, setCookie } from "@/utils/cookie-utils";
 
 export type Timer = ReturnType<typeof globalThis.setInterval> | null;
 

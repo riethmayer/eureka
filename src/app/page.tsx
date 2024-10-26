@@ -1,13 +1,11 @@
 "use client";
-import Button, { ButtonType } from "@/components/common/button";
+import { PlayButton } from "@/components/common/button";
 import EurekaLogo from "@/components/eureka-logo";
-import Link from "next/link";
 import { useGameStore } from "@/zustand/game-store";
 import { useEffect, useRef } from "react";
 import { getCookie, setCookie } from "@/utils/cookie-utils";
 
 const IndexPage: React.FC = () => {
-  const { start } = useGameStore();
   const { changeName } = useGameStore();
   const name = useGameStore((state) => state.name);
   const hasRunOnce = useRef(false);
@@ -44,11 +42,7 @@ const IndexPage: React.FC = () => {
         />
       </p>
       <div className="flex flex-row align-middle">
-        <Link href="/play">
-          <Button variant={ButtonType.play} onClick={() => start()}>
-            Start
-          </Button>
-        </Link>
+        <PlayButton>Start</PlayButton>
       </div>
     </div>
   );

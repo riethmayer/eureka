@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect } from "react";
 import GameBoard from "@/components/game-board";
 import { useGameStore } from "@/zustand/game-store";
