@@ -47,7 +47,7 @@ export type TestActions = {
   __oneSecondRemaining: () => void;
 };
 
-export type GameState = State & Action & TestActions;
+export type GameStore = State & Action & TestActions;
 
 const initialState: State = {
   timer: null,
@@ -61,7 +61,7 @@ const initialState: State = {
   name: "",
 };
 
-export const useGameStore = create<GameState>()(
+export const useGameStore = create<GameStore>()(
   devtools((set, get) => {
     return {
       ...initialState,
