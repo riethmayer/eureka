@@ -1,3 +1,9 @@
+"use client";
+
+import React from "react";
+import Link from "next/link";
+import { useGameStore } from "@/zustand/game-store";
+
 export enum ButtonType {
   default = "default",
   play = "play",
@@ -88,5 +94,62 @@ export const Button = ({ variant, children, ...props }: Props) => (
     {children}
   </button>
 );
+
+type ShortcutProps = Omit<Props, "variant"> & { children?: React.ReactNode };
+
+export const PlayButton: React.FC<ShortcutProps> = ({ children, ...props }) => {
+  const start = useGameStore((state) => state.start);
+  return (
+    <Link href="/play">
+      <Button variant={ButtonType.play} onClick={() => start()} {...props}>
+        {children ?? "Play"}
+      </Button>
+    </Link>
+  );
+};
+
+export const PauseButton: React.FC<ShortcutProps> = ({ children, ...props }) => {
+  const pause = useGameStore((state) => state.pause);
+  return (
+    <Link href="/paused">
+      <Button variant={ButtonType.pause} onClick={pause} {...props}>
+        {children ?? "Pause"}
+      </Button>
+    </Link>
+  );
+};
+
+export const ResumeButton: React.FC<ShortcutProps> = ({ children, ...props }) => {
+  const resume = useGameStore((state) => state.resume);
+  return (
+    <Link href="/play">
+      <Button variant={ButtonType.resume} onClick={resume} {...props}>
+        {children ?? "Resume"}
+      </Button>
+    </Link>
+  );
+};
+
+export const RestartButton: React.FC<ShortcutProps> = ({ children, ...props }) => {
+  const restart = useGameStore((state) => state.restart);
+  return (
+    <Link href="/play">
+      <Button variant={ButtonType.restart} onClick={restart} {...props}>
+        {children ?? "Restart"}
+      </Button>
+    </Link>
+  );
+};
+
+export const NextLevelButton: React.FC<ShortcutProps> = ({ children, ...props }) => {
+  const continueNextLevel = useGameStore((state) => state.continueNextLevel);
+  return (
+    <Link href="/play">
+      <Button variant={ButtonType.play} onClick={continueNextLevel} {...props}>
+        {children ?? "Next"}
+      </Button>
+    </Link>
+  );
+};
 
 export default Button;

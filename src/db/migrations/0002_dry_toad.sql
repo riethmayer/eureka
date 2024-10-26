@@ -1,0 +1,1 @@
+ALTER TABLE `games` ADD `max_time` integer DEFAULT 800 NOT NULL;

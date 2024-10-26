@@ -1,5 +1,4 @@
-import Link from "next/link";
-import Button, { ButtonType } from "@/components/common/button";
+import { PlayButton } from "@/components/common/button";
 
 const Loading = () => {
   return (
@@ -13,9 +12,7 @@ const Loading = () => {
         </div>
       </div>
       <div className="relative bg-slate-200 mt-8 rounded-xl px-10 py-4">
-        <Link href="/play">
-          <Button variant={ButtonType.play}>Start New</Button>
-        </Link>
+        <PlayButton>Play</PlayButton>
       </div>
     </div>
   );
