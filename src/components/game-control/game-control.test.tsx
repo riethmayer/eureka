@@ -1,5 +1,4 @@
-/// <reference types="vitest" />
-import { vi, describe, beforeEach, it, expect } from "vitest";
+import { describe, beforeEach, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 
 import { useGameStore } from "@/zustand/game-store";
@@ -7,8 +6,8 @@ import { usePathname } from "next/navigation";
 
 import GameControl from "@/components/game-control/game-control";
 
-// Add this type definition at the top of the file
-type GameStore = {
+// Replace the GameStore type with a more precise interface
+interface GameStore {
   isGameRunning: () => boolean;
   isLevelClear: () => boolean;
   start: () => void;
@@ -16,7 +15,10 @@ type GameStore = {
   continueNextLevel: () => void;
   restart: () => void;
   pause: () => void;
-};
+}
+
+// Add a type for the selector function
+type GameStoreSelector<T> = (state: GameStore) => T;
 
 // Mock the usePathname hook
 vi.mock("next/navigation", () => ({
@@ -28,24 +30,35 @@ vi.mock("@/zustand/game-store", () => ({
   useGameStore: vi.fn(),
 }));
 
+// Improve the mock implementation
+const createMockGameStore = (
+  overrides: Partial<GameStore> = {}
+): GameStore => ({
+  isGameRunning: vi.fn().mockReturnValue(false),
+  isLevelClear: vi.fn().mockReturnValue(false),
+  start: vi.fn(),
+  resume: vi.fn(),
+  continueNextLevel: vi.fn(),
+  restart: vi.fn(),
+  pause: vi.fn(),
+  ...overrides,
+});
+
 describe("GameControl", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    (usePathname as ReturnType<typeof vi.fn>).mockReturnValue("/play");
+    (useGameStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector: GameStoreSelector<unknown>) => selector(createMockGameStore())
+    );
   });
 
   it('renders PlayButton when pathname is "/play" and game is not running', () => {
-    (usePathname as any).mockReturnValue("/play");
-    (useGameStore as any).mockImplementation(
-      (selector: (state: GameStore) => any) =>
-        selector({
-          isGameRunning: () => false,
-          isLevelClear: () => false,
-          start: vi.fn(),
-          resume: vi.fn(),
-          continueNextLevel: vi.fn(),
-          restart: vi.fn(),
-          pause: vi.fn(),
-        })
+    (useGameStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector: GameStoreSelector<unknown>) =>
+        selector(
+          createMockGameStore({ isGameRunning: vi.fn().mockReturnValue(false) })
+        )
     );
 
     render(<GameControl />);
@@ -53,18 +66,11 @@ describe("GameControl", () => {
   });
 
   it('renders PauseButton and RestartButton when pathname is "/play" and game is running', () => {
-    (usePathname as any).mockReturnValue("/play");
-    (useGameStore as any).mockImplementation(
-      (selector: (state: GameStore) => any) =>
-        selector({
-          isGameRunning: () => true,
-          isLevelClear: () => false,
-          start: vi.fn(),
-          resume: vi.fn(),
-          continueNextLevel: vi.fn(),
-          restart: vi.fn(),
-          pause: vi.fn(),
-        })
+    (useGameStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector: GameStoreSelector<unknown>) =>
+        selector(
+          createMockGameStore({ isGameRunning: vi.fn().mockReturnValue(true) })
+        )
     );
 
     render(<GameControl />);
@@ -73,18 +79,11 @@ describe("GameControl", () => {
   });
 
   it('renders NextLevelButton when pathname is "/play" and level is clear', () => {
-    (usePathname as any).mockReturnValue("/play");
-    (useGameStore as any).mockImplementation(
-      (selector: (state: GameStore) => any) =>
-        selector({
-          isGameRunning: () => false,
-          isLevelClear: () => true,
-          start: vi.fn(),
-          resume: vi.fn(),
-          continueNextLevel: vi.fn(),
-          restart: vi.fn(),
-          pause: vi.fn(), // Add this line
-        })
+    (useGameStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector: GameStoreSelector<unknown>) =>
+        selector(
+          createMockGameStore({ isLevelClear: vi.fn().mockReturnValue(true) })
+        )
     );
 
     render(<GameControl />);
@@ -92,37 +91,18 @@ describe("GameControl", () => {
   });
 
   it('renders ResumeButton when pathname is "/paused"', () => {
-    (usePathname as any).mockReturnValue("/paused");
-    (useGameStore as any).mockImplementation(
-      (selector: (state: GameStore) => any) =>
-        selector({
-          isGameRunning: () => false,
-          isLevelClear: () => false,
-          start: vi.fn(),
-          resume: vi.fn(),
-          continueNextLevel: vi.fn(),
-          restart: vi.fn(),
-          pause: vi.fn(), // Add this line
-        })
-    );
+    (usePathname as ReturnType<typeof vi.fn>).mockReturnValue("/paused");
 
     render(<GameControl />);
     expect(screen.getByText("Resume")).toBeInTheDocument();
   });
 
   it("renders RestartButton when game is running", () => {
-    (usePathname as any).mockReturnValue("/play");
-    (useGameStore as any).mockImplementation(
-      (selector: (state: GameStore) => any) =>
-        selector({
-          isGameRunning: () => true,
-          isLevelClear: () => false,
-          start: vi.fn(),
-          resume: vi.fn(),
-          continueNextLevel: vi.fn(),
-          restart: vi.fn(),
-          pause: vi.fn(), // Add this line
-        })
+    (useGameStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector: GameStoreSelector<unknown>) =>
+        selector(
+          createMockGameStore({ isGameRunning: vi.fn().mockReturnValue(true) })
+        )
     );
 
     render(<GameControl />);
