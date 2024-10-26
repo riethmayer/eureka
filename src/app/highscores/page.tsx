@@ -36,7 +36,7 @@ const HighscoresController = async () => {
         </table>
       </div>
       <div className="relative bg-slate-200 mt-8 rounded-xl px-10 py-4">
-        <PlayButton />
+        <PlayButton>Play</PlayButton>
       </div>
     </div>
   );
