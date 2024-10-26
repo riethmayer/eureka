@@ -1,36 +1,42 @@
 "use client";
 
+import React from "react";
 import { usePathname } from "next/navigation";
 import { useGameStore } from "@/zustand/game-store";
 
 import {
-  PauseButton,
   PlayButton,
+  PauseButton,
   NextLevelButton,
   RestartButton,
+  ResumeButton,
 } from "@/components/common/button";
 
-const GameControl = () => {
+const GameControl: React.FC = () => {
   const pathname = usePathname();
   const isGameRunning = useGameStore((state) => state.isGameRunning());
+  const isLevelClear = useGameStore((state) => state.isLevelClear());
 
-  return (
-    <>
-      {pathname === "/play" &&
-        (isGameRunning ? (
+  if (pathname === "/play") {
+    if (isLevelClear) {
+      return <NextLevelButton>Next</NextLevelButton>;
+    }
+    if (isGameRunning) {
+      return (
+        <>
           <PauseButton>Pause</PauseButton>
-        ) : (
-          <PlayButton>Play</PlayButton>
-        ))}
-      {pathname === "/level-clear" ? (
-        <NextLevelButton>Next</NextLevelButton>
-      ) : null}
-      {pathname === "/game-over" ? (
-        <RestartButton>Restart</RestartButton>
-      ) : null}
-      {isGameRunning ? <RestartButton>Restart</RestartButton> : null}
-    </>
-  );
+          <RestartButton>Restart</RestartButton>
+        </>
+      );
+    }
+    return <PlayButton>Play</PlayButton>;
+  }
+
+  if (pathname === "/paused") {
+    return <ResumeButton>Resume</ResumeButton>;
+  }
+
+  return null;
 };
 
 export default GameControl;
