@@ -80,13 +80,13 @@ const icons = {
   ),
 };
 
-type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   path: string;
   variant: keyof typeof icons;
   children: React.ReactNode;
 };
 
-export const Button = ({ path, variant, children, ...props }: Props) => (
+export const Button = ({ path, variant, children, ...props }: ButtonProps) => (
   <Link href={path}>
     <button
       className="flex px-4 py-1 justify-center text-white font-semibold rounded-lg ease-in-out bg-[#6b2070] hover:-transform-y-1 hover:scale-110 hover:bg-[#8f2297] duration-300"
@@ -98,49 +98,80 @@ export const Button = ({ path, variant, children, ...props }: Props) => (
   </Link>
 );
 
-export const PlayButton = (props: Omit<Props, "variant" | "path">) => (
-  <Button
-    {...props}
-    path="/play"
-    variant={ButtonType.play}
-    onClick={useGameStore.getState().start}
-  />
-);
+export const PlayButton: React.FC<Omit<ButtonProps, "path" | "variant">> = ({
+  children,
+  ...props
+}) => {
+  const start = useGameStore((state) => state.start);
+  return (
+    <Button path="/play" variant={ButtonType.play} onClick={start} {...props}>
+      {children}
+    </Button>
+  );
+};
 
-export const PauseButton = (props: Omit<Props, "variant" | "path">) => (
-  <Button
-    {...props}
-    path="/paused"
-    variant={ButtonType.pause}
-    onClick={useGameStore.getState().pause}
-  />
-);
+export const PauseButton: React.FC<Omit<ButtonProps, "path" | "variant">> = (
+  props
+) => {
+  const pause = useGameStore((state) => state.pause);
+  return (
+    <Button
+      {...props}
+      path="/paused"
+      variant={ButtonType.pause}
+      onClick={pause}
+    />
+  );
+};
 
-export const ResumeButton = (props: Omit<Props, "variant" | "path">) => (
-  <Button
-    {...props}
-    path="/play"
-    variant={ButtonType.resume}
-    onClick={useGameStore.getState().resume}
-  />
-);
+export const ResumeButton: React.FC<Omit<ButtonProps, "path" | "variant">> = ({
+  children,
+  ...props
+}) => {
+  const resume = useGameStore((state) => state.resume);
+  return (
+    <Button
+      path="/play"
+      variant={ButtonType.resume}
+      onClick={resume}
+      {...props}
+    >
+      {children}
+    </Button>
+  );
+};
 
-export const RestartButton = (props: Omit<Props, "variant" | "path">) => (
-  <Button
-    {...props}
-    path="/play"
-    variant={ButtonType.restart}
-    onClick={useGameStore.getState().restart}
-  />
-);
+export const RestartButton: React.FC<Omit<ButtonProps, "path" | "variant">> = ({
+  children,
+  ...props
+}) => {
+  const restart = useGameStore((state) => state.restart);
+  return (
+    <Button
+      path="/play"
+      variant={ButtonType.restart}
+      onClick={restart}
+      {...props}
+    >
+      {children}
+    </Button>
+  );
+};
 
-export const NextLevelButton = (props: Omit<Props, "variant" | "path">) => (
-  <Button
-    {...props}
-    path="/play"
-    variant={ButtonType.play}
-    onClick={useGameStore.getState().continueNextLevel}
-  />
-);
+export const NextLevelButton: React.FC<
+  Omit<ButtonProps, "path" | "variant">
+> = ({ children, ...props }) => {
+  const continueNextLevel = useGameStore((state) => state.continueNextLevel);
+  return (
+    <Button
+      path="/play"
+      variant={ButtonType.play}
+      onClick={continueNextLevel}
+      {...props}
+    >
+      {children}
+    </Button>
+  );
+};
 
 export default Button;
