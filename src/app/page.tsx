@@ -1,14 +1,13 @@
 "use client";
+import Link from "next/link";
 import Button, { ButtonType } from "@/components/common/button";
 import EurekaLogo from "@/components/eureka-logo";
-import Link from "next/link";
 import { useGameStore } from "@/zustand/game-store";
 import { useEffect, useRef } from "react";
 import { getCookie, setCookie } from "@/utils/cookie-utils";
 
 const IndexPage: React.FC = () => {
-  const { start } = useGameStore();
-  const { changeName } = useGameStore();
+  const { changeName, start } = useGameStore();
   const name = useGameStore((state) => state.name);
   const hasRunOnce = useRef(false);
 

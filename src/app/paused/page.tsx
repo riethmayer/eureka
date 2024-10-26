@@ -1,7 +1,7 @@
 "use client";
+import Link from "next/link";
 import Button, { ButtonType } from "@/components/common/button";
 import { useGameStore } from "@/zustand/game-store";
-import Link from "next/link";
 
 const Paused = () => {
   const { resume } = useGameStore();
