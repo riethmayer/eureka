@@ -1,11 +1,17 @@
-import { describe, beforeEach, it, expect, vi, MockedFunction } from "vitest";
+import {
+  describe,
+  beforeEach,
+  it,
+  expect,
+  vi,
+  MockedFunction,
+  Mocked,
+} from "vitest";
 import { render, screen } from "@testing-library/react";
-
 import { useGameStore } from "@/zustand/game-store";
 import { usePathname } from "next/navigation";
-
 import GameControl from "@/components/game-control/game-control";
-import { type GameStore } from "@/zustand/game-store";
+import type { GameStore } from "@/zustand/game-store";
 
 // Update the selector type
 type GameStoreSelector<T> = (state: GameStore) => T;
@@ -17,8 +23,7 @@ vi.mock("next/navigation", () => ({
 
 // Update the mock implementation
 vi.mock("@/zustand/game-store", () => ({
-  useGameStore: (selector: GameStoreSelector<unknown>) =>
-    selector(createMockGameStore()),
+  useGameStore: vi.fn(),
 }));
 
 // Create a properly typed mock
@@ -29,11 +34,16 @@ const createMockGameStore = (overrides = {}): GameStore =>
     ...overrides,
   }) as unknown as GameStore;
 
+// Update the mock type
+const mockedUseGameStore = useGameStore as unknown as MockedFunction<
+  typeof useGameStore
+>;
+
 describe("GameControl", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     (usePathname as ReturnType<typeof vi.fn>).mockReturnValue("/play");
-    vi.mocked(useGameStore).mockImplementation(
+    mockedUseGameStore.mockImplementation(
       (selector: GameStoreSelector<unknown>) => selector(createMockGameStore())
     );
   });
