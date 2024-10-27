@@ -31,12 +31,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     const payload = { name, score: intScore, level: intLevel };
 
-    if (isNaN(intScore) || intScore < 1) {
+    if (isNaN(intScore) || intScore < 2) {
       const message: HighscoreResponse = {
-        message: "Invalid Request: score is less than 1",
+        message: "Ignoring request: score is less than 2",
         ...payload,
       };
-      console.error(message);
       return NextResponse.json(message, { status: 400 });
     }
 
