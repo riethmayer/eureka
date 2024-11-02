@@ -85,9 +85,14 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode;
 };
 
-export const Button = ({ variant, children, ...props }: Props) => (
+export const Button = ({ variant, children, disabled, ...props }: Props) => (
   <button
-    className="flex px-4 py-1 justify-center text-white font-semibold rounded-lg ease-in-out bg-[#6b2070] hover:-translate-y-1 hover:scale-110 hover:bg-[#8f2297] duration-300"
+    disabled={disabled}
+    className={`flex px-4 py-1 justify-center font-semibold rounded-lg ease-in-out duration-300 ${
+      disabled
+        ? "bg-gray-500 text-gray-300 cursor-not-allowed opacity-50"
+        : "text-white bg-[#6b2070] hover:-translate-y-1 hover:scale-110 hover:bg-[#8f2297]"
+    }`}
     {...props}
   >
     {icons[variant]}
@@ -95,13 +100,24 @@ export const Button = ({ variant, children, ...props }: Props) => (
   </button>
 );
 
-type ShortcutProps = Omit<Props, "variant"> & { children?: React.ReactNode };
+type ShortcutProps = Omit<Props, "variant"> & { children?: React.ReactNode; disabled?: boolean };
 
-export const PlayButton: React.FC<ShortcutProps> = ({ children, ...props }) => {
+export const PlayButton: React.FC<ShortcutProps> = ({ children, disabled, ...props }) => {
   const start = useGameStore((state) => state.start);
   return (
-    <Link href="/play">
-      <Button variant={ButtonType.play} onClick={() => start()} {...props}>
+    <Link href={disabled ? "#" : "/play"} tabIndex={disabled ? -1 : undefined}>
+      <Button
+        variant={ButtonType.play}
+        disabled={disabled}
+        onClick={(e) => {
+          if (disabled) {
+            e.preventDefault();
+            return;
+          }
+          start();
+        }}
+        {...props}
+      >
         {children ?? "Play"}
       </Button>
     </Link>
