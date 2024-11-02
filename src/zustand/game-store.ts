@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { postHighscore } from "@/utils/post-highscore";
 import type { GameBoard } from "@/types/game-board";
 import { initializeGameBoard } from "@/utils/init-gameboard";
+import { saveGameStateToServer } from "@/utils/save-game-state";
 
 export type Timer = ReturnType<typeof globalThis.setInterval> | null;
 
@@ -19,6 +19,7 @@ export type State = {
   score: number;
   level: number;
   name: string;
+  gameId: string | null;
 };
 
 export type Action = {
@@ -40,7 +41,8 @@ export type Action = {
   endGame: () => void;
   changeName: (name: string) => void;
   withdraw: () => void;
-  storeHighscore: () => void;
+  saveGameState: () => Promise<void>;
+  autoSave: () => void;
 };
 
 export type TestActions = {
@@ -59,6 +61,7 @@ const initialState: State = {
   score: 0,
   level: 1,
   name: "",
+  gameId: null,
 };
 
 export const useGameStore = create<GameStore>()(
@@ -71,6 +74,7 @@ export const useGameStore = create<GameStore>()(
         set((state) => {
           if (state.timer) {
             globalThis.clearInterval(state.timer);
+            get().saveGameState();
             return { timer: null };
           }
           return state;
@@ -93,6 +97,10 @@ export const useGameStore = create<GameStore>()(
       step: () => {
         set((prev) => {
           const newTimeRemaining = Math.max(prev.timeRemaining - 1, 0);
+          // Autosave every 60 seconds
+          if (newTimeRemaining % 60 === 0) {
+            get().autoSave();
+          }
           if (newTimeRemaining === 0 && prev.timeRemaining !== 0) {
             if (prev.timer) {
               globalThis.clearInterval(prev.timer);
@@ -110,6 +118,7 @@ export const useGameStore = create<GameStore>()(
           ...initialState,
           gameBoard: initializeGameBoard(),
           name: prev.name,
+          gameId: null,
           timer:
             prev.timer ||
             globalThis.setInterval(() => get().step(), EVERY_SECOND),
@@ -117,7 +126,8 @@ export const useGameStore = create<GameStore>()(
       },
 
       withdraw: () => {
-        get().storeHighscore();
+        set(() => ({ timeRemaining: 0 }));
+        get().saveGameState();
         get().pause();
         set((state) => ({
           timer: null,
@@ -133,19 +143,6 @@ export const useGameStore = create<GameStore>()(
         get().endGame();
         get().start();
       },
-
-      storeHighscore: async () => {
-        try {
-          await postHighscore({
-            name: get().name || "unknown",
-            score: get().score,
-            level: get().level,
-          });
-        } catch (error) {
-          console.error("Failed to store highscore", error);
-        }
-      },
-
       allowedforSelection: (index: string) => {
         // TODO: fix bug where you can select items in hidden layers
         const { gameBoard: board } = get();
@@ -233,7 +230,6 @@ export const useGameStore = create<GameStore>()(
             // if we have more tiles, we need to return the new board with the pair removed
             return { gameBoard };
           }
-
           // if we don't have a pair, we need to deselect the other tile
           if (otherActiveTile) {
             otherActiveTile.active = false;
@@ -249,10 +245,12 @@ export const useGameStore = create<GameStore>()(
 
       scoredPair: () => {
         set((state) => ({ score: state.score + 2 }));
+        get().saveGameState();
       },
 
       levelCleared: () => {
         get().pause();
+        get().saveGameState();
         set((state) => ({
           levelClear: true,
           level: state.level + 1,
@@ -272,7 +270,7 @@ export const useGameStore = create<GameStore>()(
 
       endGame: async () => {
         set(() => ({ gameOver: true }));
-        get().storeHighscore();
+        await get().saveGameState();
       },
 
       changeName: (name: string) => {
@@ -296,6 +294,30 @@ export const useGameStore = create<GameStore>()(
 
       __oneSecondRemaining: () => {
         set(() => ({ timeRemaining: 1 }));
+      },
+
+      saveGameState: async () => {
+        const state = get();
+        const savedGame = await saveGameStateToServer({
+          id: state.gameId,
+          board: state.gameBoard,
+          name: state.name,
+          level: state.level,
+          score: state.score,
+          maxTime: state.maxTime,
+          timeRemaining: state.timeRemaining,
+        });
+
+        if (savedGame && !state.gameId) {
+          set({ gameId: savedGame.id });
+        }
+      },
+
+      autoSave: () => {
+        const state = get();
+        if (state.isGameRunning() && !state.gameOver && !state.levelClear) {
+          get().saveGameState();
+        }
       },
     };
   })

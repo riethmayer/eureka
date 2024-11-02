@@ -1,12 +1,24 @@
-import { describe, it, expect, afterEach, vi } from "vitest";
+import { describe, it, expect, afterEach, vi, beforeEach } from "vitest";
 import { act, renderHook } from "@testing-library/react";
 import { useGameStore, TIME_TO_SOLVE } from "@/zustand/game-store";
+import { saveGameState } from "@/db/insert-game";
 
 vi.mock("@/utils/post-highscore", () => {
   return {
     postHighscore: vi.fn(),
   };
 });
+
+vi.mock("@/db/client", () => ({
+  default: {
+    insert: vi.fn(),
+    select: vi.fn(),
+  },
+}));
+
+vi.mock("@/db/insert-game", () => ({
+  saveGameState: vi.fn(),
+}));
 
 import { postHighscore } from "@/utils/post-highscore";
 
@@ -255,5 +267,194 @@ describe("useGameStore", () => {
     });
 
     expect(result.current.gameOver).toBe(true);
+  });
+});
+
+describe("Game State Saving", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    // Mock fetch globally
+    global.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ id: "new-game-id" }),
+      })
+    ) as any;
+  });
+
+  it("creates a new game on first save", async () => {
+    const { result } = renderHook(() => useGameStore());
+
+    act(() => {
+      result.current.start();
+    });
+
+    await act(async () => {
+      await result.current.saveGameState();
+    });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      "/api/game",
+      expect.objectContaining({
+        method: "POST",
+        body: expect.stringContaining('"id":null'),
+      })
+    );
+    expect(result.current.gameId).toBe("new-game-id");
+  });
+
+  it("updates existing game on subsequent saves", async () => {
+    const { result } = renderHook(() => useGameStore());
+
+    // Start and do initial save
+    act(() => {
+      result.current.start();
+    });
+
+    await act(async () => {
+      await result.current.saveGameState();
+    });
+
+    const firstGameId = result.current.gameId;
+
+    // Make some changes and save again
+    act(() => {
+      result.current.scoredPair();
+    });
+
+    await act(async () => {
+      await result.current.saveGameState();
+    });
+
+    expect(global.fetch).toHaveBeenLastCalledWith(
+      "/api/game",
+      expect.objectContaining({
+        method: "POST",
+        body: expect.stringContaining(`"id":"${firstGameId}"`),
+      })
+    );
+    expect(result.current.gameId).toBe(firstGameId);
+  });
+
+  it("saves game state on pause", async () => {
+    const { result } = renderHook(() => useGameStore());
+
+    act(() => {
+      result.current.start();
+      result.current.pause();
+    });
+
+    expect(global.fetch).toHaveBeenCalled();
+  });
+
+  it("saves game state on level clear", async () => {
+    const { result } = renderHook(() => useGameStore());
+
+    act(() => {
+      result.current.start();
+      result.current.levelCleared();
+    });
+
+    expect(global.fetch).toHaveBeenCalled();
+  });
+
+  it("saves game state on game over", async () => {
+    const { result } = renderHook(() => useGameStore());
+
+    act(() => {
+      result.current.start();
+      result.current.__oneSecondRemaining();
+      result.current.step();
+    });
+
+    expect(global.fetch).toHaveBeenCalled();
+  });
+
+  it("autosaves every 60 seconds", async () => {
+    const { result } = renderHook(() => useGameStore());
+
+    act(() => {
+      result.current.start();
+    });
+
+    // Clear initial calls
+    vi.clearAllMocks();
+
+    // Simulate 59 steps (no save expected)
+    for (let i = 0; i < 59; i++) {
+      act(() => {
+        result.current.step();
+      });
+    }
+    expect(global.fetch).not.toHaveBeenCalled();
+
+    // 60th step should trigger save
+    act(() => {
+      result.current.step();
+    });
+    expect(global.fetch).toHaveBeenCalled();
+  });
+
+  it("resets gameId when starting a new game", () => {
+    const { result } = renderHook(() => useGameStore());
+
+    // Start and save a game
+    act(() => {
+      result.current.start();
+    });
+
+    act(async () => {
+      await result.current.saveGameState();
+    });
+
+    expect(result.current.gameId).toBe("new-game-id");
+
+    // Start a new game
+    act(() => {
+      result.current.start();
+    });
+
+    expect(result.current.gameId).toBeNull();
+  });
+
+  it("does not autosave when game is paused", async () => {
+    const { result } = renderHook(() => useGameStore());
+
+    act(() => {
+      result.current.start();
+      result.current.pause();
+    });
+
+    vi.clearAllMocks();
+
+    // Simulate 60 steps
+    for (let i = 0; i < 60; i++) {
+      act(() => {
+        result.current.step();
+      });
+    }
+
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("does not autosave when game is over", async () => {
+    const { result } = renderHook(() => useGameStore());
+
+    act(() => {
+      result.current.start();
+      result.current.__oneSecondRemaining();
+      result.current.step();
+    });
+
+    vi.clearAllMocks();
+
+    // Simulate 60 steps
+    for (let i = 0; i < 60; i++) {
+      act(() => {
+        result.current.step();
+      });
+    }
+
+    expect(global.fetch).not.toHaveBeenCalled();
   });
 });
