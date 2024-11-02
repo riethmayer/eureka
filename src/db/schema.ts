@@ -21,3 +21,38 @@ export const games = sqliteTable("games", {
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
 });
+
+export const gameMoves = sqliteTable("game_moves", {
+  id: text("id", { length: 36 })
+    .primaryKey()
+    .notNull()
+    .$defaultFn(() => createId()),
+  gameId: text("game_id", { length: 36 })
+    .notNull()
+    .references(() => games.id),
+  moveType: text("move_type", { enum: ["click", "pair", "levelUp"] }).notNull(),
+  tileIndex: text("tile_index"), // null for levelUp moves
+  token: text("token"), // null for levelUp moves
+  score: integer("score").notNull(),
+  timeRemaining: integer("time_remaining").notNull(),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const gameSnapshots = sqliteTable("game_snapshots", {
+  id: text("id", { length: 36 })
+    .primaryKey()
+    .notNull()
+    .$defaultFn(() => createId()),
+  gameId: text("game_id", { length: 36 })
+    .notNull()
+    .references(() => games.id),
+  board: text("board", { mode: "json" }).$type<GameBoard>().notNull(),
+  timeRemaining: integer("time_remaining").notNull(),
+  score: integer("score").notNull(),
+  level: integer("level").notNull(),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
