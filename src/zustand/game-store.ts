@@ -148,15 +148,29 @@ export const useGameStore = create<GameState>()(
       },
 
       allowedforSelection: (index: string) => {
-        // TODO: fix bug where you can select items in hidden layers
         const { gameBoard: board } = get();
-        const { row, layer } = board[index];
+        const { row, layer, column } = board[index];
+
+        // Check for an item directly covering the clicked tile and return an array containing itadd , should it exist
+        const coveringItem = (row: number, layer: number, column: number) => {
+          return Object.keys(board)
+            .filter((j) => {
+              return board[j].row === row - 1 && 
+                board[j].layer === layer + 1 &&
+                board[j].column === column;
+            });
+        };
+
         const rowItems = (row: number, layer: number) => {
           return Object.keys(board)
             .filter((i) => {
               return board[i].row === row && board[i].layer == layer;
-            })
-            .map((i: string) => i);
+            });
+        };
+
+        // Check if covering tile exists
+        if (coveringItem(row, layer, column).length !== 0) {
+          return false;
         };
 
         switch (true) {
