@@ -149,26 +149,23 @@ export const useGameStore = create<GameState>()(
 
       allowedforSelection: (index: string) => {
         const { gameBoard: board } = get();
-        const currentTile = board[index];
-        const { row, layer, column } = currentTile;
+        const { row, layer, column } = board[index];
 
-        // Check for an item directly covering the clicked tile and return it, should it exist
+        // Check for an item directly covering the clicked tile and return an array containing itadd , should it exist
         const coveringItem = (row: number, layer: number, column: number) => {
           return Object.keys(board)
             .filter((j) => {
               return board[j].row === row - 1 && 
                 board[j].layer === layer + 1 &&
                 board[j].column === column;
-            })
-            .map((j: string) => j);
+            });
         };
 
         const rowItems = (row: number, layer: number) => {
           return Object.keys(board)
             .filter((i) => {
               return board[i].row === row && board[i].layer == layer;
-            })
-            .map((i: string) => i);
+            });
         };
 
         // Check if covering tile exists
