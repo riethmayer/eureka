@@ -1,6 +1,6 @@
 import type { NewGame, Game } from "@/types/game";
 
-export const saveGameStateToServer = async (
+export const postGameState = async (
   gameState: NewGame & { id?: string | null }
 ): Promise<Game | null> => {
   try {

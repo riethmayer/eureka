@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import type { GameBoard } from "@/types/game-board";
 import { initializeGameBoard } from "@/utils/init-gameboard";
-import { saveGameStateToServer } from "@/utils/save-game-state";
+import { postGameState } from "@/utils/post-game-state";
 
 export type Timer = ReturnType<typeof globalThis.setInterval> | null;
 
@@ -12,7 +12,7 @@ export const TIME_TO_SOLVE = 800; // 800 is the original value we believe
 export type State = {
   timer: Timer;
   maxTime: number;
-  timeRemaining: number;
+  timePassed: number;
   levelClear: boolean;
   gameBoard: GameBoard;
   gameOver: boolean;
@@ -20,6 +20,8 @@ export type State = {
   level: number;
   name: string;
   gameId: string | null;
+  isSaving: boolean;
+  saveError: string | null;
 };
 
 export type Action = {
@@ -28,21 +30,21 @@ export type Action = {
   isGameRunning: () => boolean;
   isLevelClear: () => boolean;
   countTilesLeft: () => number;
-  pause: () => void;
+  pause: () => Promise<void>;
   resume: () => void;
   start: () => void;
   step: () => void;
   restart: () => void;
   allowedforSelection: (index: string) => boolean;
   clicked: (index: string) => void;
-  scoredPair: () => void;
-  levelCleared: () => void;
+  scoredPair: () => Promise<void>;
+  levelCleared: () => Promise<void>;
   continueNextLevel: () => void;
-  endGame: () => void;
+  endGame: () => Promise<void>;
   changeName: (name: string) => void;
   withdraw: () => void;
   saveGameState: () => Promise<void>;
-  autoSave: () => void;
+  autoSave: () => Promise<void>;
 };
 
 export type TestActions = {
@@ -54,7 +56,7 @@ export type GameStore = State & Action & TestActions;
 const initialState: State = {
   timer: null,
   maxTime: TIME_TO_SOLVE,
-  timeRemaining: TIME_TO_SOLVE,
+  timePassed: 0,
   levelClear: false,
   gameBoard: {},
   gameOver: false,
@@ -62,6 +64,8 @@ const initialState: State = {
   level: 1,
   name: "",
   gameId: null,
+  isSaving: false,
+  saveError: null,
 };
 
 export const useGameStore = create<GameStore>()(
@@ -70,15 +74,13 @@ export const useGameStore = create<GameStore>()(
       ...initialState,
 
       // Pauses the game by clearing the interval timer
-      pause: () => {
-        set((state) => {
-          if (state.timer) {
-            globalThis.clearInterval(state.timer);
-            get().saveGameState();
-            return { timer: null };
-          }
-          return state;
-        });
+      pause: async () => {
+        const state = get();
+        if (!state.isGameRunning()) return;
+
+        clearInterval(state.timer!);
+        set({ timer: null });
+        await state.saveGameState();
       },
 
       // Resumes the game by starting the interval timer
@@ -94,21 +96,23 @@ export const useGameStore = create<GameStore>()(
       },
 
       // Steps the game forward by decreasing the time remaining
-      step: () => {
+      step: async () => {
         set((prev) => {
-          const newTimeRemaining = Math.max(prev.timeRemaining - 1, 0);
+          const newTimePassed = Math.min(prev.timePassed + 1, prev.maxTime);
           // Autosave every 60 seconds
-          if (newTimeRemaining % 60 === 0) {
+          if (newTimePassed % 60 === 0) {
             get().autoSave();
           }
-          if (newTimeRemaining === 0 && prev.timeRemaining !== 0) {
+          const prevTimeRemaining = prev.maxTime - prev.timePassed;
+          const newTimeRemaining = prev.maxTime - newTimePassed;
+          if (newTimeRemaining === 0 && prevTimeRemaining !== 0) {
             if (prev.timer) {
               globalThis.clearInterval(prev.timer);
             }
             get().endGame();
-            return { timeRemaining: 0, timer: null };
+            return { timePassed: newTimePassed, timer: null };
           }
-          return { timeRemaining: newTimeRemaining };
+          return { timePassed: newTimePassed };
         });
       },
 
@@ -126,10 +130,10 @@ export const useGameStore = create<GameStore>()(
       },
 
       withdraw: () => {
-        set(() => ({ timeRemaining: 0 }));
+        set(() => ({ timePassed: 0 }));
         get().saveGameState();
         get().pause();
-        set((state) => ({
+        set(() => ({
           timer: null,
           maxTime: TIME_TO_SOLVE,
           timeRemaining: TIME_TO_SOLVE,
@@ -243,20 +247,27 @@ export const useGameStore = create<GameStore>()(
         });
       },
 
-      scoredPair: () => {
-        set((state) => ({ score: state.score + 2 }));
-        get().saveGameState();
+      scoredPair: async () => {
+        try {
+          set({ isSaving: true, saveError: null });
+          set((state) => ({ score: state.score + 2 }));
+          await get().saveGameState();
+        } catch (error) {
+          set({ saveError: (error as Error).message });
+          console.error("Failed to save score:", error);
+        } finally {
+          set({ isSaving: false });
+        }
       },
 
-      levelCleared: () => {
-        get().pause();
-        get().saveGameState();
+      levelCleared: async () => {
+        const state = get();
         set((state) => ({
           levelClear: true,
           level: state.level + 1,
-          maxTime: state.timeRemaining + TIME_TO_SOLVE,
-          timeRemaining: state.timeRemaining + TIME_TO_SOLVE,
+          maxTime: TIME_TO_SOLVE * (state.level + 1),
         }));
+        await state.pause();
       },
 
       isLevelClear: () => get().levelClear,
@@ -287,36 +298,44 @@ export const useGameStore = create<GameStore>()(
       countTilesLeft: () => Object.keys(get().gameBoard).length,
 
       formattedTimeRemaining: () => {
-        return new Date(get().timeRemaining * 1000)
-          .toISOString()
-          .substring(14, 19);
+        const timeRemaining = get().maxTime - get().timePassed;
+        return new Date(timeRemaining * 1000).toISOString().substring(14, 19);
       },
 
       __oneSecondRemaining: () => {
-        set(() => ({ timeRemaining: 1 }));
+        set(() => ({ timePassed: get().maxTime - 1 }));
       },
 
       saveGameState: async () => {
-        const state = get();
-        const savedGame = await saveGameStateToServer({
-          id: state.gameId,
-          board: state.gameBoard,
-          name: state.name,
-          level: state.level,
-          score: state.score,
-          maxTime: state.maxTime,
-          timeRemaining: state.timeRemaining,
-        });
+        try {
+          set({ isSaving: true, saveError: null });
+          const state = get();
+          const savedGame = await postGameState({
+            id: state.gameId,
+            board: state.gameBoard,
+            name: state.name,
+            level: state.level,
+            score: state.score,
+            maxTime: state.maxTime,
+            timePassed: state.timePassed,
+          });
 
-        if (savedGame && !state.gameId) {
-          set({ gameId: savedGame.id });
+          // Set gameId immediately after receiving response
+          if (savedGame) {
+            set({ gameId: savedGame.id });
+          }
+        } catch (error) {
+          set({ saveError: (error as Error).message });
+          console.error("Failed to save game state:", error);
+        } finally {
+          set({ isSaving: false });
         }
       },
 
-      autoSave: () => {
+      autoSave: async () => {
         const state = get();
         if (state.isGameRunning() && !state.gameOver && !state.levelClear) {
-          get().saveGameState();
+          await get().saveGameState();
         }
       },
     };
@@ -330,12 +349,11 @@ export const useGameStore = create<GameStore>()(
  * TODO: consider moving logic to subscribers?
  *  */
 export const unsubscribe = () => {
-  const unsub = useGameStore.subscribe(({ timeRemaining }) => {
-    const gameOver = useGameStore.getState().gameOver;
+  const unsub = useGameStore.subscribe(({ timePassed, gameOver }) => {
     const formattedTimeRemaining = useGameStore
       .getState()
       .formattedTimeRemaining();
-    console.log({ timeRemaining, formattedTimeRemaining, gameOver });
+    console.log({ timePassed, formattedTimeRemaining, gameOver });
   });
   return unsub;
 };

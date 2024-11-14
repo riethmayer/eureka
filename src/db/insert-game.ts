@@ -31,6 +31,7 @@ export const saveGameState = async (
 ) => {
   try {
     const { id, ...gameState } = state;
+    console.log("calling saveGameState", id, gameState);
     if (id) {
       const result = await updateGame(id, gameState);
       return result[0];
