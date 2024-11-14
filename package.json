@@ -2,6 +2,7 @@
   "name": "eureka",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@libsql/client": "^0.14.0",
     "@paralleldrive/cuid2": "^2.2.2",
@@ -35,7 +36,7 @@
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.2",
-    "@testing-library/react": "^16.0.1",
+    "@testing-library/reacasync t": "^16.0.1",
     "@testing-library/react-hooks": "^8.0.1",
     "@types/cookies": "^0.7.7",
     "@types/hoist-non-react-statics": "^3.3.5",
