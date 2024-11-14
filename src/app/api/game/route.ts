@@ -7,6 +7,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const gameState: NewGame & { id?: string | null } = await req.json();
     const savedGame = await saveGameState(gameState);
+    // Bust the page cache for the play page
     await revalidatePath("/play");
 
     return NextResponse.json(savedGame, { status: 201 });
