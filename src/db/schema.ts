@@ -16,7 +16,7 @@ export const games = sqliteTable("games", {
   level: integer("level").notNull().default(1),
   score: integer("score").notNull().default(0),
   maxTime: integer("max_time").notNull().default(800),
-  timeRemaining: integer("time_remaining").notNull().default(800),
+  timePassed: integer("time_passed").notNull().default(800),
   createdAt: text("created_at")
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
@@ -34,7 +34,7 @@ export const gameMoves = sqliteTable("game_moves", {
   tileIndex: text("tile_index"), // null for levelUp moves
   token: text("token"), // null for levelUp moves
   score: integer("score").notNull(),
-  timeRemaining: integer("time_remaining").notNull(),
+  timePast: integer("time_past").notNull(),
   createdAt: text("created_at")
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
@@ -49,7 +49,7 @@ export const gameSnapshots = sqliteTable("game_snapshots", {
     .notNull()
     .references(() => games.id),
   board: text("board", { mode: "json" }).$type<GameBoard>().notNull(),
-  timeRemaining: integer("time_remaining").notNull(),
+  timePast: integer("time_past").notNull(),
   score: integer("score").notNull(),
   level: integer("level").notNull(),
   createdAt: text("created_at")
