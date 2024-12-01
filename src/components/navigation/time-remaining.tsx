@@ -1,5 +1,5 @@
 "use client";
-import { useGameStore, unsubscribe } from "@/zustand/game-store";
+import { useGameStore } from "@/zustand/game-store";
 
 const TimeRemaining = () => {
   const formattedTimeRemaining = useGameStore((state) =>

@@ -1,15 +1,17 @@
 import { desc, sql } from "drizzle-orm";
 
 import db from "@/db/client";
-import { highscores as highscoresTable } from "@/db/schema";
-import { Highscore } from "@/types/highscore";
+import { games as highscoresTable } from "@/db/schema";
+import { Game } from "@/types/game";
 
-interface RankedHighscore extends Highscore {
-  rank: string;
+interface RankedHighscore
+  extends Pick<Game, "id" | "name" | "score" | "level" | "createdAt"> {
+  rank: number;
 }
 
 const LIMIT = 10;
 export const getHighscores = async (): Promise<RankedHighscore[]> => {
+
   const highscores = await db
     .select({
       id: highscoresTable.id,
@@ -17,7 +19,7 @@ export const getHighscores = async (): Promise<RankedHighscore[]> => {
       score: highscoresTable.score,
       level: highscoresTable.level,
       createdAt: highscoresTable.createdAt,
-      rank: sql<string>`RANK() OVER (ORDER BY ${highscoresTable.score} DESC, ${highscoresTable.createdAt} DESC)`,
+      rank: sql<number>`RANK() OVER (ORDER BY ${highscoresTable.score} DESC, ${highscoresTable.createdAt} DESC)`,
     })
     .from(highscoresTable)
     .limit(LIMIT)

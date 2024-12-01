@@ -8,6 +8,20 @@
       "when": 1728566691400,
       "tag": "0000_fuzzy_thunderbolt",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1728678750068,
+      "tag": "0001_unusual_smasher",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1728721761989,
+      "tag": "0002_dry_toad",
+      "breakpoints": true
     }
   ]
 }

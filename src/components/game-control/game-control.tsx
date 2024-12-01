@@ -1,36 +1,42 @@
 "use client";
+
+import React from "react";
 import { usePathname } from "next/navigation";
-import PausedButton from "@/components/game-control/paused-button";
-import PlayButton from "@/components/game-control/play-button";
-import ResumeButton from "@/components/game-control/resume-button";
-import NextLevelButton from "@/components/game-control/next-level-button";
-import RestartButton from "@/components/game-control/restart-button";
 import { useGameStore } from "@/zustand/game-store";
 
-const GameControl = () => {
+import {
+  PlayButton,
+  PauseButton,
+  NextLevelButton,
+  RestartButton,
+  ResumeButton,
+} from "@/components/common/button";
+
+const GameControl: React.FC = () => {
   const pathname = usePathname();
-  const isLevelClear = useGameStore((state) => state.isLevelClear());
   const isGameRunning = useGameStore((state) => state.isGameRunning());
+  const isLevelClear = useGameStore((state) => state.isLevelClear());
 
-  const actions: Record<string, React.FC> = {
-    "/play": isLevelClear
-      ? NextLevelButton
-      : isGameRunning
-        ? PausedButton
-        : PlayButton,
-    "/paused": ResumeButton,
-    "/highscores": PlayButton,
-    "/next-level": NextLevelButton,
-  } as const;
+  if (pathname === "/play") {
+    if (isLevelClear) {
+      return <NextLevelButton>Next</NextLevelButton>;
+    }
+    if (isGameRunning) {
+      return (
+        <>
+          <PauseButton>Pause</PauseButton>
+          <RestartButton>Restart</RestartButton>
+        </>
+      );
+    }
+    return <PlayButton>Play</PlayButton>;
+  }
 
-  const Component = pathname && actions[pathname] ? actions[pathname] : null;
+  if (pathname === "/paused") {
+    return <ResumeButton>Resume</ResumeButton>;
+  }
 
-  return (
-    <>
-      {Component && <Component />}
-      {isGameRunning && <RestartButton />}
-    </>
-  );
+  return null;
 };
 
 export default GameControl;
