@@ -31,18 +31,18 @@ export type Action = {
   isLevelClear: () => boolean;
   countTilesLeft: () => number;
   pause: () => Promise<void>;
-  resume: () => void;
-  start: () => void;
-  step: () => void;
-  restart: () => void;
-  allowedforSelection: (index: string) => boolean;
-  clicked: (index: string) => void;
+  resume: () => Promise<void>;
+  start: () => Promise<void>;
+  step: () => Promise<void>;
+  restart: () => Promise<void>;
+  allowedforSelection: (index: string) => Promise<boolean>;
+  clicked: (index: string) => Promise<void>;
   scoredPair: () => Promise<void>;
   levelCleared: () => Promise<void>;
   continueNextLevel: () => void;
   endGame: () => Promise<void>;
   changeName: (name: string) => void;
-  withdraw: () => void;
+  withdraw: () => Promise<void>;
   saveGameState: () => Promise<void>;
   autoSave: () => Promise<void>;
 };
@@ -84,7 +84,7 @@ export const useGameStore = create<GameStore>()(
       },
 
       // Resumes the game by starting the interval timer
-      resume: () => {
+      resume: async () => {
         set((state) => {
           if (!state.timer) {
             return {
@@ -117,7 +117,7 @@ export const useGameStore = create<GameStore>()(
       },
 
       // Starts the game by resetting the state and starting the timer
-      start: () => {
+      start: async () => {
         set((prev) => ({
           ...initialState,
           gameBoard: initializeGameBoard(),
@@ -129,7 +129,7 @@ export const useGameStore = create<GameStore>()(
         }));
       },
 
-      withdraw: () => {
+      withdraw: async () => {
         set(() => ({ timePassed: 0 }));
         get().saveGameState();
         get().pause();
@@ -143,7 +143,7 @@ export const useGameStore = create<GameStore>()(
         }));
       },
 
-      restart: () => {
+      restart: async () => {
         get().endGame();
         get().start();
       },
@@ -212,7 +212,7 @@ export const useGameStore = create<GameStore>()(
         }
       },
 
-      clicked: (index: string) => {
+      clicked: async (index: string) => {
         set((state) => {
           const gameBoard = { ...state.gameBoard };
           const tile = gameBoard[index];
