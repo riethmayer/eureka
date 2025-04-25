@@ -1,6 +1,7 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
 import { act, renderHook } from "@testing-library/react";
 import { useGameStore, TIME_TO_SOLVE } from "@/zustand/game-store";
+import type { GameBoard } from "@/types/game-board";
 
 vi.mock("@/utils/post-highscore", () => {
   return {
@@ -256,5 +257,25 @@ describe("useGameStore", () => {
     });
 
     expect(result.current.gameOver).toBe(true);
+  });
+
+  it("doesn't allow selection of partially covered tiles", () => {
+    const { result } = renderHook(() => useGameStore());
+    
+    const testBoard = {
+      "10": { layer: 0, row: 1, column: 5, token: "0", active: false },
+      
+      "20": { layer: 1, row: 0, column: 6, token: "1", active: false },
+      
+      "30": { layer: 0, row: 3, column: 8, token: "2", active: false }
+    } as unknown as GameBoard;
+    
+    act(() => {
+      useGameStore.setState({ gameBoard: testBoard });
+    });
+    
+    expect(result.current.allowedforSelection("10")).toBe(false);
+    
+    expect(result.current.allowedforSelection("30")).toBe(true);
   });
 });
