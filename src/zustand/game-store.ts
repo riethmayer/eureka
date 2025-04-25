@@ -151,13 +151,17 @@ export const useGameStore = create<GameState>()(
         const { gameBoard: board } = get();
         const { row, layer, column } = board[index];
 
-        // Check for an item directly covering the clicked tile and return an array containing itadd , should it exist
+        // Check for an item directly or partially covering the clicked tile
         const coveringItem = (row: number, layer: number, column: number) => {
           return Object.keys(board)
             .filter((j) => {
-              return board[j].row === row - 1 && 
-                board[j].layer === layer + 1 &&
-                board[j].column === column;
+              return board[j].layer > layer && 
+                (
+                  // Check for direct coverage (same column, one row up)
+                  (board[j].row === row - 1 && board[j].column === column) ||
+                  // Check for partial coverage (adjacent columns, overlapping rows)
+                  (Math.abs(board[j].column - column) <= 1 && board[j].row <= row)
+                );
             });
         };
 
