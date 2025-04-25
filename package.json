@@ -36,16 +36,14 @@
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.2",
-    "@testing-library/reacasync t": "^16.0.1",
-    "@testing-library/react-hooks": "^8.0.1",
+    "@testing-library/react": "^14.2.1",
     "@types/cookies": "^0.7.7",
     "@types/hoist-non-react-statics": "^3.3.5",
     "@types/js-cookie": "^3",
     "@types/node": "^20.11.20",
-    "@types/react": "^18.2.58",
-    "@types/react-dom": "^18.2.19",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "@types/redux-logger": "^3.0.9",
-    "@types/testing-library__react-hooks": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
     "@vitejs/plugin-react": "^4.3.3",
@@ -61,10 +59,10 @@
     "jsdom": "^25.0.1",
     "postcss": "^8",
     "prettier": "^3",
-    "react-testing-library": "^8.0.1",
     "tailwindcss": "^3.4.12",
     "typescript": "^5",
-    "vitest": "^2"
+    "vite": "^5.1.4",
+    "vitest": "2.1.2"
   },
   "engines": {
     "node": ">=24"
@@ -73,5 +71,6 @@
   "main": "index.js",
   "repository": "git@github.com:riethmayer/eureka.git",
   "author": "Jan Riethmayer <jan@riethmayer.de>",
-  "license": "MIT"
+  "license": "MIT",
+  "packageManager": "yarn@4.9.1"
 }
