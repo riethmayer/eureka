@@ -41,15 +41,19 @@ body {
 }
 
 .tile.active div {
-  border-bottom: 4px rgb(0, 100, 0) solid; 
-  border-right: 4px green solid;
-  border-left: 4px limegreen solid;
-  border-top: 4px rgb(75, 240, 75) solid;
+  border-bottom: 4px rgb(75, 240, 75) solid; 
+  border-right: 4px rgb(70, 220, 70) solid;
+  border-left: 4px green solid;
+  border-top: 4px rgb(0, 100, 0) solid;
   background-color: limegreen;
 }
 
 .tile div p {
   text-shadow: 1px 1px 1px black, -1px -1px 1px white;
+}
+
+.tile.active div p {
+  text-shadow: 1px 1px 1px white, -1px -1px 1px black;
 }
 
 svg .inner-rectangle {
@@ -102,9 +106,6 @@ svg .inner-rectangle {
 
 .tile.layer-4 {
   margin: -14px 0px 0px -14px;
-}
-
-.tile.layer-6 {
 }
 
 .turtle .tile {

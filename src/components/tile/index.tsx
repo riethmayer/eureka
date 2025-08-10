@@ -39,8 +39,8 @@ const Tile: React.FC<TileProps> = ({
       }}
     >
       <div
-        className="w-16 h-20 text-6xl font-bold border-4 
-              border-t-gray-300 border-r-gray-600 border-b-gray-700 border-l-gray-400 
+        className="w-16 h-20 text-6xl font-bold border-4 rounded-lg
+              border-t-gray-300 border-r-gray-600 border-b-gray-700 border-l-gray-400
               flex justify-center items-center hover:cursor-pointer"
         style={{
           color: tokenColor,
