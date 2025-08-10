@@ -96,7 +96,7 @@ const TitleAnimation: React.FC = () => {
           position: absolute;
           bottom: 0;
           width: 300%;
-          height: 80px;
+          height: 90px;
           display: flex;
           overflow: hidden;
         }
@@ -105,11 +105,13 @@ const TitleAnimation: React.FC = () => {
           height: 100%;
         }
         .wave1 {
-          animation: waveSlide1 15s linear infinite;
+          animation: waveSlide1 24s ease-in-out infinite alternate;
+          z-index: 0;
         }
         .wave2 {
-          bottom: -10px;
-          animation: waveSlide2 20s linear infinite;
+          bottom: -20px;
+          animation: waveSlide2 32s ease-in-out infinite alternate;
+          z-index: 2;
         }
         @keyframes waveSlide1 {
           from {
@@ -124,7 +126,7 @@ const TitleAnimation: React.FC = () => {
             transform: translateX(0);
           }
           to {
-            transform: translateX(-50%);
+            transform: translateX(-33.3333%);
           }
         }
 
@@ -134,14 +136,17 @@ const TitleAnimation: React.FC = () => {
           left: 50%;
           transform: translateX(-50%);
           animation: boatFloat 6s ease-in-out infinite;
+          z-index: 1;
         }
         @keyframes boatFloat {
-          0%,
-          100% {
-            transform: translate(-50%, 0);
+          0% {
+            transform: translate(-50%, 0) rotate(-5deg);
           }
           50% {
-            transform: translate(-50%, -10px);
+            transform: translate(-50%, -10px) rotate(5deg);
+          }
+          100% {
+            transform: translate(-50%, 0) rotate(-5deg);
           }
         }
         .boat-body {
