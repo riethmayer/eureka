@@ -11,17 +11,18 @@ const Navigation = () => {
   const name = useGameStore((state) => state.name);
   return (
     <>
-      <div className="flex w-full items-center bg-gray-300 justify-between py-4">
+      <div className="flex w-full items-center bg-gray-300 justify-between py-2 px-3 gap-x-4 gap-y-1 flex-wrap">
         <LogoButton />
-        <div className="flex items-center justify-center gap-6">
+        <div className="flex items-center justify-center gap-4 flex-wrap">
           <GameControl />
           <TimeRemaining />
           <Link href="/highscores">
             <Score />
           </Link>
           <Level />
-
-          <div className="flex items-center justify-center mr-8">{name}</div>
+          {name && (
+            <div className="flex items-center justify-center text-sm">{name}</div>
+          )}
         </div>
       </div>
       <ProgressBar />

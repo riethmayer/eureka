@@ -8,11 +8,12 @@ export type TileProps = {
   id: string;
 } & TokenTile;
 
-const top = (row: number, layer: number, id: string) => {
-  const tileHeight = 5.1;
-  // crooked tiles are 0.5 higher than the rest
+const top = (row: number, layer: number, id: string): string => {
+  // crooked tiles are 0.5 row-heights higher than their nominal row
   const crookedFactor = [42, 55, 56, 143].map(String).includes(id) ? 0.5 : 0;
-  return tileHeight * (layer + row - crookedFactor);
+  // 1.02 adds a small gap between rows (matches original 5.1rem / 5rem ratio)
+  const factor = ((layer + row - crookedFactor) * 1.02).toFixed(4);
+  return `calc(${factor} * var(--tile-h))`;
 };
 
 const Tile: React.FC<TileProps> = ({
@@ -39,9 +40,9 @@ const Tile: React.FC<TileProps> = ({
       }}
     >
       <div
-        className="w-16 h-20 text-6xl font-bold border-4 
-              border-t-gray-300 border-r-gray-600 border-b-gray-700 border-l-gray-400 
-              flex justify-center items-center hover:cursor-pointer"
+        className="tile-face flex justify-center items-center font-bold border-4
+              border-t-gray-300 border-r-gray-600 border-b-gray-700 border-l-gray-400
+              hover:cursor-pointer"
         style={{
           color: tokenColor,
           textShadow: "1px 1px 1px black, -1px -1px 1px white",
