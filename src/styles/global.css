@@ -9,9 +9,10 @@
    A media query tightens it on short viewports so rows still fit vertically.
    ========================================================================== */
 :root {
-  --tile-w: clamp(24px, calc((100vw - 1rem) / 13), 72px);
+  /* Board is ~15.3 tile-widths wide (14 steps × 1.02 + 1 tile), so divide by 15.5 */
+  --tile-w: clamp(24px, calc((100vw - 1rem) / 15.5), 72px);
   --tile-h: calc(var(--tile-w) * 1.25);         /* 4:5 width:height ratio */
-  --tile-step: calc(var(--tile-w) * 0.815);     /* column spacing — tiles overlap slightly */
+  --tile-step: calc(var(--tile-w) * 1.02);      /* column spacing — flush with a 2% gap */
   --tile-font: calc(var(--tile-w) * 0.875);     /* token character size */
   --layer-offset: calc(var(--tile-w) * 0.0625); /* 3-D stack shift per layer */
 }
@@ -106,7 +107,8 @@ svg .inner-rectangle {
 
 /* Board container — sizes itself to the tile grid */
 .game-board {
-  width: calc(14 * var(--tile-step) + var(--tile-w) * 1.4);
+  /* 14 steps + 1 tile width + small buffer */
+  width: calc(14 * var(--tile-step) + var(--tile-w) * 1.1);
   height: calc(8.5 * var(--tile-h));
   overflow-x: auto; /* safety net on very small viewports */
 }
