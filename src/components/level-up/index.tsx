@@ -7,8 +7,10 @@ const LevelUp = () => {
   const { continueNextLevel } = useGameStore();
   const level = useGameStore((state) => state.level);
   return (
-    <div className=" flex flex-col align-middle items-center">
-      <h1 className="my-12 text-white text-5xl"> LEVEL {level - 1} CLEAR! </h1>
+    <div className="flex flex-col justify-center items-center py-16 gap-8">
+      <h1 className="text-white text-5xl font-extrabold tracking-wider">
+        LEVEL {level - 1} CLEAR!
+      </h1>
       <Link href="/play">
         <Button variant={ButtonType.resume} onClick={() => continueNextLevel()}>
           Continue

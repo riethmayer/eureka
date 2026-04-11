@@ -5,17 +5,26 @@ import { useGameStore } from "@/zustand/game-store";
 
 const GameOver = () => {
   const { start } = useGameStore();
+  const score = useGameStore((state) => state.score);
+  const level = useGameStore((state) => state.level);
   return (
-    <div className="bg-slate-200 px-10 py-10">
-      <h1>GAME OVER</h1>
-
-      <div className="relative bg-slate-200 rounded-xl py-4">
-        <Link href="/play">
-          <Button variant={ButtonType.play} onClick={() => start()}>
-            Start New
-          </Button>
-        </Link>
+    <div className="flex flex-col justify-center items-center py-16 gap-8">
+      <h1 className="text-white text-6xl font-extrabold tracking-widest">
+        GAME OVER
+      </h1>
+      <div className="flex gap-12 text-white text-xl">
+        <span>
+          Score: <strong className="text-yellow-300">{score}</strong>
+        </span>
+        <span>
+          Level: <strong className="text-yellow-300">{level}</strong>
+        </span>
       </div>
+      <Link href="/play">
+        <Button variant={ButtonType.play} onClick={() => start()}>
+          Play Again
+        </Button>
+      </Link>
     </div>
   );
 };

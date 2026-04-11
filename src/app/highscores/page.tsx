@@ -22,17 +22,25 @@ const HighscoresController = async () => {
             </tr>
           </thead>
           <tbody>
-            {highscores.map((score, index) => (
-              <tr
-                key={index}
-                className={index % 2 ? `bg-gray-200` : `bg-gray-100`}
-              >
-                <td className="border px-4 py-2 text-center">{score.rank}</td>
-                <td className="border px-4 py-2 text-center">{score.name}</td>
-                <td className="border px-4 py-2 text-center">{score.score}</td>
-                <td className="border px-4 py-2 text-center">{score.level}</td>
+            {highscores.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="px-4 py-8 text-center text-gray-500 italic">
+                  No scores yet — be the first to play!
+                </td>
               </tr>
-            ))}
+            ) : (
+              highscores.map((score, index) => (
+                <tr
+                  key={index}
+                  className={index % 2 ? "bg-gray-200" : "bg-gray-100"}
+                >
+                  <td className="border px-4 py-2 text-center">{score.rank}</td>
+                  <td className="border px-4 py-2 text-center">{score.name}</td>
+                  <td className="border px-4 py-2 text-center">{score.score}</td>
+                  <td className="border px-4 py-2 text-center">{score.level}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

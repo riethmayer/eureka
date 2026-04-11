@@ -43,7 +43,7 @@ const IndexPage: React.FC = () => {
           className="border-2 border-gray-200 rounded-md bg-inherit border-none p-1 inline-flex text-white focus:ring-4 focus:ring-yellow-500 focus:outline-none"
         />
       </p>
-      <div className="flex flex-row align-middle">
+      <div className="flex flex-row items-center">
         <Link href="/play">
           <Button variant={ButtonType.play} onClick={() => start()}>
             Start
