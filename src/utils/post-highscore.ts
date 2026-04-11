@@ -8,17 +8,19 @@ export const postHighscore = async ({
   name,
   score,
   level,
-}: PostHighScoreProps) => {
+}: PostHighScoreProps): Promise<void> => {
   if (score < 2) {
     return;
   }
-  await fetch("/api/highscore", {
+
+  const response = await fetch("/api/highscore", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name,
-      score,
-      level,
-    }),
+    body: JSON.stringify({ name, score, level }),
   });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => "(no body)");
+    throw new Error(`Highscore POST failed (${response.status}): ${text}`);
+  }
 };
