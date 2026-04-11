@@ -5,16 +5,22 @@
 /* ==========================================================================
    Responsive Tile System
    All tile dimensions derive from --tile-w on :root.
-   --tile-w is clamped between 24px–72px and is the smaller of:
-     - viewport-width / 13  (fits 15 columns horizontally)
-     - viewport-height / 11 (fits ~8 tile rows + nav vertically)
+   --tile-w scales with viewport width (fits 13 columns), capped at 72px.
+   A media query tightens it on short viewports so rows still fit vertically.
    ========================================================================== */
 :root {
-  --tile-w: clamp(24px, min(calc((100vw - 1rem) / 13), calc((100vh - 4rem) / 11)), 72px);
+  --tile-w: clamp(24px, calc((100vw - 1rem) / 13), 72px);
   --tile-h: calc(var(--tile-w) * 1.25);         /* 4:5 width:height ratio */
   --tile-step: calc(var(--tile-w) * 0.815);     /* column spacing — tiles overlap slightly */
   --tile-font: calc(var(--tile-w) * 0.875);     /* token character size */
   --layer-offset: calc(var(--tile-w) * 0.0625); /* 3-D stack shift per layer */
+}
+
+/* On short viewports (landscape mobile, small tablets) scale down so rows fit */
+@media (max-height: 600px) {
+  :root {
+    --tile-w: clamp(20px, calc((100vh - 4rem) / 11), 48px);
+  }
 }
 
 html {
@@ -123,6 +129,8 @@ svg .inner-rectangle {
 
 .turtle .tile {
   position: absolute;
+  /* --tile-top-factor is a unitless number set per-tile via inline style */
+  top: calc(var(--tile-top-factor, 0) * var(--tile-h));
 }
 
 .layer-0 {

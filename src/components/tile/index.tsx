@@ -8,12 +8,11 @@ export type TileProps = {
   id: string;
 } & TokenTile;
 
-const top = (row: number, layer: number, id: string): string => {
-  // crooked tiles are 0.5 row-heights higher than their nominal row
+// Returns the unitless row+layer multiplier; CSS multiplies by --tile-h in the stylesheet.
+const topFactor = (row: number, layer: number, id: string): string => {
   const crookedFactor = [42, 55, 56, 143].map(String).includes(id) ? 0.5 : 0;
   // 1.02 adds a small gap between rows (matches original 5.1rem / 5rem ratio)
-  const factor = ((layer + row - crookedFactor) * 1.02).toFixed(4);
-  return `calc(${factor} * var(--tile-h))`;
+  return ((layer + row - crookedFactor) * 1.02).toFixed(4);
 };
 
 const Tile: React.FC<TileProps> = ({
@@ -36,8 +35,8 @@ const Tile: React.FC<TileProps> = ({
       onClick={onClick}
       className={classes}
       style={{
-        top: `${top(row, layer, id)}rem`,
-      }}
+        "--tile-top-factor": topFactor(row, layer, id),
+      } as React.CSSProperties}
     >
       <div
         className="tile-face flex justify-center items-center font-bold border-4
