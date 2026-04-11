@@ -2,21 +2,26 @@ import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
 import * as schema from "./schema";
 
-const databaseUrl = process.env.TURSO_DATABASE_URL;
-const authToken = process.env.TURSO_AUTH_TOKEN;
+// Lazy singleton — validation runs on first DB access (request time),
+// not at module import time (build time), so next build doesn't require env vars.
+let _db: ReturnType<typeof drizzle<typeof schema>> | null = null;
 
-if (!databaseUrl) {
-  throw new Error("TURSO_DATABASE_URL environment variable is not set");
-}
-if (!authToken) {
-  throw new Error("TURSO_AUTH_TOKEN environment variable is not set");
-}
+const getDb = () => {
+  if (_db) return _db;
 
-export const client = createClient({
-  url: databaseUrl,
-  authToken,
-});
+  const databaseUrl = process.env.TURSO_DATABASE_URL;
+  const authToken = process.env.TURSO_AUTH_TOKEN;
 
-const db = drizzle(client, { schema });
+  if (!databaseUrl) {
+    throw new Error("TURSO_DATABASE_URL environment variable is not set");
+  }
+  if (!authToken) {
+    throw new Error("TURSO_AUTH_TOKEN environment variable is not set");
+  }
 
-export default db;
+  const client = createClient({ url: databaseUrl, authToken });
+  _db = drizzle(client, { schema });
+  return _db;
+};
+
+export default getDb;

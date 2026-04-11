@@ -1,6 +1,6 @@
 import { desc, sql } from "drizzle-orm";
 
-import db from "@/db/client";
+import getDb from "@/db/client";
 import { highscores as highscoresTable } from "@/db/schema";
 import { Highscore } from "@/types/highscore";
 
@@ -10,7 +10,7 @@ interface RankedHighscore extends Highscore {
 
 const LIMIT = 10;
 export const getHighscores = async (): Promise<RankedHighscore[]> => {
-  const highscores = await db
+  const highscores = await getDb()
     .select({
       id: highscoresTable.id,
       name: highscoresTable.name,
