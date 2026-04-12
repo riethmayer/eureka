@@ -173,7 +173,12 @@ svg .inner-rectangle {
 
 /* Add this to your global CSS file or a CSS module */
 .loader {
-  @apply border-[16px] border-solid border-gray-200 border-t-purple-700 rounded-full w-32 h-32 animate-spin;
+  border: 16px solid #e5e7eb;
+  border-top-color: #7e22ce;
+  border-radius: 9999px;
+  width: 8rem;
+  height: 8rem;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
