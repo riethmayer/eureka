@@ -8,12 +8,8 @@ const TimeRemaining = () => {
   const isGameRunning = useGameStore((state) => state.isGameRunning());
 
   return (
-    <div className="w-9">
-      {
-        <div className="">
-          {(isGameRunning && formattedTimeRemaining) || " "}
-        </div>
-      }
+    <div className="min-w-[3rem] tabular-nums">
+      {(isGameRunning && formattedTimeRemaining) || ""}
     </div>
   );
 };
