@@ -2,8 +2,7 @@ import getClient from "@/db/client";
 import type { Game, NewGame } from "@/types/game";
 
 export const postGame = async (newGame: NewGame): Promise<Game> => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (getClient() as any)
+  const { data, error } = await (getClient() as any) // untyped client
     .from("games")
     .insert(newGame)
     .select()
@@ -17,8 +16,7 @@ export const updateGame = async (
   id: string,
   gameState: Partial<NewGame>
 ): Promise<Game> => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (getClient() as any)
+  const { data, error } = await (getClient() as any) // untyped client
     .from("games")
     .update(gameState)
     .eq("id", id)

@@ -12,8 +12,7 @@ interface RankedHighscore {
 const LIMIT = 10;
 
 export const getHighscores = async (): Promise<RankedHighscore[]> => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (getClient() as any)
+  const { data, error } = await (getClient() as any) // untyped client
     .from("games")
     .select("id, name, score, level, created_at")
     .order("score", { ascending: false })
