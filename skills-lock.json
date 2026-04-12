@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "nextjs-app-router-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "d2f0a7065f7418fdb3ae88559f1f1426f40c26f2b5aebcd394797418d4bb3b04"
+    },
     "supabase": {
       "source": "supabase/agent-skills",
       "sourceType": "github",
