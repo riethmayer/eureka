@@ -3,9 +3,9 @@
 import { useGameStore } from "@/zustand/game-store";
 
 const ProgressBar = () => {
-  const timeRemaining = useGameStore((state) => state.timeRemaining);
+  const timePassed = useGameStore((state) => state.timePassed);
   const maxTime = useGameStore((state) => state.maxTime);
-  const percentage = (timeRemaining / maxTime) * 100;
+  const percentage = ((maxTime - timePassed) / maxTime) * 100;
 
   const indicator = percentage <= 50 ? "bg-red-700" : "bg-green-600";
   return (
