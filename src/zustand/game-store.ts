@@ -152,18 +152,18 @@ export const useGameStore = create<GameState>()(
         const { gameBoard: board } = get();
         const { row, layer, column } = board[index];
 
-        // Check for an item directly or partially covering the clicked tile
+        // Check for a tile on a higher layer that visually covers the clicked tile.
+        // Two tiles overlap vertically when row_j + layer_j === row + layer
+        // (both map to the same topFactor). Only the same column can cover a tile
+        // because adjacent columns are spaced 1.02× tile-width apart — no visual overlap.
         const coveringItem = (row: number, layer: number, column: number) => {
-          return Object.keys(board)
-            .filter((j) => {
-              return board[j].layer > layer && 
-                (
-                  // Check for direct coverage (same column, one row up)
-                  (board[j].row === row - 1 && board[j].column === column) ||
-                  // Check for partial coverage (adjacent columns, overlapping rows)
-                  (Math.abs(board[j].column - column) <= 1 && board[j].row <= row)
-                );
-            });
+          return Object.keys(board).filter((j) => {
+            return (
+              board[j].layer > layer &&
+              board[j].column === column &&
+              board[j].row + board[j].layer === row + layer
+            );
+          });
         };
 
         const rowItems = (row: number, layer: number) => {
