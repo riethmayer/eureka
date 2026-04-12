@@ -41,7 +41,7 @@ export type Action = {
   endGame: () => void;
   changeName: (name: string) => void;
   withdraw: () => void;
-  storeHighscore: () => void;
+  storeHighscore: () => Promise<void>;
 };
 
 export type TestActions = {
@@ -118,7 +118,7 @@ export const useGameStore = create<GameState>()(
       },
 
       withdraw: () => {
-        get().storeHighscore();
+        void get().storeHighscore();
         get().pause();
         set((state) => ({
           timer: null,
@@ -143,7 +143,8 @@ export const useGameStore = create<GameState>()(
             level: get().level,
           });
         } catch (error) {
-          console.error("Failed to store highscore", error);
+          // Non-fatal: log the failure but don't disrupt game state
+          console.error("Failed to store highscore:", error);
         }
       },
 
@@ -291,7 +292,7 @@ export const useGameStore = create<GameState>()(
 
       endGame: async () => {
         set(() => ({ gameOver: true }));
-        get().storeHighscore();
+        await get().storeHighscore();
       },
 
       changeName: (name: string) => {
