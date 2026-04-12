@@ -64,7 +64,7 @@
     "vitest": "^2"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "description": "Mahjong solitair game",
   "main": "index.js",
