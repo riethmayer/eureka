@@ -1,6 +1,4 @@
-export TURSO_DATABASE_URL ?= http://127.0.0.1:8080
-
-.PHONY: help test dev db migrate studio
+.PHONY: help test dev migrate generate studio push
 
 # Help
 help: ## Show this help
@@ -8,25 +6,20 @@ help: ## Show this help
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
 	awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36mmake %-20s\033[0m%s\n", $$1, $$2}'
 
-# help: ## Show this help
-# 	@printf "\033[36mhelp: \033[0m\n"
-# 	@$(foreach make,$(MAKEFILE_LIST),$(call print_help_for,$(make));)
-# 	@printf "\n"
-
-test: ## Test front and back in containers
+test: ## Run tests
 	yarn test
 
 dev: ## Run local development server
 	yarn dev
 
-db: ## Run local development database (src/db/db.sql)
-	turso dev --db-file src/db/db.sql
+migrate: ## Apply database migrations
+	yarn drizzle-kit migrate
 
-migrate: ## Run local development database (src/db/db.sql)
-	yarn drizzle-kit migrate 
-
-generate: ## Run local development database (src/db/db.sql)
+generate: ## Generate migration files from schema changes
 	yarn drizzle-kit generate
+
+push: ## Push schema directly to database (no migration files)
+	yarn drizzle-kit push
 
 studio: ## Run drizzle-kit studio
 	yarn drizzle-kit studio
