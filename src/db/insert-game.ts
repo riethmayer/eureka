@@ -1,43 +1,43 @@
-import getDb from "@/db/client";
-import { games } from "@/db/schema";
+import getClient from "@/db/client";
 import type { Game, NewGame } from "@/types/game";
-import { eq } from "drizzle-orm";
 
-export const postGame = async (newGame: NewGame): Promise<Game[]> => {
-  const result = await getDb().insert(games).values(newGame).returning();
-  if (!result) {
-    throw new Error("Failed to store game");
-  }
-  return result;
+export const postGame = async (newGame: NewGame): Promise<Game> => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (getClient() as any)
+    .from("games")
+    .insert(newGame)
+    .select()
+    .single();
+
+  if (error) throw new Error(`Failed to store game: ${error.message}`);
+  return data as Game;
 };
 
 export const updateGame = async (
   id: string,
-  gameState: Omit<NewGame, "id">
-): Promise<Game[]> => {
-  const result = await getDb()
-    .update(games)
-    .set(gameState)
-    .where(eq(games.id, id))
-    .returning();
-  if (!result) {
-    throw new Error("Failed to update game");
-  }
-  return result;
+  gameState: Partial<NewGame>
+): Promise<Game> => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (getClient() as any)
+    .from("games")
+    .update(gameState)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw new Error(`Failed to update game: ${error.message}`);
+  return data as Game;
 };
 
 export const saveGameState = async (
   state: NewGame & { id?: string | null }
-) => {
+): Promise<Game | null> => {
   try {
     const { id, ...gameState } = state;
-    console.log("calling saveGameState", id, gameState);
     if (id) {
-      const result = await updateGame(id, gameState);
-      return result[0];
+      return await updateGame(id, gameState);
     } else {
-      const result = await postGame(gameState);
-      return result[0];
+      return await postGame(gameState);
     }
   } catch (error) {
     console.error("Failed to save game state:", error);

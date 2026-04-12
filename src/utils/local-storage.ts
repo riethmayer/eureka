@@ -37,7 +37,7 @@ export const saveGame = (
   const game: Game = {
     ...gameState,
     id,
-    createdAt: new Date().toISOString(),
+    created_at: new Date().toISOString(),
   }
   safeSet(CURRENT_GAME_KEY, game)
   return game

@@ -1,30 +1,31 @@
-import { desc, sql } from "drizzle-orm";
+import getClient from "@/db/client";
 
-import getDb from "@/db/client";
-import { games as highscoresTable } from "@/db/schema";
-import { Game } from "@/types/game";
-
-interface RankedHighscore
-  extends Pick<Game, "id" | "name" | "score" | "level" | "createdAt"> {
+interface RankedHighscore {
+  id: string;
+  name: string;
+  score: number;
+  level: number;
+  created_at: string;
   rank: number;
 }
 
 const LIMIT = 10;
+
 export const getHighscores = async (): Promise<RankedHighscore[]> => {
-  const highscores = await getDb()
-    .select({
-      id: highscoresTable.id,
-      name: highscoresTable.name,
-      score: highscoresTable.score,
-      level: highscoresTable.level,
-      createdAt: highscoresTable.createdAt,
-      rank: sql<number>`RANK() OVER (ORDER BY ${highscoresTable.score} DESC, ${highscoresTable.createdAt} DESC)`,
-    })
-    .from(highscoresTable)
-    .limit(LIMIT)
-    .orderBy(desc(highscoresTable.score), desc(highscoresTable.createdAt))
-    .all();
-  return highscores;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (getClient() as any)
+    .from("games")
+    .select("id, name, score, level, created_at")
+    .order("score", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(LIMIT);
+
+  if (error) throw new Error(`Failed to fetch highscores: ${error.message}`);
+
+  return ((data ?? []) as Array<Omit<RankedHighscore, "rank">>).map((row, index) => ({
+    ...row,
+    rank: index + 1,
+  }));
 };
 
 export default getHighscores;
