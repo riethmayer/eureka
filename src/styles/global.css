@@ -54,12 +54,19 @@ body {
   background-color: #ddd;
 }
 
+/* Smooth transition for selection highlight */
+.tile div {
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background-color 0.12s ease-out;
+}
+
 .tile.active div {
-  border-bottom: 4px rgb(0, 100, 0) solid;
-  border-right: 4px green solid;
-  border-left: 4px limegreen solid;
-  border-top: 4px rgb(75, 240, 75) solid;
-  background-color: limegreen;
+  background-color: #f0b429;
+  transform: scale(1.06);
+  box-shadow: 0 0 10px 3px rgba(240, 180, 41, 0.55);
+  border-top: 4px #f5d060 solid;
+  border-right: 4px #c8891e solid;
+  border-bottom: 4px #a06010 solid;
+  border-left: 4px #d4a020 solid;
 }
 
 .tile div p {
@@ -171,7 +178,6 @@ svg .inner-rectangle {
 .column-14 { left: calc(14 * var(--tile-step)); }
 .column-15 { left: calc(6.47 * var(--tile-step)); } /* center/top piece */
 
-/* Add this to your global CSS file or a CSS module */
 .loader {
   border: 16px solid #e5e7eb;
   border-top-color: #7e22ce;
@@ -184,4 +190,33 @@ svg .inner-rectangle {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* ── Tile interaction animations ───────────────────────────── */
+
+/* Mismatch: horizontal shake on the tile wrapper */
+@keyframes tile-shake {
+  0%, 100% { transform: translateX(0); }
+  15%       { transform: translateX(-6px); }
+  30%       { transform: translateX(6px); }
+  45%       { transform: translateX(-5px); }
+  60%       { transform: translateX(5px); }
+  75%       { transform: translateX(-3px); }
+  90%       { transform: translateX(3px); }
+}
+
+.tile.mismatch {
+  animation: tile-shake 0.4s ease-in-out;
+}
+
+/* Match: scale-up then vanish on the inner face */
+@keyframes tile-pop {
+  0%   { transform: scale(1);    opacity: 1; }
+  40%  { transform: scale(1.18); opacity: 0.9; }
+  100% { transform: scale(0);    opacity: 0; }
+}
+
+.tile.match div {
+  animation: tile-pop 0.32s ease-in forwards;
+  pointer-events: none;
 }

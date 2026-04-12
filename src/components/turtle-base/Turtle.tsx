@@ -18,6 +18,7 @@ const Turtle = () => {
               column={column}
               layer={layer}
               active={active}
+              animating={board[idx].animating}
               className={`${token}`}
               id={idx}
               onClick={() => clicked(idx)}

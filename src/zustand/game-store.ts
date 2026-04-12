@@ -216,53 +216,69 @@ export const useGameStore = create<GameStore>()(
         set((state) => {
           const gameBoard = { ...state.gameBoard };
           const tile = gameBoard[index];
+
+          // Ignore clicks on tiles mid-animation
+          if (tile.animating) return state;
+
           if (tile.active) {
-            // already active, so they're deselecting.
-            // if it's active, they were allowed to set it active.
-            tile.active = false;
-            gameBoard[index] = tile;
+            // Deselect
+            gameBoard[index] = { ...tile, active: false };
             return { gameBoard };
           }
 
-          // if it's not active, we need to check if it's allowed to be selected
           if (!get().allowedforSelection(index)) {
-            // it's not allowed to be selected so we need to return the state as is
             console.debug("Not allowed to select this tile", index);
             return state;
           }
 
-          // check if we have a pair
           const otherActiveTileIds = Object.keys(gameBoard).filter((i) => {
             return gameBoard[i].active && i !== index;
           });
 
-          const otherActiveTile = otherActiveTileIds.map(
-            (i) => gameBoard[i]
-          )[0];
+          const otherActiveTile = otherActiveTileIds.map((i) => gameBoard[i])[0];
+          const otherActiveId = otherActiveTileIds[0];
 
           if (otherActiveTile && otherActiveTile.token === tile.token) {
-            // if we have a pair, we need to score it
+            // MATCH — animate pop, then delete after animation completes
             get().scoredPair();
-            // we need to remove both tiles from the board
-            delete gameBoard[index];
-            delete gameBoard[otherActiveTileIds[0]];
-            // if we have no more tiles, we need to clear the level
-            if (Object.keys(gameBoard).length === 0) {
-              get().levelCleared();
-              return { gameBoard: initializeGameBoard() };
-            }
-            // if we have more tiles, we need to return the new board with the pair removed
+            gameBoard[index] = { ...tile, active: false, animating: 'match' };
+            gameBoard[otherActiveId] = { ...otherActiveTile, active: false, animating: 'match' };
+
+            setTimeout(() => {
+              set((state) => {
+                const board = { ...state.gameBoard };
+                delete board[index];
+                delete board[otherActiveId];
+                if (Object.keys(board).length === 0) {
+                  get().levelCleared();
+                  return { gameBoard: initializeGameBoard() };
+                }
+                return { gameBoard: board };
+              });
+            }, 350);
+
             return { gameBoard };
           }
-          // if we don't have a pair, we need to deselect the other tile
-          if (otherActiveTile) {
-            otherActiveTile.active = false;
-            gameBoard[otherActiveTileIds[0]] = otherActiveTile;
-          }
 
-          // last case, we only need to set the tile active
-          tile.active = true;
-          gameBoard[index] = tile;
+          // MISMATCH — shake both tiles, then clear animation
+          if (otherActiveTile) {
+            gameBoard[otherActiveId] = { ...otherActiveTile, active: false, animating: 'mismatch' };
+          }
+          gameBoard[index] = { ...tile, active: true, animating: 'mismatch' };
+
+          setTimeout(() => {
+            set((state) => {
+              const board = { ...state.gameBoard };
+              if (board[otherActiveId]) {
+                board[otherActiveId] = { ...board[otherActiveId], animating: null };
+              }
+              if (board[index]) {
+                board[index] = { ...board[index], animating: null };
+              }
+              return { gameBoard: board };
+            });
+          }, 400);
+
           return { gameBoard };
         });
       },

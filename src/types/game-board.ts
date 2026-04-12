@@ -45,16 +45,19 @@ export const allTokens: Token[] = [
   ...tokens,
 ] as const; // 2 pairs of each token
 
+export type TileAnimation = 'mismatch' | 'match' | null;
+
 export type TokenTile = {
   layer: number;
   row: number;
   column: number;
   token: Token;
   active: boolean;
+  animating: TileAnimation;
 };
 
 export type GameBoard = Record<string, TokenTile>;
-type GameBoardLayout = Record<string, Omit<TokenTile, "token" | "active">>;
+type GameBoardLayout = Record<string, Omit<TokenTile, "token" | "active" | "animating">>;
 
 export const gameBoardLayout: GameBoardLayout = {
   0: { layer: 0, row: 0, column: 1 },

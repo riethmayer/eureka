@@ -10,7 +10,7 @@ const Turtle = () => {
     <div className="turtle mt-4">
       <div>
         {Object.keys(board).map((idx) => {
-          const { active, column, layer, row, token } = board[idx];
+          const { active, animating, column, layer, row, token } = board[idx];
           return (
             <Tile
               token={token}
@@ -18,6 +18,7 @@ const Turtle = () => {
               column={column}
               layer={layer}
               active={active}
+              animating={animating}
               className={`${token}`}
               id={idx}
               onClick={() => clicked(idx)}

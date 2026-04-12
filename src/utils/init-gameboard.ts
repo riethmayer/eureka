@@ -14,10 +14,10 @@ export const shuffleTiles = (): Token[] => {
 // used for testing purposes, only initializes the first two tiles
 export const initializeTestGameBoard = (): GameBoard => {
   return {
-    0: { ...gameBoardLayout[0], active: false, token: allTokens[0] },
-    1: { ...gameBoardLayout[1], active: false, token: allTokens[0] },
-    12: { ...gameBoardLayout[12], active: false, token: allTokens[1] },
-    13: { ...gameBoardLayout[13], active: false, token: allTokens[1] },
+    0: { ...gameBoardLayout[0], active: false, animating: null, token: allTokens[0] },
+    1: { ...gameBoardLayout[1], active: false, animating: null, token: allTokens[0] },
+    12: { ...gameBoardLayout[12], active: false, animating: null, token: allTokens[1] },
+    13: { ...gameBoardLayout[13], active: false, animating: null, token: allTokens[1] },
   } as GameBoard;
 };
 
@@ -29,6 +29,7 @@ export const initializeGameBoard = (): GameBoard => {
     result[String(index)] = {
       ...gameBoardLayout[index],
       active: false,
+      animating: null,
       token,
     };
   });

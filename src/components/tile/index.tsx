@@ -23,10 +23,11 @@ const Tile: React.FC<TileProps> = ({
   column,
   row,
   active,
+  animating,
 }) => {
   const classes = `tile rect layer-${layer} column-${column} row-${row} ${
     active ? "active" : ""
-  }`;
+  } ${animating ?? ""}`;
 
   const tokenColor = colour(token);
   return (
