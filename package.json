@@ -63,6 +63,9 @@
     "typescript": "^5",
     "vitest": "^2"
   },
+  "engines": {
+    "node": ">=22"
+  },
   "description": "Mahjong solitair game",
   "main": "index.js",
   "repository": "git@github.com:riethmayer/eureka.git",
