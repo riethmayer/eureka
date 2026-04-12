@@ -282,23 +282,24 @@ describe("useGameStore", () => {
     expect(result.current.gameOver).toBe(true);
   });
 
-  it("doesn't allow selection of partially covered tiles", () => {
+  it("doesn't allow selection of covered tiles (same column, same topFactor)", () => {
     const { result } = renderHook(() => useGameStore());
-    
+
     const testBoard = {
+      // covered: layer 1 tile at same column with matching topFactor (row+layer)
       "10": { layer: 0, row: 1, column: 5, token: "0", active: false },
-      
-      "20": { layer: 1, row: 0, column: 6, token: "1", active: false },
-      
+      "20": { layer: 1, row: 0, column: 5, token: "1", active: false }, // row+layer = 1 = 10's row+layer
+
+      // not covered: different column, so no overlap
       "30": { layer: 0, row: 3, column: 8, token: "2", active: false }
     } as unknown as GameBoard;
-    
+
     act(() => {
       useGameStore.setState({ gameBoard: testBoard });
     });
-    
+
     expect(result.current.allowedforSelection("10")).toBe(false);
-    
+
     expect(result.current.allowedforSelection("30")).toBe(true);
   });
 });

@@ -10,7 +10,7 @@
     "cookies": "^0.9.1",
     "js-cookie": "^3.0.5",
     "moment": "^2.29.4",
-    "next": "14.2.28",
+    "next": "14.2.35",
     "next-redux-wrapper": "^8.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -33,20 +33,20 @@
     "migrate": "drizzle-kit migrate"
   },
   "devDependencies": {
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.2",
-    "@testing-library/react": "^14.2.1",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/cookies": "^0.7.7",
     "@types/hoist-non-react-statics": "^3.3.5",
     "@types/js-cookie": "^3",
-    "@types/node": "^20.11.20",
+    "@types/node": "^25.6.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@types/redux-logger": "^3.0.9",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
-    "@vitejs/plugin-react": "^4.3.3",
-    "@vitest/coverage-v8": "^2.1.2",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^4.1.4",
     "autoprefixer": "^10.4.17",
     "eslint": "^8",
     "eslint-config-next": "^14",
@@ -59,8 +59,8 @@
     "prettier": "^3",
     "tailwindcss": "^3.4.12",
     "typescript": "^5",
-    "vite": "^5.1.4",
-    "vitest": "2.1.2"
+    "vite": "^8.0.8",
+    "vitest": "^4.1.4"
   },
   "engines": {
     "node": ">=24"
