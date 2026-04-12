@@ -227,7 +227,7 @@ export const useGameStore = create<GameStore>()(
           // if it's not active, we need to check if it's allowed to be selected
           if (!get().allowedforSelection(index)) {
             // it's not allowed to be selected so we need to return the state as is
-            console.error("Not allowed to select this tile", index);
+            console.debug("Not allowed to select this tile", index);
             return state;
           }
 
