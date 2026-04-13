@@ -1,8 +1,15 @@
 import "../styles/global.css";
 import Navigation from "@/components/navigation";
+import type { Viewport } from "next";
+
 export const metadata = {
   title: "Eureka",
   description: "Eureka is a Mahjong Solitaire Game",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({

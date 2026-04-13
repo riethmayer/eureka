@@ -7,18 +7,20 @@
    A media query tightens it on short viewports so rows still fit vertically.
    ========================================================================== */
 :root {
-  /* Board is ~15.3 tile-widths wide (14 steps × 1.02 + 1 tile), so divide by 15.5 */
-  --tile-w: clamp(24px, calc((100vw - 1rem) / 15.5), 72px);
+  /* Board is 15.38 tile-widths wide (14×1.02 + 1.1).
+     Dividing by 15.5 ensures the board stays within the viewport.
+     Uses vw (not dvw) for broad Safari/iOS compatibility. */
+  --tile-w: min(calc(100vw / 15.5), 72px);
   --tile-h: calc(var(--tile-w) * 1.25);         /* 4:5 width:height ratio */
   --tile-step: calc(var(--tile-w) * 1.02);      /* column spacing — flush with a 2% gap */
   --tile-font: calc(var(--tile-w) * 0.875);     /* token character size */
-  --layer-offset: calc(var(--tile-w) * 0.0625); /* 3-D stack shift per layer */
+  --layer-offset: calc(var(--tile-w) * 0.12);   /* 3-D stack shift per layer */
 }
 
 /* On short viewports (landscape mobile, small tablets) scale down so rows fit */
 @media (max-height: 600px) {
   :root {
-    --tile-w: clamp(20px, calc((100vh - 4rem) / 11), 48px);
+    --tile-w: min(calc((100vh - 4rem) / 11), 48px);
   }
 }
 
@@ -32,26 +34,27 @@ body {
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  overflow-x: hidden; /* prevent iOS Safari from expanding the viewport on overflow */
 }
 
 .tile.layer-0 div {
-  background-color: #999;
+  background-color: #888;
 }
 
 .tile.layer-1 div {
-  background-color: #aaa;
+  background-color: #a0a0a0;
 }
 
 .tile.layer-2 div {
-  background-color: #bbb;
+  background-color: #b8b8b8;
 }
 
 .tile.layer-3 div {
-  background-color: #ccc;
+  background-color: #d0d0d0;
 }
 
 .tile.layer-4 div {
-  background-color: #ddd;
+  background-color: #e8e8e8;
 }
 
 /* Smooth transition for selection highlight */
@@ -112,10 +115,9 @@ svg .inner-rectangle {
 
 /* Board container — sizes itself to the tile grid */
 .game-board {
-  /* 14 steps + 1 tile width + small buffer */
   width: calc(14 * var(--tile-step) + var(--tile-w) * 1.1);
   height: calc(8.5 * var(--tile-h));
-  overflow-x: auto; /* safety net on very small viewports */
+  overflow-x: hidden;
 }
 
 .tile.layer-1 {
