@@ -304,6 +304,104 @@ describe("useGameStore", () => {
   });
 });
 
+describe("Highscore Rank", () => {
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    (postGameState as any).mockResolvedValue({ id: "mock-game-id" });
+    await act(async () => {
+      useGameStore.setState(useGameStore.getInitialState(), true);
+      await Promise.resolve();
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("initialises lastGameRank as null", () => {
+    const { result } = renderHook(() => useGameStore());
+    expect(result.current.lastGameRank).toBeNull();
+  });
+
+  it("sets lastGameRank when gameId is found in highscores response", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: [
+              { id: "other-id", rank: 1 },
+              { id: "mock-game-id", rank: 2 },
+              { id: "another-id", rank: 3 },
+            ],
+          }),
+      })
+    );
+
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => {
+      result.current.start();
+      await result.current.endGame();
+    });
+
+    expect(result.current.lastGameRank).toBe(2);
+  });
+
+  it("leaves lastGameRank null when gameId is not in the top 10", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: [
+              { id: "other-id-1", rank: 1 },
+              { id: "other-id-2", rank: 2 },
+            ],
+          }),
+      })
+    );
+
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => {
+      result.current.start();
+      await result.current.endGame();
+    });
+
+    expect(result.current.lastGameRank).toBeNull();
+  });
+
+  it("leaves lastGameRank null when the highscores fetch fails", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Network error")));
+
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => {
+      result.current.start();
+      await result.current.endGame();
+    });
+
+    expect(result.current.lastGameRank).toBeNull();
+  });
+
+  it("resets lastGameRank to null when a new game starts", async () => {
+    act(() => {
+      useGameStore.setState({ lastGameRank: 3 });
+    });
+
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => {
+      await result.current.start();
+    });
+
+    expect(result.current.lastGameRank).toBeNull();
+  });
+});
+
 describe("Game State Saving", () => {
   beforeEach(async () => {
     vi.clearAllMocks();

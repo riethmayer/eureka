@@ -19,9 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="bg-slate-800 h-full">
-      <body className="h-full">
+      <body className="h-full flex flex-col">
         <Navigation />
-        <main>{children}</main>
+        <main className="flex flex-col flex-1 min-h-0">{children}</main>
       </body>
     </html>
   );

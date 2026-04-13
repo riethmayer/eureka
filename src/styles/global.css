@@ -194,6 +194,23 @@ svg .inner-rectangle {
   100% { transform: rotate(360deg); }
 }
 
+/* ── Rank toast animations ─────────────────────────────────── */
+
+@keyframes toast-in {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  60%  { opacity: 1; transform: translateX(-50%) translateY(-6px); }
+  80%  {             transform: translateX(-50%) translateY(3px); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes toast-out {
+  0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(16px); }
+}
+
+.animate-toast-in  { animation: toast-in  0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-toast-out { animation: toast-out 0.3s  ease-in                         forwards; }
+
 /* ── Tile interaction animations ───────────────────────────── */
 
 /* Mismatch: horizontal shake on the tile wrapper */

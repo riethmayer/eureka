@@ -3,26 +3,16 @@ import Link from "next/link";
 import Button, { ButtonType } from "@/components/common/button";
 import EurekaLogo from "@/components/eureka-logo";
 import { useGameStore } from "@/zustand/game-store";
-import { useEffect, useRef } from "react";
-import { getCookie, setCookie } from "@/utils/cookie-utils";
+import { useEffect } from "react";
+import { setCookie } from "@/utils/cookie-utils";
 
 const IndexPage: React.FC = () => {
   const { changeName, start } = useGameStore();
   const name = useGameStore((state) => state.name);
-  const hasRunOnce = useRef(false);
 
-  // Load the user's name from the cookie.
+  // Persist name changes to cookie (only when non-empty to avoid wiping a stored name).
   useEffect(() => {
-    const storedName = getCookie("userName");
-    if (storedName && !hasRunOnce.current) {
-      changeName(storedName);
-    }
-    hasRunOnce.current = true;
-  }, [changeName]);
-
-  // Save the user's changed name to the cookie.
-  useEffect(() => {
-    setCookie("userName", name);
+    if (name) setCookie("userName", name);
   }, [name]);
 
   return (

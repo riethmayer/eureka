@@ -22,6 +22,7 @@ export type State = {
   gameId: string | null;
   isSaving: boolean;
   saveError: string | null;
+  lastGameRank: number | null;
 };
 
 export type Action = {
@@ -66,6 +67,7 @@ const initialState: State = {
   gameId: null,
   isSaving: false,
   saveError: null,
+  lastGameRank: null,
 };
 
 export const useGameStore = create<GameStore>()(
@@ -319,10 +321,29 @@ export const useGameStore = create<GameStore>()(
       endGame: async () => {
         set(() => ({ gameOver: true }));
         await get().saveGameState();
+        try {
+          const res = await fetch("/api/highscores");
+          const json = await res.json();
+          if (json.success) {
+            const gameId = get().gameId;
+            const rank = (json.data as Array<{ id: string; rank: number }>).find(
+              (h) => h.id === gameId
+            )?.rank ?? null;
+            set({ lastGameRank: rank });
+          }
+        } catch {
+          // non-critical — rank display is best-effort
+        }
       },
 
       changeName: (name: string) => {
         set(() => ({ name }));
+        // If a game is already saved (has a gameId), backfill the name so it
+        // isn't stored as empty when the user enters their name mid-session.
+        const { gameId } = get();
+        if (name && gameId) {
+          get().saveGameState();
+        }
       },
 
       // Returns true if the game is currently running

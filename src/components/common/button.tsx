@@ -91,7 +91,7 @@ export const Button = ({ variant, children, disabled, ...props }: Props) => (
     className={`flex px-4 py-1 justify-center font-semibold rounded-lg ease-in-out duration-300 ${
       disabled
         ? "bg-gray-500 text-gray-300 cursor-not-allowed opacity-50"
-        : "text-white bg-[#6b2070] hover:-translate-y-1 hover:scale-110 hover:bg-[#8f2297]"
+        : "text-white bg-[#6b2070] hover:scale-110 hover:bg-[#8f2297]"
     }`}
     {...props}
   >

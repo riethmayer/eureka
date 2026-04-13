@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import GameBoard from "@/components/game-board";
 import { useGameStore } from "@/zustand/game-store";
 import { useRouter } from "next/navigation";
+import RankToast from "@/components/rank-toast";
 
 export default function Game() {
   const isGameRunning = useGameStore((state) => state.isGameRunning());
@@ -22,5 +23,10 @@ export default function Game() {
       router.replace("/game-over");
     }
   }, [gameOver, router]);
-  return <div className="relative">{isGameRunning && <GameBoard />}</div>;
+  return (
+    <div className="relative">
+      {isGameRunning && <GameBoard />}
+      <RankToast />
+    </div>
+  );
 }

@@ -16,6 +16,13 @@ const GameControl: React.FC = () => {
   const pathname = usePathname();
   const isGameRunning = useGameStore((state) => state.isGameRunning());
   const isLevelClear = useGameStore((state) => state.isLevelClear());
+  const countTilesLeft = useGameStore((state) => state.countTilesLeft);
+  const gameOver = useGameStore((state) => state.gameOver);
+
+  if (pathname === "/highscores") {
+    const hasActiveGame = !gameOver && countTilesLeft() > 0;
+    return hasActiveGame ? <ResumeButton>Resume</ResumeButton> : <PlayButton>Play</PlayButton>;
+  }
 
   if (pathname === "/play") {
     if (isLevelClear) {
