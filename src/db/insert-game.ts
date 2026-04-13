@@ -29,18 +29,12 @@ export const updateGame = async (
 
 export const saveGameState = async (
   state: NewGame & { id?: string | null }
-): Promise<Game | null> => {
-  try {
-    const { id, ...gameState } = state;
-    if (id) {
-      return await updateGame(id, gameState);
-    } else {
-      return await postGame(gameState);
-    }
-  } catch (error) {
-    console.error("Failed to save game state:", error);
-    return null;
+): Promise<Game> => {
+  const { id, ...gameState } = state;
+  if (id) {
+    return await updateGame(id, gameState);
   }
+  return await postGame(gameState);
 };
 
 export default postGame;

@@ -70,6 +70,10 @@ const initialState: State = {
   lastGameRank: null,
 };
 
+// Serialises all saves so concurrent calls never race on gameId.
+// Each call chains onto the previous, reading the latest state when it runs.
+let _saveQueue: Promise<void> = Promise.resolve();
+
 export const useGameStore = create<GameStore>()(
   devtools((set, get) => {
     return {
@@ -287,16 +291,8 @@ export const useGameStore = create<GameStore>()(
       },
 
       scoredPair: async () => {
-        try {
-          set({ isSaving: true, saveError: null });
-          set((state) => ({ score: state.score + 2 }));
-          await get().saveGameState();
-        } catch (error) {
-          set({ saveError: (error as Error).message });
-          console.error("Failed to save score:", error);
-        } finally {
-          set({ isSaving: false });
-        }
+        set((state) => ({ score: state.score + 2 }));
+        await get().saveGameState();
       },
 
       levelCleared: async () => {
@@ -365,29 +361,30 @@ export const useGameStore = create<GameStore>()(
       },
 
       saveGameState: async () => {
-        try {
-          set({ isSaving: true, saveError: null });
-          const state = get();
-          const savedGame = await postGameState({
-            id: state.gameId,
-            board: state.gameBoard,
-            name: state.name,
-            level: state.level,
-            score: state.score,
-            maxTime: state.maxTime,
-            timePassed: state.timePassed,
-          });
-
-          // Set gameId immediately after receiving response
-          if (savedGame) {
+        const doSave = async () => {
+          try {
+            set({ isSaving: true, saveError: null });
+            const state = get();
+            const savedGame = await postGameState({
+              id: state.gameId,
+              board: state.gameBoard,
+              name: state.name,
+              level: state.level,
+              score: state.score,
+              maxTime: state.maxTime,
+              timePassed: state.timePassed,
+            });
             set({ gameId: savedGame.id });
+          } catch (error) {
+            set({ saveError: (error as Error).message });
+            console.error("Failed to save game state:", error);
+          } finally {
+            set({ isSaving: false });
           }
-        } catch (error) {
-          set({ saveError: (error as Error).message });
-          console.error("Failed to save game state:", error);
-        } finally {
-          set({ isSaving: false });
-        }
+        };
+
+        _saveQueue = _saveQueue.then(doSave);
+        await _saveQueue;
       },
 
       autoSave: async () => {
