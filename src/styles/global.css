@@ -60,13 +60,13 @@ body {
 }
 
 .tile.active div {
-  background-color: #f0b429;
+  background-color: #b8eab8;
   transform: scale(1.06);
-  box-shadow: 0 0 10px 3px rgba(240, 180, 41, 0.55);
-  border-top: 4px #f5d060 solid;
-  border-right: 4px #c8891e solid;
-  border-bottom: 4px #a06010 solid;
-  border-left: 4px #d4a020 solid;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  border-top: 4px #e4ffe4 solid;
+  border-right: 4px #3a7a3a solid;
+  border-bottom: 4px #1a501a solid;
+  border-left: 4px #90cc90 solid;
 }
 
 .tile div p {

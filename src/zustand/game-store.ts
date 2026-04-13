@@ -260,20 +260,21 @@ export const useGameStore = create<GameStore>()(
             return { gameBoard };
           }
 
-          // MISMATCH — shake both tiles, then clear animation
-          if (otherActiveTile) {
-            gameBoard[otherActiveId] = { ...otherActiveTile, active: false, animating: 'mismatch' };
+          // No prior selection — just select this tile
+          if (!otherActiveTile) {
+            gameBoard[index] = { ...tile, active: true };
+            return { gameBoard };
           }
-          gameBoard[index] = { ...tile, active: true, animating: 'mismatch' };
+
+          // MISMATCH — deselect and shake the first tile, leave the second unselected
+          gameBoard[otherActiveId] = { ...otherActiveTile, active: false, animating: 'mismatch' };
+          gameBoard[index] = { ...tile, active: false };
 
           setTimeout(() => {
             set((state) => {
               const board = { ...state.gameBoard };
               if (board[otherActiveId]) {
                 board[otherActiveId] = { ...board[otherActiveId], animating: null };
-              }
-              if (board[index]) {
-                board[index] = { ...board[index], animating: null };
               }
               return { gameBoard: board };
             });
