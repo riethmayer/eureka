@@ -129,6 +129,8 @@ export const useGameStore = create<GameStore>()(
           gameBoard: initializeGameBoard(),
           name: prev.name,
           gameId: null,
+          // Preserve so the rank toast can still render after restart() calls start()
+          lastGameRank: prev.lastGameRank,
           timer:
             prev.timer ||
             globalThis.setInterval(() => get().step(), EVERY_SECOND),
@@ -150,7 +152,7 @@ export const useGameStore = create<GameStore>()(
       },
 
       restart: async () => {
-        get().endGame();
+        await get().endGame();
         get().start();
       },
 

@@ -387,7 +387,7 @@ describe("Highscore Rank", () => {
     expect(result.current.lastGameRank).toBeNull();
   });
 
-  it("resets lastGameRank to null when a new game starts", async () => {
+  it("preserves lastGameRank through start() so the toast can still render after restart", async () => {
     act(() => {
       useGameStore.setState({ lastGameRank: 3 });
     });
@@ -398,7 +398,9 @@ describe("Highscore Rank", () => {
       await result.current.start();
     });
 
-    expect(result.current.lastGameRank).toBeNull();
+    // start() intentionally preserves lastGameRank — it is cleared by
+    // RankToast when it renders, not by the game reset itself.
+    expect(result.current.lastGameRank).toBe(3);
   });
 });
 
