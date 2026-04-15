@@ -65,8 +65,10 @@ const RankToast = () => {
     if (lastGameRank === null) return;
 
     const capturedRank = lastGameRank;
-    // Clear from store immediately so remounts (e.g. returning from highscores) don't re-fire.
-    useGameStore.setState({ lastGameRank: null });
+    // Defer store clear to the next task so we don't trigger a synchronous
+    // setState inside an effect (which causes cascading renders). Navigation
+    // takes far longer than one tick, so remount protection is unaffected.
+    setTimeout(() => useGameStore.setState({ lastGameRank: null }), 0);
 
     setRank(capturedRank);
     setVisible(true);

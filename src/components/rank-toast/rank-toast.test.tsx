@@ -135,9 +135,11 @@ describe("RankToast", () => {
 
   // ── Store cleanup ─────────────────────────────────────────────────
 
-  it("clears lastGameRank in the store immediately on display", () => {
+  it("clears lastGameRank in the store after display (deferred to next tick)", async () => {
     mockRank(2);
     render(<RankToast />);
+    // setState is deferred via setTimeout(0) to avoid synchronous setState in effect
+    await act(async () => { vi.advanceTimersByTime(0); });
     expect(mockedUseGameStore.setState).toHaveBeenCalledWith({ lastGameRank: null });
   });
 
