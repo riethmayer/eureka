@@ -387,9 +387,9 @@ describe("Highscore Rank", () => {
     expect(result.current.lastGameRank).toBeNull();
   });
 
-  it("preserves lastGameRank through start() so the toast can still render after restart", async () => {
+  it("clears lastGameRank and gameOverRank on start()", async () => {
     act(() => {
-      useGameStore.setState({ lastGameRank: 3 });
+      useGameStore.setState({ lastGameRank: 3, gameOverRank: 3 });
     });
 
     const { result } = renderHook(() => useGameStore());
@@ -398,9 +398,61 @@ describe("Highscore Rank", () => {
       await result.current.start();
     });
 
-    // start() intentionally preserves lastGameRank — it is cleared by
-    // RankToast when it renders, not by the game reset itself.
+    // start() resets all state — the toast fires on the play page before
+    // navigation, so there's no need to preserve rank across start().
+    expect(result.current.lastGameRank).toBeNull();
+    expect(result.current.gameOverRank).toBeNull();
+  });
+
+  it("sets gameOverRank alongside lastGameRank on endGame()", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: [{ id: "mock-game-id", rank: 3 }],
+          }),
+      })
+    );
+
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => {
+      result.current.start();
+      await result.current.endGame();
+    });
+
     expect(result.current.lastGameRank).toBe(3);
+    expect(result.current.gameOverRank).toBe(3);
+    expect(result.current.gameOver).toBe(true);
+  });
+
+  it("sets gameOver only after save and rank fetch complete", async () => {
+    let resolveHighscores!: (v: unknown) => void;
+    const highscoresPromise = new Promise((res) => { resolveHighscores = res; });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockReturnValue({ json: () => highscoresPromise })
+    );
+
+    const { result } = renderHook(() => useGameStore());
+
+    let endGameDone = false;
+    act(() => { result.current.start(); });
+    const endGamePromise = act(async () => {
+      await result.current.endGame();
+      endGameDone = true;
+    });
+
+    // gameOver should still be false while highscores fetch is pending
+    expect(result.current.gameOver).toBe(false);
+
+    resolveHighscores({ success: true, data: [{ id: "mock-game-id", rank: 1 }] });
+    await endGamePromise;
+
+    expect(endGameDone).toBe(true);
+    expect(result.current.gameOver).toBe(true);
   });
 });
 

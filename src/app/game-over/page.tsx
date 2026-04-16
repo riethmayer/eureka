@@ -7,7 +7,7 @@ const GameOver = () => {
   const { start } = useGameStore();
   const score = useGameStore((state) => state.score);
   const level = useGameStore((state) => state.level);
-  const lastGameRank = useGameStore((state) => state.lastGameRank);
+  const gameOverRank = useGameStore((state) => state.gameOverRank);
 
   return (
     <div className="flex flex-col justify-center items-center py-16 gap-8">
@@ -22,9 +22,9 @@ const GameOver = () => {
           Level: <strong className="text-yellow-300">{level}</strong>
         </span>
       </div>
-      {lastGameRank !== null ? (
+      {gameOverRank !== null ? (
         <p className="text-green-300 text-2xl font-bold">
-          You ranked #{lastGameRank}!
+          You ranked #{gameOverRank}!
         </p>
       ) : (
         <p className="text-gray-400 text-lg">Didn&apos;t make the top 10 this time.</p>

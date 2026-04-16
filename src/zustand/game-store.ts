@@ -23,6 +23,9 @@ export type State = {
   isSaving: boolean;
   saveError: string | null;
   lastGameRank: number | null;
+  // Separate from lastGameRank (which is cleared by RankToast).
+  // Set atomically with gameOver so the game-over page always has the rank on first render.
+  gameOverRank: number | null;
 };
 
 export type Action = {
@@ -68,6 +71,7 @@ const initialState: State = {
   isSaving: false,
   saveError: null,
   lastGameRank: null,
+  gameOverRank: null,
 };
 
 // Serialises all saves so concurrent calls never race on gameId.
@@ -103,6 +107,7 @@ export const useGameStore = create<GameStore>()(
 
       // Steps the game forward by decreasing the time remaining
       step: async () => {
+        let timedOut = false;
         set((prev) => {
           const newTimePassed = Math.min(prev.timePassed + 1, prev.maxTime);
           // Autosave every 60 seconds
@@ -115,11 +120,16 @@ export const useGameStore = create<GameStore>()(
             if (prev.timer) {
               globalThis.clearInterval(prev.timer);
             }
-            get().endGame();
+            timedOut = true;
             return { timePassed: newTimePassed, timer: null };
           }
           return { timePassed: newTimePassed };
         });
+        // endGame is async (save + rank fetch). Call it outside set() so it
+        // can be properly awaited and won't conflict with the set() callback.
+        if (timedOut) {
+          await get().endGame();
+        }
       },
 
       // Starts the game by resetting the state and starting the timer
@@ -128,9 +138,6 @@ export const useGameStore = create<GameStore>()(
           ...initialState,
           gameBoard: initializeGameBoard(),
           name: prev.name,
-          gameId: null,
-          // Preserve so the rank toast can still render after restart() calls start()
-          lastGameRank: prev.lastGameRank,
           timer:
             prev.timer ||
             globalThis.setInterval(() => get().step(), EVERY_SECOND),
@@ -316,21 +323,26 @@ export const useGameStore = create<GameStore>()(
       },
 
       endGame: async () => {
-        set(() => ({ gameOver: true }));
+        // Save first, then look up rank, then set gameOver + both rank fields
+        // atomically. This ensures the game-over page always mounts with the
+        // correct rank on its first render — no flicker of "Didn't make top 10".
         await get().saveGameState();
+        let rank: number | null = null;
         try {
           const res = await fetch("/api/highscores");
           const json = await res.json();
           if (json.success) {
             const gameId = get().gameId;
-            const rank = (json.data as Array<{ id: string; rank: number }>).find(
+            rank = (json.data as Array<{ id: string; rank: number }>).find(
               (h) => h.id === gameId
             )?.rank ?? null;
-            set({ lastGameRank: rank });
           }
         } catch {
           // non-critical — rank display is best-effort
         }
+        // lastGameRank triggers RankToast (then gets cleared by it).
+        // gameOverRank is never cleared by the toast — game-over page uses this.
+        set({ gameOver: true, lastGameRank: rank, gameOverRank: rank });
       },
 
       changeName: (name: string) => {
