@@ -294,7 +294,6 @@ export const useGameStore = create<GameStore>()(
 
       scoredPair: async () => {
         set((state) => ({ score: state.score + 2 }));
-        await get().saveGameState();
       },
 
       levelCleared: async () => {

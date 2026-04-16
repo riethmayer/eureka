@@ -435,25 +435,30 @@ describe("Game State Saving", () => {
 
     await act(async () => {
       result.current.start();
+      // Score two pairs then explicitly save (scoredPair no longer auto-saves)
       await result.current.scoredPair();
+      await result.current.scoredPair();
+      await result.current.saveGameState();
     });
 
+    expect(postGameState).toHaveBeenCalledOnce();
     expect(postGameState).toHaveBeenCalledWith(
       expect.objectContaining({
         id: null,
-        score: 2,
+        score: 4,
       })
     );
+    expect(result.current.gameId).toBe("mock-game-id");
 
     await act(async () => {
       await result.current.scoredPair();
+      await result.current.saveGameState();
     });
 
-    expect(result.current.gameId).toBe("mock-game-id");
     expect(postGameState).toHaveBeenLastCalledWith(
       expect.objectContaining({
         id: "mock-game-id",
-        score: 4,
+        score: 6,
       })
     );
   });
