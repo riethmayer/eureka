@@ -456,6 +456,93 @@ describe("Highscore Rank", () => {
   });
 });
 
+describe("Restart", () => {
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    (postGameState as any).mockResolvedValue({ id: "mock-game-id" });
+    await act(async () => {
+      useGameStore.setState(useGameStore.getInitialState(), true);
+      await Promise.resolve();
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("never sets gameOver — stays in play flow", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      json: () => Promise.resolve({ success: true, data: [] }),
+    }));
+
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => {
+      result.current.start();
+      await result.current.restart();
+    });
+
+    expect(result.current.gameOver).toBe(false);
+  });
+
+  it("sets lastGameRank so the toast fires on the new board (rank found)", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      json: () => Promise.resolve({
+        success: true,
+        data: [{ id: "mock-game-id", rank: 2 }],
+      }),
+    }));
+
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => {
+      result.current.start();
+      await result.current.restart();
+    });
+
+    expect(result.current.lastGameRank).toBe(2);
+    // gameOverRank must NOT be set — restart doesn't go through game-over page
+    expect(result.current.gameOverRank).toBeNull();
+  });
+
+  it("does not set lastGameRank when rank is not in top 10", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      json: () => Promise.resolve({ success: true, data: [] }),
+    }));
+
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => {
+      result.current.start();
+      await result.current.restart();
+    });
+
+    expect(result.current.lastGameRank).toBeNull();
+  });
+
+  it("resets game state (new board, score 0) before setting the toast rank", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      json: () => Promise.resolve({
+        success: true,
+        data: [{ id: "mock-game-id", rank: 1 }],
+      }),
+    }));
+
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => {
+      result.current.start();
+      // Score a pair before restart to confirm score is reset
+      await result.current.scoredPair();
+      await result.current.restart();
+    });
+
+    expect(result.current.score).toBe(0);
+    expect(result.current.gameId).toBeNull();
+    expect(result.current.lastGameRank).toBe(1);
+  });
+});
+
 describe("Game State Saving", () => {
   beforeEach(async () => {
     vi.clearAllMocks();

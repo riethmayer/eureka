@@ -159,8 +159,37 @@ export const useGameStore = create<GameStore>()(
       },
 
       restart: async () => {
-        await get().endGame();
+        // Stop the timer immediately so no more step() ticks fire.
+        const { timer } = get();
+        if (timer) {
+          clearInterval(timer);
+          set({ timer: null });
+        }
+
+        // Save current progress and look up rank (same as endGame but without
+        // setting gameOver — the user stays in the play flow, not game-over).
+        await get().saveGameState();
+        let rank: number | null = null;
+        try {
+          const res = await fetch("/api/highscores");
+          const json = await res.json();
+          if (json.success) {
+            const gameId = get().gameId;
+            rank = (json.data as Array<{ id: string; rank: number }>).find(
+              (h) => h.id === gameId
+            )?.rank ?? null;
+          }
+        } catch {
+          // best-effort — toast is nice-to-have
+        }
+
+        // Start fresh (resets all state including lastGameRank).
         get().start();
+
+        // Set lastGameRank after start() so the RankToast fires on the new board.
+        if (rank !== null) {
+          set({ lastGameRank: rank });
+        }
       },
 
 
