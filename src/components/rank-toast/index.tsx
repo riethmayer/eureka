@@ -56,34 +56,60 @@ const VISIBLE_MS  = 5000;
 const FADE_OUT_MS = 300;
 
 const RankToast = () => {
-  const lastGameRank = useGameStore((state) => state.lastGameRank);
-  const [rank, setRank]     = useState<number | null>(null);
-  const [visible, setVisible] = useState(false);
-  const [fading, setFading]  = useState(false);
+  // Read the initial rank via useState initializer — avoids needing an effect
+  // just to snapshot mount-time state, and keeps the value off the render path.
+  const [shownRank, setShownRank] = useState<number | null>(
+    () => useGameStore.getState().lastGameRank
+  );
+  const [fading, setFading] = useState(false);
 
+  // Mount effect: side effects for the initial rank + subscribe to future changes.
+  // No React setState in the synchronous effect body, so react-hooks/set-state-in-effect
+  // is not triggered.
+  // - Initial side effects (confetti, deferred store clear) contain no React setState.
+  // - setState calls for future ranks are inside the Zustand subscriber callback,
+  //   which runs outside React's render/effect cycle.
   useEffect(() => {
-    if (lastGameRank === null) return;
+    const initial = useGameStore.getState().lastGameRank;
+    let clearTimer: ReturnType<typeof setTimeout> | undefined;
 
-    const capturedRank = lastGameRank;
-    // Defer store clear to the next task so we don't trigger a synchronous
-    // setState inside an effect (which causes cascading renders). Navigation
-    // takes far longer than one tick, so remount protection is unaffected.
-    setTimeout(() => useGameStore.setState({ lastGameRank: null }), 0);
+    if (initial !== null) {
+      if (initial <= 3) fireConfetti(initial as 1 | 2 | 3);
+      // Defer store clear so it doesn't land in the same task as the
+      // useState initializer that already captured the value.
+      clearTimer = setTimeout(() => useGameStore.setState({ lastGameRank: null }), 0);
+    }
 
-    setRank(capturedRank);
-    setVisible(true);
-    setFading(false);
+    const unsub = useGameStore.subscribe((state, prev) => {
+      if (state.lastGameRank !== null && state.lastGameRank !== prev.lastGameRank) {
+        useGameStore.setState({ lastGameRank: null });
+        setShownRank(state.lastGameRank);
+        setFading(false);
+        if (state.lastGameRank <= 3) fireConfetti(state.lastGameRank as 1 | 2 | 3);
+      }
+    });
 
-    if (capturedRank <= 3) fireConfetti(capturedRank as 1 | 2 | 3);
+    return () => {
+      if (clearTimer !== undefined) clearTimeout(clearTimer);
+      unsub();
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const fadeTimer = setTimeout(() => setFading(true),  VISIBLE_MS - FADE_OUT_MS);
-    const hideTimer = setTimeout(() => setVisible(false), VISIBLE_MS);
+  // Auto-dismiss: React setState is called inside setTimeout callbacks (async),
+  // not synchronously in the effect body, so the rule is not triggered.
+  useEffect(() => {
+    if (shownRank === null) return;
+    const fadeTimer = setTimeout(() => setFading(true), VISIBLE_MS - FADE_OUT_MS);
+    const hideTimer = setTimeout(() => {
+      setShownRank(null);
+      setFading(false);
+    }, VISIBLE_MS);
     return () => { clearTimeout(fadeTimer); clearTimeout(hideTimer); };
-  }, [lastGameRank]);
+  }, [shownRank]);
 
-  if (!visible || rank === null) return null;
+  if (shownRank === null) return null;
 
-  const podium = rank <= 3 ? PODIUM[rank as 1 | 2 | 3] : null;
+  const podium = shownRank <= 3 ? PODIUM[shownRank as 1 | 2 | 3] : null;
   const animClass = fading ? "animate-toast-out" : "animate-toast-in";
   const base = "fixed bottom-8 left-1/2 z-50 shadow-2xl";
 
@@ -93,7 +119,7 @@ const RankToast = () => {
         <span className="text-8xl leading-none">{podium.emoji}</span>
         <span className={`text-4xl font-extrabold tracking-wide ${podium.text}`}>{podium.label}</span>
         <span className={`text-lg font-medium ${podium.sub}`}>
-          You ranked <strong>#{rank}</strong> on the leaderboard
+          You ranked <strong>#{shownRank}</strong> on the leaderboard
         </span>
       </div>
     );
@@ -101,7 +127,7 @@ const RankToast = () => {
 
   return (
     <div className={`${base} bg-slate-800 border border-slate-500 rounded-2xl px-12 py-6 flex flex-col items-center gap-1 ${animClass}`}>
-      <span className="text-white font-bold text-2xl">You ranked <strong className="text-yellow-300">#{rank}</strong></span>
+      <span className="text-white font-bold text-2xl">You ranked <strong className="text-yellow-300">#{shownRank}</strong></span>
       <span className="text-slate-400 text-base">Keep playing to climb higher!</span>
     </div>
   );

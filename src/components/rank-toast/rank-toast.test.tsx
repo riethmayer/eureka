@@ -7,17 +7,21 @@ import RankToast from "./index";
 vi.mock("canvas-confetti", () => ({ default: vi.fn() }));
 
 vi.mock("@/zustand/game-store", () => ({
-  useGameStore: Object.assign(vi.fn(), { setState: vi.fn() }),
+  useGameStore: Object.assign(vi.fn(), {
+    setState: vi.fn(),
+    getState: vi.fn(),
+    subscribe: vi.fn(),
+  }),
 }));
 
 const mockedUseGameStore = useGameStore as unknown as ReturnType<typeof vi.fn> & {
   setState: ReturnType<typeof vi.fn>;
+  getState: ReturnType<typeof vi.fn>;
+  subscribe: ReturnType<typeof vi.fn>;
 };
 
 const mockRank = (lastGameRank: number | null) => {
-  mockedUseGameStore.mockImplementation((selector: (s: { lastGameRank: number | null }) => unknown) =>
-    selector({ lastGameRank })
-  );
+  mockedUseGameStore.getState.mockReturnValue({ lastGameRank });
 };
 
 /** Finds the innermost element whose collapsed textContent contains the given string. */
@@ -39,6 +43,7 @@ describe("RankToast", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
+    mockedUseGameStore.subscribe.mockReturnValue(() => {});
     mockRank(null);
   });
 
