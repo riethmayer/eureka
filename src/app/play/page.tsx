@@ -7,9 +7,8 @@ import { useRouter } from "next/navigation";
 import RankToast from "@/components/rank-toast";
 
 export default function Game() {
-  const isGameRunning = useGameStore((state) => state.isGameRunning());
   const gameOver = useGameStore((state) => state.gameOver);
-  const isLevelClear = useGameStore((state) => state.isLevelClear());
+  const isLevelClear = useGameStore((state) => state.levelClear);
   const router = useRouter();
 
   useEffect(() => {
@@ -24,8 +23,10 @@ export default function Game() {
     }
   }, [gameOver, router]);
   return (
-    <div className="flex flex-col items-center justify-center flex-1 min-h-0">
-      {isGameRunning && <GameBoard />}
+    <div className="flex-1 min-h-0 overflow-auto overscroll-contain">
+      <div className="min-h-full flex flex-col justify-center">
+        <GameBoard />
+      </div>
       <RankToast />
     </div>
   );

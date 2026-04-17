@@ -8,9 +8,11 @@
    ========================================================================== */
 :root {
   /* Board is 15.38 tile-widths wide (14×1.02 + 1.1).
-     Dividing by 15.5 ensures the board stays within the viewport.
+     Dividing by 15.5 fills the viewport up to the 72px cap.
+     44px floor keeps tiles playable on small phones — the board overflows
+     and becomes scrollable rather than shrinking to an unplayable size.
      Uses vw (not dvw) for broad Safari/iOS compatibility. */
-  --tile-w: min(calc(100vw / 15.5), 72px);
+  --tile-w: clamp(44px, calc(100vw / 15.5), 72px);
   --tile-h: calc(var(--tile-w) * 1.25);         /* 4:5 width:height ratio */
   --tile-step: calc(var(--tile-w) * 1.02);      /* column spacing — flush with a 2% gap */
   --tile-font: calc(var(--tile-w) * 0.875);     /* token character size */
@@ -34,7 +36,7 @@ body {
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  overflow-x: hidden; /* prevent iOS Safari from expanding the viewport on overflow */
+  overflow: hidden; /* prevent iOS Safari from expanding the viewport on overflow; body-level scroll would shift nav out of view */
 }
 
 .tile.layer-0 div {
@@ -210,6 +212,21 @@ svg .inner-rectangle {
 
 .animate-toast-in  { animation: toast-in  0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 .animate-toast-out { animation: toast-out 0.3s  ease-in                         forwards; }
+
+/* ── Board intro animation ─────────────────────────────────── */
+
+@keyframes tile-intro {
+  0%   { opacity: 0; transform: scale(0.7)    translateY(-10px); }
+  60%  { opacity: 1; transform: scale(1.06)   translateY(2px);   }
+  80%  {             transform: scale(0.97)   translateY(-1px);  }
+  100% { opacity: 1; transform: scale(1)      translateY(0);     }
+}
+
+/* Plays once on mount; --intro-delay is set per-tile as a CSS custom property.
+   Declared before .tile.match div so the match rule wins at equal specificity. */
+.tile.born div {
+  animation: tile-intro 0.3s ease-out var(--intro-delay, 0s) both;
+}
 
 /* ── Tile interaction animations ───────────────────────────── */
 

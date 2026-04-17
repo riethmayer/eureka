@@ -1,6 +1,8 @@
 "use client";
+import { useState, useEffect } from "react";
 import colour from "./colours";
 import { TokenTile } from "@/types/game-board";
+import { useGameStore } from "@/zustand/game-store";
 
 export type TileProps = {
   onClick: () => void;
@@ -25,9 +27,30 @@ const Tile: React.FC<TileProps> = ({
   active,
   animating,
 }) => {
+  // Stagger: diagonal wave across base layer, then each layer stacks on top.
+  // col/row each add ~0–0.25s, layer adds 0–0.6s → total max ~1.1s.
+  const introDelay = column * 0.018 + row * 0.018 + layer * 0.15;
+
+  // Read shouldAnimateOnMount synchronously so all tiles in this render batch
+  // see the same value before any effect runs.
+  const [born, setBorn] = useState(() => useGameStore.getState().shouldAnimateOnMount);
+
+  useEffect(() => {
+    if (born) {
+      // Clear the flag so a subsequent mount (e.g. pause → /paused → resume)
+      // doesn't replay the animation. All tiles in this batch already captured
+      // the value via the useState initialiser above.
+      useGameStore.setState({ shouldAnimateOnMount: false });
+    }
+    const id = setTimeout(() => setBorn(false), (introDelay + 0.4) * 1000);
+    return () => clearTimeout(id);
+  // introDelay derives from props that are constant for a tile's lifetime
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const classes = `tile rect layer-${layer} column-${column} row-${row} ${
     active ? "active" : ""
-  } ${animating ?? ""}`;
+  } ${animating ?? ""} ${born ? "born" : ""}`;
 
   const tokenColor = colour(token);
   return (
@@ -37,6 +60,7 @@ const Tile: React.FC<TileProps> = ({
       className={classes}
       style={{
         "--tile-top-factor": topFactor(row, layer, id),
+        "--intro-delay": `${introDelay.toFixed(3)}s`,
       } as React.CSSProperties}
     >
       <div

@@ -26,6 +26,17 @@ export type State = {
   // Separate from lastGameRank (which is cleared by RankToast).
   // Set atomically with gameOver so the game-over page always has the rank on first render.
   gameOverRank: number | null;
+  // Changes on every call to start() so tiles can key off it and remount
+  // (replaying their intro animation) only when a genuinely new board is dealt,
+  // not when the game is merely paused and resumed.
+  boardGeneration: number;
+  // Set to true by start() and levelCleared() to signal that the next Tile
+  // mount should play the intro animation. The first tile to mount clears it
+  // so that pause→resume navigation (which also remounts tiles) does not replay.
+  shouldAnimateOnMount: boolean;
+  // True from the moment restart() clears the board until start() finishes
+  // initialising the new board. Used to show a loading indicator in GameBoard.
+  isRestarting: boolean;
 };
 
 export type Action = {
@@ -72,6 +83,9 @@ const initialState: State = {
   saveError: null,
   lastGameRank: null,
   gameOverRank: null,
+  boardGeneration: 0, // 0 = no game started yet; Date.now() once a game begins
+  shouldAnimateOnMount: false,
+  isRestarting: false,
 };
 
 // Serialises all saves so concurrent calls never race on gameId.
@@ -138,6 +152,8 @@ export const useGameStore = create<GameStore>()(
           ...initialState,
           gameBoard: initializeGameBoard(),
           name: prev.name,
+          boardGeneration: Date.now(),
+          shouldAnimateOnMount: true,
           timer:
             prev.timer ||
             globalThis.setInterval(() => get().step(), EVERY_SECOND),
@@ -159,16 +175,15 @@ export const useGameStore = create<GameStore>()(
       },
 
       restart: async () => {
-        // Stop the timer immediately so no more step() ticks fire.
+        // Stop the timer and hide the board immediately so the UI feels snappy.
         const { timer } = get();
-        if (timer) {
-          clearInterval(timer);
-          set({ timer: null });
-        }
+        set({ timer: null, isRestarting: true });
+        if (timer) clearInterval(timer);
 
-        // Save current progress and look up rank (same as endGame but without
-        // setting gameOver — the user stays in the play flow, not game-over).
+        // Save current progress, then fetch rank while loading indicator is shown.
         await get().saveGameState();
+
+        // Look up rank while the loading indicator is visible.
         let rank: number | null = null;
         try {
           const res = await fetch("/api/highscores");
@@ -183,7 +198,7 @@ export const useGameStore = create<GameStore>()(
           // best-effort — toast is nice-to-have
         }
 
-        // Start fresh (resets all state including lastGameRank).
+        // start() spreads initialState, which resets isRestarting to false.
         get().start();
 
         // Set lastGameRank after start() so the RankToast fires on the new board.
@@ -338,6 +353,7 @@ export const useGameStore = create<GameStore>()(
           levelClear: true,
           level: state.level + 1,
           maxTime: TIME_TO_SOLVE * (state.level + 1),
+          shouldAnimateOnMount: true,
         }));
         await state.pause();
       },

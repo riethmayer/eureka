@@ -3,10 +3,9 @@
 ## Project Purpose
 Eureka is a Mahjong Solitaire game built with Next.js (App Router), React, TypeScript, Zustand, Tailwind, and Drizzle ORM (Turso/SQLite). Core gameplay runs in client-side Zustand state; persistence and highscores are written/read via Next.js API routes.
 
-## Current Repository State (Reviewed 2026-04-13)
+## Current Repository State (Reviewed 2026-04-17)
 - Branch: `master`
-- Latest commits: `ddbb619` (test: add RankToast tests and serialise save queue), `94d6c9a` (feat: highscores, rank toast with confetti, navigation improvements)
-- Test suite: **57 tests across 5 files**, all passing
+- Test suite: **77 tests across 6 files**, all passing
 
 ## Quick Start
 1. Install dependencies: `yarn install`
@@ -44,19 +43,23 @@ Eureka is a Mahjong Solitaire game built with Next.js (App Router), React, TypeS
 - Global styles + keyframe animations: `src/styles/global.css`
 
 ## Runtime Flow
-1. User enters name on `/` and clicks Start → `start()` in Zustand store resets state and starts timer.
-2. `/play` renders `GameBoard` while `isGameRunning()` is true.
+1. User enters name on `/` and clicks Start → `start()` resets state, sets `boardGeneration: Date.now()` and `shouldAnimateOnMount: true`, starts timer.
+2. `/play` always renders `GameBoard` (not gated on `isGameRunning`). Tiles cascade in with a staggered intro animation on every genuinely new board.
 3. Tile clicks call `clicked(index)`, evaluate selection rules, animate and remove matched pairs, increment score.
 4. Timer ticks via `step()` every second; autosave triggers every 60 seconds.
 5. Save path: `postGameState()` → `POST /api/game` → DB layer. All saves are serialised through `_saveQueue` to prevent `gameId` races.
-6. Level clear → `levelCleared()` pauses game and routes to `/next-level` interstitial.
-7. Time up or board cleared → `endGame()` saves final state, then GETs `/api/highscores` to determine `lastGameRank`.
-8. `lastGameRank` drives `RankToast` (overlay confetti + animated toast) and the `/game-over` page rank display.
+6. Level clear → `levelCleared()` sets `shouldAnimateOnMount: true`, pauses game, routes to `/next-level` interstitial. Board intro replays when returning to `/play`.
+7. Time up → `endGame()` saves final state, GETs `/api/highscores` for rank, then sets `gameOver + lastGameRank + gameOverRank` atomically. Play page routes to `/game-over`.
+8. Restart → `restart()` stops the timer and sets `isRestarting: true` synchronously (board hidden, "Restarting game…" shown), then saves + fetches rank in the background before calling `start()`.
+9. `lastGameRank` drives `RankToast` (confetti + animated toast on the play page). `gameOverRank` drives the rank display on `/game-over` (never cleared by the toast).
 
 ## Important Invariants
 - **Save queue**: `_saveQueue` is a module-level promise chain in `game-store.ts`. Do NOT bypass it or read `gameId` before the queued save resolves.
-- **`restart()` must `await endGame()`**: `endGame()` snapshots score/gameId before `start()` resets state. Missing the `await` causes saves to capture the reset (score 0, gameId null).
-- **`start()` preserves `lastGameRank`**: So the `RankToast` can render after a restart. The toast clears it from the store on first render (not `start()`).
+- **`restart()` saves before calling `start()`**: `start()` resets `gameId` to null. `restart()` must `await saveGameState()` before calling `start()` or the rank lookup will use a null `gameId`.
+- **`endGame()` sets state atomically**: `gameOver`, `lastGameRank`, and `gameOverRank` are set in a single `set()` call after all async work completes. This prevents the game-over page from rendering with a stale null rank.
+- **`lastGameRank` vs `gameOverRank`**: `RankToast` clears `lastGameRank` after displaying it. `gameOverRank` is never cleared by the toast — the `/game-over` page reads it independently.
+- **Board intro animation**: `shouldAnimateOnMount` must be `true` at the moment tiles mount for the animation to play. `start()` and `levelCleared()` set it; the first tile to run its mount effect clears it. Do NOT set it on pause/resume.
+- **`isRestarting` resets via `initialState`**: `start()` spreads `initialState` which contains `isRestarting: false`. No explicit reset is needed in `restart()`.
 - **Toast CSS centering**: Keyframes in `global.css` own `translateX(-50%)`. Do NOT also apply Tailwind `-translate-x-1/2` on the toast element — it conflicts with keyframe `transform`.
 - **Cookie loading**: Player name is loaded from cookie in `Navigation` with a `hasLoaded` ref guard. The home page only writes to cookie when `name` is non-empty.
 
@@ -65,16 +68,17 @@ Eureka is a Mahjong Solitaire game built with Next.js (App Router), React, TypeS
 - Additional schema tables (`game_moves`, `game_snapshots`, `game_states`) exist but are not used in the current app flow.
 - Local fallback database: `file:./local.db`.
 
-## Quality Snapshot (2026-04-13)
+## Quality Snapshot (2026-04-17)
 - `yarn lint`: passes
 - `yarn type-check`: passes
-- `yarn test`: 57 tests, 5 files, all passing
+- `yarn test`: 77 tests, 6 files, all passing
 - `yarn build`: passes
 
 ## Known Pitfalls
 - `tsconfig.json` includes `.next/types/**/*.ts`, so stale `.next` artifacts can affect local type checks.
 - The `type-check` script runs with `--incremental false` to avoid stale `tsbuildinfo` cache issues.
 - Tile animation state (`animating: 'match' | 'mismatch' | null`) lives in `gameBoard[index]`. Clicks on tiles with `animating` set are silently ignored.
+- Tile intro animation uses a `born` React state initialised from `shouldAnimateOnMount`. Because it's a `useState` lazy initialiser (not a selector), it only runs on mount — changing `shouldAnimateOnMount` in the store after a tile is already mounted has no effect on that tile.
 
 ## Suggested First Checks In Any New Session
 1. `git status --short --branch`

@@ -34,8 +34,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Tile animations
 Tile animation state lives in `gameBoard[index].animating` (`'match' | 'mismatch' | null`). The `clicked()` action sets the flag and uses `setTimeout` to clear it after the CSS animation completes. CSS classes `tile.match` and `tile.mismatch` are defined in `global.css`.
 
+### Board intro animation
+When a new board is dealt, tiles cascade in with a staggered `tile-intro` keyframe (defined in `global.css`). The stagger is driven by a `--intro-delay` CSS custom property set per-tile from `column × 0.018 + row × 0.018 + layer × 0.15` seconds, producing a diagonal wave across the base layer followed by higher layers building up on top.
+
+**How "new game only" is enforced:** `start()` sets `boardGeneration: Date.now()` and `shouldAnimateOnMount: true`. `levelCleared()` also sets `shouldAnimateOnMount: true`. `Turtle` keys each `<Tile>` by `${boardGeneration}-${idx}`, forcing a remount when a new game starts. Each `Tile` initialises its `born` state from `useGameStore.getState().shouldAnimateOnMount` (synchronous read, runs before any effect). The first tile to run its mount effect calls `useGameStore.setState({ shouldAnimateOnMount: false })`, so any later mount — including the remount that happens when the player navigates back from `/paused` — reads `false` and skips the animation. The `born` class is also removed via a `setTimeout` after its animation window has passed, preventing it from re-triggering if the `animating` prop cycles through `mismatch → null` while `born` is still set.
+
 ### RankToast
-`src/components/rank-toast/index.tsx` reads `lastGameRank` from the store once, copies it to local state, then immediately clears it from the store (`useGameStore.setState({ lastGameRank: null })`) so remounts don't re-fire. `start()` intentionally preserves `lastGameRank` through the reset so the toast survives a restart.
+`src/components/rank-toast/index.tsx` reads `lastGameRank` from the store at mount via a `useState` lazy initialiser, copies it to local state, then clears it from the store (deferred one tick via `setTimeout(0)`) so remounts don't re-fire. A Zustand subscriber handles ranks that arrive after mount (e.g. from `restart()`). `start()` resets `lastGameRank` to null — the toast fires before navigation so the rank is already captured in local state.
 
 ### Toast CSS centering
 Keyframes in `global.css` own the `translateX(-50%)` centering. Do **not** apply Tailwind's `-translate-x-1/2` to the toast element — it would conflict with the keyframe `transform` property and offset the position.
@@ -52,7 +57,7 @@ Player name is loaded from cookie in `Navigation` (`src/components/navigation/in
 | `/game-over` | Game over with score and rank feedback |
 | `/next-level` | Level-clear interstitial |
 | `/highscores` | Leaderboard (top 10, server-rendered) |
-| `/paused` | Paused state (legacy; game now pauses in-place) |
+| `/paused` | Paused state — hides the board so the player can't plan moves while the timer is stopped |
 
 ## API Routes
 

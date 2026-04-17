@@ -5,6 +5,7 @@ import Tile from "../tile";
 const Turtle = () => {
   const board = useGameStore((state) => state.gameBoard);
   const clicked = useGameStore((state) => state.clicked);
+  const boardGeneration = useGameStore((state) => state.boardGeneration);
 
   return (
     <div className="turtle mt-4">
@@ -22,7 +23,7 @@ const Turtle = () => {
               className={`${token}`}
               id={idx}
               onClick={() => clicked(idx)}
-              key={idx}
+              key={`${boardGeneration}-${idx}`}
             />
           );
         })}

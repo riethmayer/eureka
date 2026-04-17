@@ -2,8 +2,8 @@
 
 import LevelUp from "@/components/level-up";
 
-const Paused = () => {
+const NextLevel = () => {
   return <LevelUp />;
 };
 
-export default Paused;
+export default NextLevel;

@@ -31,6 +31,8 @@ const createMockGameStore = (overrides = {}): GameStore =>
   ({
     isGameRunning: vi.fn().mockReturnValue(false),
     isLevelClear: vi.fn().mockReturnValue(false),
+    countTilesLeft: vi.fn().mockReturnValue(0),
+    gameOver: false,
     ...overrides,
   }) as unknown as GameStore;
 

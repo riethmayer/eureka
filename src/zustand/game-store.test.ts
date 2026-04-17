@@ -9,9 +9,6 @@ vi.mock("@/utils/post-game-state", () => ({
   postGameState: vi.fn().mockResolvedValue({ id: "mock-game-id" }),
 }));
 
-// Helper function for tests
-const waitForStateUpdate = () =>
-  new Promise((resolve) => setTimeout(resolve, 0));
 
 describe("useGameStore", () => {
   beforeEach(() => {
@@ -161,7 +158,7 @@ describe("useGameStore", () => {
 
     await act(async () => {
       await result.current.start();
-      await result.current.__oneSecondRemaining();
+      result.current.__oneSecondRemaining();
       await result.current.step();
     });
 
@@ -181,14 +178,11 @@ describe("useGameStore", () => {
   it("start action is idempotent", async () => {
     const { result } = renderHook(() => useGameStore());
 
-    let timer;
     await act(async () => {
       result.current.start();
-      timer = result.current.timer;
       result.current.start();
       await Promise.resolve();
     });
-    const newTimer = result.current.timer;
 
     expect(result.current.timePassed).toBe(0);
     expect(result.current.gameOver).toBe(false);
@@ -543,6 +537,91 @@ describe("Restart", () => {
   });
 });
 
+describe("Board Generation", () => {
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    (postGameState as any).mockResolvedValue({ id: "mock-game-id" });
+    await act(async () => {
+      useGameStore.setState(useGameStore.getInitialState(), true);
+      await Promise.resolve();
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("starts at 0 before any game begins", () => {
+    const { result } = renderHook(() => useGameStore());
+    expect(result.current.boardGeneration).toBe(0);
+  });
+
+  it("is set to a non-zero timestamp after start()", async () => {
+    const { result } = renderHook(() => useGameStore());
+    await act(async () => { await result.current.start(); });
+    expect(result.current.boardGeneration).toBeGreaterThan(0);
+  });
+
+  it("changes to a new value on each call to start()", async () => {
+    vi.spyOn(Date, "now").mockReturnValueOnce(1000).mockReturnValueOnce(2000);
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => { await result.current.start(); });
+    expect(result.current.boardGeneration).toBe(1000);
+
+    await act(async () => { await result.current.start(); });
+    expect(result.current.boardGeneration).toBe(2000);
+  });
+
+  it("is not changed by pause()", async () => {
+    const { result } = renderHook(() => useGameStore());
+    await act(async () => { await result.current.start(); });
+    const gen = result.current.boardGeneration;
+
+    await act(async () => { await result.current.pause(); });
+    expect(result.current.boardGeneration).toBe(gen);
+  });
+
+  it("is not changed by resume()", async () => {
+    const { result } = renderHook(() => useGameStore());
+    await act(async () => { await result.current.start(); await result.current.pause(); });
+    const gen = result.current.boardGeneration;
+
+    await act(async () => { await result.current.resume(); });
+    expect(result.current.boardGeneration).toBe(gen);
+  });
+
+  it("shouldAnimateOnMount starts false", () => {
+    const { result } = renderHook(() => useGameStore());
+    expect(result.current.shouldAnimateOnMount).toBe(false);
+  });
+
+  it("shouldAnimateOnMount is set to true by start()", async () => {
+    const { result } = renderHook(() => useGameStore());
+    await act(async () => { await result.current.start(); });
+    expect(result.current.shouldAnimateOnMount).toBe(true);
+  });
+
+  it("shouldAnimateOnMount is set to true by levelCleared()", async () => {
+    const { result } = renderHook(() => useGameStore());
+    await act(async () => { await result.current.start(); await result.current.levelCleared(); });
+    expect(result.current.shouldAnimateOnMount).toBe(true);
+  });
+
+  it("shouldAnimateOnMount is not changed by pause() or resume()", async () => {
+    const { result } = renderHook(() => useGameStore());
+    await act(async () => { await result.current.start(); });
+    // Simulate tiles clearing the flag after mount
+    act(() => { useGameStore.setState({ shouldAnimateOnMount: false }); });
+
+    await act(async () => { await result.current.pause(); });
+    expect(result.current.shouldAnimateOnMount).toBe(false);
+
+    await act(async () => { await result.current.resume(); });
+    expect(result.current.shouldAnimateOnMount).toBe(false);
+  });
+});
+
 describe("Game State Saving", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -711,7 +790,7 @@ describe("Game State Saving", () => {
 
     await act(async () => {
       await result.current.start();
-      await result.current.__oneSecondRemaining();
+      result.current.__oneSecondRemaining();
       await result.current.step();
     });
 
