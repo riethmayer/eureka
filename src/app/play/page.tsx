@@ -24,7 +24,7 @@ export default function Game() {
     }
   }, [gameOver, router]);
   return (
-    <div className="relative">
+    <div className="flex flex-col items-center justify-center flex-1 min-h-0">
       {isGameRunning && <GameBoard />}
       <RankToast />
     </div>
