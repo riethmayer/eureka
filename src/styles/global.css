@@ -3,16 +3,18 @@
 /* ==========================================================================
    Responsive Tile System
    All tile dimensions derive from --tile-w on :root.
-   --tile-w scales with viewport width (fits 13 columns), capped at 72px.
-   A media query tightens it on short viewports so rows still fit vertically.
+   --tile-w is the smaller of the width-fit and the height-fit, capped at 72px.
+
+   Width fit  — board is 15.38 tile-widths wide (14×1.02 + 1.1):  100vw / 15.5
+   Height fit — board is 10.625 tile-widths tall (8.5 rows × 1.25 aspect):
+                (100vh − 80px) / 10.625   where 80px ≈ nav bar + breathing room
+
+   The 44px floor keeps tiles playable on small phones; the board overflows
+   horizontally and becomes scrollable rather than shrinking further.
+   Uses vw/vh (not dvw/dvh) for broad Safari/iOS compatibility.
    ========================================================================== */
 :root {
-  /* Board is 15.38 tile-widths wide (14×1.02 + 1.1).
-     Dividing by 15.5 fills the viewport up to the 72px cap.
-     44px floor keeps tiles playable on small phones — the board overflows
-     and becomes scrollable rather than shrinking to an unplayable size.
-     Uses vw (not dvw) for broad Safari/iOS compatibility. */
-  --tile-w: clamp(44px, calc(100vw / 15.5), 72px);
+  --tile-w: clamp(44px, min(calc(100vw / 15.5), calc((100vh - 80px) / 10.625)), 72px);
   --tile-h: calc(var(--tile-w) * 1.25);         /* 4:5 width:height ratio */
   --tile-step: calc(var(--tile-w) * 1.02);      /* column spacing — flush with a 2% gap */
   --tile-font: calc(var(--tile-w) * 0.875);     /* token character size */
