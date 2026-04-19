@@ -573,6 +573,16 @@ describe("Board Generation", () => {
     expect(result.current.boardGeneration).toBe(2000);
   });
 
+  it("is updated by levelCleared() so tiles remount with animation", async () => {
+    vi.spyOn(Date, "now").mockReturnValueOnce(1000).mockReturnValueOnce(2000);
+    const { result } = renderHook(() => useGameStore());
+    await act(async () => { await result.current.start(); });
+    expect(result.current.boardGeneration).toBe(1000);
+
+    await act(async () => { await result.current.levelCleared(); });
+    expect(result.current.boardGeneration).toBe(2000);
+  });
+
   it("is not changed by pause()", async () => {
     const { result } = renderHook(() => useGameStore());
     await act(async () => { await result.current.start(); });

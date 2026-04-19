@@ -1,0 +1,36 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- App background -->
+  <rect width="512" height="512" rx="112" fill="#1e293b"/>
+
+  <!-- Tile stack — back layer (layer 1 offset) -->
+  <rect x="148" y="108" width="230" height="288" rx="28" fill="#a0a0a0"/>
+
+  <!-- Tile stack — mid layer -->
+  <rect x="136" y="120" width="230" height="288" rx="28" fill="#c8c8c8"/>
+
+  <!-- Tile face — front -->
+  <rect x="124" y="132" width="230" height="288" rx="28" fill="#e8e8e8"/>
+  <!-- Tile top highlight -->
+  <rect x="124" y="132" width="230" height="288" rx="28" fill="url(#tileGrad)"/>
+
+  <!-- Tile border -->
+  <rect x="124" y="132" width="230" height="288" rx="28" stroke="#bbb" stroke-width="3" fill="none"/>
+
+  <!-- Bold "E" token in brand purple -->
+  <text
+    x="256"
+    y="342"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="260"
+    font-weight="900"
+    text-anchor="middle"
+    fill="#6b2070"
+  >E</text>
+
+  <defs>
+    <linearGradient id="tileGrad" x1="124" y1="132" x2="354" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="white" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -5,6 +5,7 @@ import type { Viewport } from "next";
 export const metadata = {
   title: "Eureka",
   description: "Eureka is a Mahjong Solitaire Game",
+  icons: { icon: "/icon.svg" },
 };
 
 export const viewport: Viewport = {

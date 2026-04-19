@@ -353,6 +353,7 @@ export const useGameStore = create<GameStore>()(
           levelClear: true,
           level: state.level + 1,
           maxTime: TIME_TO_SOLVE * (state.level + 1),
+          boardGeneration: Date.now(),
           shouldAnimateOnMount: true,
         }));
         await state.pause();
