@@ -573,13 +573,24 @@ describe("Board Generation", () => {
     expect(result.current.boardGeneration).toBe(2000);
   });
 
-  it("is updated by levelCleared() so tiles remount with animation", async () => {
-    vi.spyOn(Date, "now").mockReturnValueOnce(1000).mockReturnValueOnce(2000);
+  it("boardGeneration is not changed by levelCleared()", async () => {
+    vi.spyOn(Date, "now").mockReturnValueOnce(1000);
     const { result } = renderHook(() => useGameStore());
     await act(async () => { await result.current.start(); });
     expect(result.current.boardGeneration).toBe(1000);
 
     await act(async () => { await result.current.levelCleared(); });
+    expect(result.current.boardGeneration).toBe(1000);
+  });
+
+  it("is updated by continueNextLevel() so tiles remount with animation", async () => {
+    vi.spyOn(Date, "now").mockReturnValueOnce(1000).mockReturnValueOnce(2000);
+    const { result } = renderHook(() => useGameStore());
+    await act(async () => { await result.current.start(); });
+    await act(async () => { await result.current.levelCleared(); });
+    expect(result.current.boardGeneration).toBe(1000);
+
+    act(() => { result.current.continueNextLevel(); });
     expect(result.current.boardGeneration).toBe(2000);
   });
 
@@ -612,9 +623,19 @@ describe("Board Generation", () => {
     expect(result.current.shouldAnimateOnMount).toBe(true);
   });
 
-  it("shouldAnimateOnMount is set to true by levelCleared()", async () => {
+  it("shouldAnimateOnMount is not changed by levelCleared()", async () => {
+    const { result } = renderHook(() => useGameStore());
+    await act(async () => { await result.current.start(); });
+    act(() => { useGameStore.setState({ shouldAnimateOnMount: false }); });
+    await act(async () => { await result.current.levelCleared(); });
+    expect(result.current.shouldAnimateOnMount).toBe(false);
+  });
+
+  it("shouldAnimateOnMount is set to true by continueNextLevel()", async () => {
     const { result } = renderHook(() => useGameStore());
     await act(async () => { await result.current.start(); await result.current.levelCleared(); });
+    act(() => { useGameStore.setState({ shouldAnimateOnMount: false }); });
+    act(() => { result.current.continueNextLevel(); });
     expect(result.current.shouldAnimateOnMount).toBe(true);
   });
 

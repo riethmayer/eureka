@@ -311,7 +311,7 @@ export const useGameStore = create<GameStore>()(
                 delete board[otherActiveId];
                 if (Object.keys(board).length === 0) {
                   get().levelCleared();
-                  return { gameBoard: initializeGameBoard(get().level) };
+                  return { gameBoard: {} };
                 }
                 return { gameBoard: board };
               });
@@ -365,8 +365,6 @@ export const useGameStore = create<GameStore>()(
           levelClear: true,
           level: state.level + 1,
           maxTime: TIME_TO_SOLVE * (state.level + 1),
-          boardGeneration: Date.now(),
-          shouldAnimateOnMount: true,
         }));
         await state.pause();
       },
@@ -374,8 +372,12 @@ export const useGameStore = create<GameStore>()(
       isLevelClear: () => get().levelClear,
 
       continueNextLevel: () => {
+        const newBoard = initializeGameBoard(get().level);
         set(() => ({
           levelClear: false,
+          gameBoard: newBoard,
+          boardGeneration: Date.now(),
+          shouldAnimateOnMount: true,
           timer: globalThis.setInterval(() => get().step(), EVERY_SECOND),
         }));
       },
