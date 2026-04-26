@@ -25,6 +25,7 @@ describe("Tile intro animation", () => {
     row: 2,
     active: false,
     animating: null as null,
+    grace: false,
   };
 
   it("has the born class on initial render", () => {

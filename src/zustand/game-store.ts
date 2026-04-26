@@ -276,16 +276,17 @@ export const useGameStore = create<GameStore>()(
           const gameBoard = { ...state.gameBoard };
           const tile = gameBoard[index];
 
-          // Ignore clicks on tiles mid-animation
-          if (tile.animating) return state;
+          // Ignore clicks on tiles mid-animation; sparkle doesn't block interaction
+          if (tile.animating && tile.animating !== 'sparkle') return state;
 
           if (tile.active) {
             // Deselect
-            gameBoard[index] = { ...tile, active: false };
+            gameBoard[index] = { ...tile, active: false, animating: null };
             return { gameBoard };
           }
 
-          if (!get().allowedforSelection(index)) {
+          // Grace tiles bypass position restrictions
+          if (!tile.grace && !get().allowedforSelection(index)) {
             console.debug("Not allowed to select this tile", index);
             return state;
           }
@@ -310,7 +311,7 @@ export const useGameStore = create<GameStore>()(
                 delete board[otherActiveId];
                 if (Object.keys(board).length === 0) {
                   get().levelCleared();
-                  return { gameBoard: initializeGameBoard() };
+                  return { gameBoard: initializeGameBoard(get().level) };
                 }
                 return { gameBoard: board };
               });
@@ -319,9 +320,20 @@ export const useGameStore = create<GameStore>()(
             return { gameBoard };
           }
 
-          // No prior selection — just select this tile
+          // No prior selection — select this tile; grace tiles get a sparkle burst
           if (!otherActiveTile) {
-            gameBoard[index] = { ...tile, active: true };
+            gameBoard[index] = { ...tile, active: true, animating: tile.grace ? 'sparkle' : null };
+            if (tile.grace) {
+              setTimeout(() => {
+                set((state) => {
+                  const board = { ...state.gameBoard };
+                  if (board[index]?.animating === 'sparkle') {
+                    board[index] = { ...board[index], animating: null };
+                  }
+                  return { gameBoard: board };
+                });
+              }, 450);
+            }
             return { gameBoard };
           }
 

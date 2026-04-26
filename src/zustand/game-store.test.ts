@@ -632,6 +632,95 @@ describe("Board Generation", () => {
   });
 });
 
+describe("Grace tiles", () => {
+  beforeEach(async () => {
+    vi.useFakeTimers();
+    vi.clearAllMocks();
+    (postGameState as any).mockResolvedValue({ id: "mock-game-id" });
+    await act(async () => {
+      useGameStore.setState(useGameStore.getInitialState(), true);
+    });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  it("grace tile can be selected even when covered by a higher-layer tile", async () => {
+    // tile "10" is covered by tile "20" (same column, same row+layer topFactor)
+    const testBoard = {
+      "10": { layer: 0, row: 1, column: 5, token: "A", active: false, animating: null, grace: true },
+      "20": { layer: 1, row: 0, column: 5, token: "B", active: false, animating: null, grace: false },
+    } as unknown as GameBoard;
+
+    act(() => { useGameStore.setState({ gameBoard: testBoard }); });
+    const { result } = renderHook(() => useGameStore());
+
+    expect(result.current.allowedforSelection("10")).toBe(false);
+
+    await act(async () => { await result.current.clicked("10"); });
+    expect(result.current.gameBoard["10"].active).toBe(true);
+  });
+
+  it("selecting a grace tile sets animating to sparkle", async () => {
+    const testBoard = {
+      "0": { layer: 0, row: 0, column: 1, token: "A", active: false, animating: null, grace: true },
+    } as unknown as GameBoard;
+
+    act(() => { useGameStore.setState({ gameBoard: testBoard }); });
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => { await result.current.clicked("0"); });
+    expect(result.current.gameBoard["0"].animating).toBe("sparkle");
+  });
+
+  it("sparkle animation clears after 450 ms", async () => {
+    const testBoard = {
+      "0": { layer: 0, row: 0, column: 1, token: "A", active: false, animating: null, grace: true },
+    } as unknown as GameBoard;
+
+    act(() => { useGameStore.setState({ gameBoard: testBoard }); });
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => { await result.current.clicked("0"); });
+    expect(result.current.gameBoard["0"].animating).toBe("sparkle");
+
+    await act(async () => { vi.advanceTimersByTime(450); });
+    expect(result.current.gameBoard["0"].animating).toBeNull();
+  });
+
+  it("non-grace tile does not get sparkle when selected", async () => {
+    const testBoard = {
+      "0": { layer: 0, row: 0, column: 1, token: "A", active: false, animating: null, grace: false },
+    } as unknown as GameBoard;
+
+    act(() => { useGameStore.setState({ gameBoard: testBoard }); });
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => { await result.current.clicked("0"); });
+    expect(result.current.gameBoard["0"].active).toBe(true);
+    expect(result.current.gameBoard["0"].animating).toBeNull();
+  });
+
+  it("a sparkling grace tile can still be matched by clicking a second tile", async () => {
+    const testBoard = {
+      "0": { layer: 0, row: 0, column: 1, token: "A", active: false, animating: null, grace: true },
+      "1": { layer: 0, row: 1, column: 3, token: "A", active: false, animating: null, grace: false },
+    } as unknown as GameBoard;
+
+    act(() => { useGameStore.setState({ gameBoard: testBoard }); });
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => { await result.current.clicked("0"); });
+    expect(result.current.gameBoard["0"].animating).toBe("sparkle");
+
+    await act(async () => { await result.current.clicked("1"); });
+    expect(result.current.gameBoard["0"].animating).toBe("match");
+    expect(result.current.gameBoard["1"].animating).toBe("match");
+  });
+});
+
 describe("Game State Saving", () => {
   beforeEach(async () => {
     vi.clearAllMocks();

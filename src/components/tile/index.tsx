@@ -26,6 +26,7 @@ const Tile: React.FC<TileProps> = ({
   row,
   active,
   animating,
+  grace,
 }) => {
   // Stagger: diagonal wave across base layer, then each layer stacks on top.
   // col/row each add ~0–0.25s, layer adds 0–0.6s → total max ~1.1s.
@@ -50,7 +51,7 @@ const Tile: React.FC<TileProps> = ({
 
   const classes = `tile rect layer-${layer} column-${column} row-${row} ${
     active ? "active" : ""
-  } ${animating ?? ""} ${born ? "born" : ""}`;
+  } ${animating ?? ""} ${born ? "born" : ""} ${grace ? "grace" : ""}`;
 
   const tokenColor = colour(token);
   return (

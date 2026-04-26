@@ -230,6 +230,30 @@ svg .inner-rectangle {
   animation: tile-intro 0.3s ease-out var(--intro-delay, 0s) both;
 }
 
+/* ── Grace tile animations ─────────────────────────────────── */
+
+/* Sparkle burst on the outer wrapper when a grace tile is first selected.
+   Lives on the wrapper (not .tile-face) so it composites independently. */
+@keyframes tile-shimmer {
+  from { transform: translateX(-150%) skewX(-20deg); }
+  to   { transform: translateX(300%) skewX(-20deg); }
+}
+
+.tile.sparkle .tile-face {
+  position: relative;
+  overflow: hidden;
+}
+
+.tile.sparkle .tile-face::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 248, 220, 0.9) 50%, transparent 100%);
+  animation: tile-shimmer 0.45s ease-in-out forwards;
+  pointer-events: none;
+}
+
 /* ── Tile interaction animations ───────────────────────────── */
 
 /* Mismatch: horizontal shake on the tile wrapper */

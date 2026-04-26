@@ -29,3 +29,35 @@ describe("initialiseGameBoard", () => {
     expect(tokensInResult.join(",")).not.toEqual(initialTokens.join(",")); // order should be different
   });
 });
+
+describe("grace tiles", () => {
+  const graceCount = (level: number) =>
+    Object.values(initializeGameBoard(level)).filter((t) => t.grace).length;
+
+  it("level 1 (default) has no grace tiles", () => {
+    expect(graceCount(1)).toBe(0);
+  });
+
+  it("omitting the level argument has no grace tiles", () => {
+    expect(Object.values(initializeGameBoard()).filter((t) => t.grace)).toHaveLength(0);
+  });
+
+  it("level 2 has exactly 1 grace tile", () => {
+    expect(graceCount(2)).toBe(1);
+  });
+
+  it("level 3 has exactly 2 grace tiles", () => {
+    expect(graceCount(3)).toBe(2);
+  });
+
+  it("level 5 has exactly 4 grace tiles", () => {
+    expect(graceCount(5)).toBe(4);
+  });
+
+  it("all non-grace tiles have grace: false", () => {
+    const board = initializeGameBoard(3);
+    Object.values(board).forEach((tile) => {
+      expect(typeof tile.grace).toBe("boolean");
+    });
+  });
+});

@@ -45,7 +45,7 @@ export const allTokens: Token[] = [
   ...tokens,
 ] as const; // 2 pairs of each token
 
-export type TileAnimation = 'mismatch' | 'match' | null;
+export type TileAnimation = 'mismatch' | 'match' | 'sparkle' | null;
 
 export type TokenTile = {
   layer: number;
@@ -54,10 +54,11 @@ export type TokenTile = {
   token: Token;
   active: boolean;
   animating: TileAnimation;
+  grace: boolean;
 };
 
 export type GameBoard = Record<string, TokenTile>;
-type GameBoardLayout = Record<string, Omit<TokenTile, "token" | "active" | "animating">>;
+type GameBoardLayout = Record<string, Omit<TokenTile, "token" | "active" | "animating" | "grace">>;
 
 export const gameBoardLayout: GameBoardLayout = {
   0: { layer: 0, row: 0, column: 1 },
