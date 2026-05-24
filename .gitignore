@@ -20,6 +20,10 @@ yarn-error.log*
 .env.local
 .env*.local
 
+# sentry (auth token written by the build plugin)
+.env.sentry-build-plugin
+.sentryclirc
+
 # local databases
 local.db
 src/db/*.sql
