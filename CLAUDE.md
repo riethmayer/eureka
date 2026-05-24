@@ -31,6 +31,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Save Queue
 `game-store.ts` serialises all DB writes through a module-level `_saveQueue` promise chain so concurrent calls never race on `gameId`. Any code that must read the final saved `gameId` (e.g. `endGame()` needs `gameId` to look up rank) must `await` the action that triggers the save before reading state.
 
+### Board generation & order strategies
+Boards are **solvable by construction** (`src/utils/init-gameboard.ts`): the fixed layout is peeled into a removal order of free pairs, then matched token pairs are laid onto it, so replaying the order always wins. Freeness is purely geometric and lives in one shared rule (`src/utils/board-rules.ts` `isSelectable`), reused by both the live game (`allowedforSelection`) and the generator.
+
+The peel order policy is a **ports & adapters seam** (`src/utils/order-strategies.ts`). The port is `OrderStrategy.peel(random)`; selectable adapters only express *which two free tiles to take next* via `peelWith`: `scatter` (**production default** — pairs the highest free tile with the lowest, spreading matches across layers), `topDownRandom`, `original`, `bottomUpRandom`. Note the layer-greedy strategies (`topDownRandom`/`bottomUpRandom`) always pair the top-of-pyramid tiles among themselves — a visible "ready-made" cluster of matching pairs at the top — which is why `scatter` is the default. Solvability holds for every adapter because the shared loop only ever removes currently-free tiles; a policy that strands just returns `null` and `dealSolvableBoard` falls back to `canonical` — a deterministic top-down order that never strands and is kept out of the selectable list (internal safety net only).
+
+To experiment locally, override the active strategy (resolution: runtime override → localStorage `eureka.orderStrategy` → `NEXT_PUBLIC_ORDER_STRATEGY` env → default). In dev, the `/play` screen shows a strategy badge (`src/components/strategy-switcher`): press `s` / `Shift+S` (or click) to cycle and re-deal; hover for descriptions. From the browser console (any build): `eurekaOrder.set('original')` then start a new game; `eurekaOrder.list()` to see options; `eurekaOrder.set(null)` to reset. Production play is unaffected unless one of those overrides is set.
+
 ### Tile animations
 Tile animation state lives in `gameBoard[index].animating` (`'match' | 'mismatch' | null`). The `clicked()` action sets the flag and uses `setTimeout` to clear it after the CSS animation completes. CSS classes `tile.match` and `tile.mismatch` are defined in `global.css`.
 
