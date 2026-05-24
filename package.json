@@ -11,7 +11,7 @@
     "cookies": "^0.9.1",
     "js-cookie": "^3.0.5",
     "moment": "^2.29.4",
-    "next": "16",
+    "next": "^16.2.6",
     "react": "19",
     "react-dom": "19",
     "tslib": "^2.6.2",
@@ -51,7 +51,7 @@
     "eslint-import-resolver-typescript": "^3.6.3",
     "eslint-plugin-check-file": "^2.8.0",
     "jsdom": "^29.0.2",
-    "postcss": "^8.5.9",
+    "postcss": "^8.5.15",
     "prettier": "^3",
     "tailwindcss": "^4.2.2",
     "typescript": "^5",
@@ -61,7 +61,7 @@
   "engines": {
     "node": ">=24"
   },
-  "description": "Mahjong solitair game",
+  "description": "Mahjong solitaire game",
   "main": "index.js",
   "repository": "git@github.com:riethmayer/eureka.git",
   "author": "Jan Riethmayer <jan@riethmayer.de>",
@@ -75,6 +75,10 @@
     "yaml": "^2.8.3",
     "form-data": "^4.0.4",
     "tar": "^7.5.13",
-    "@babel/runtime": "^7.29.2"
+    "@babel/runtime": "^7.29.2",
+    "glob": "^10.5.0",
+    "ip-address": "^10.1.1",
+    "postcss": "^8.5.10",
+    "ws": "^8.20.1"
   }
 }
