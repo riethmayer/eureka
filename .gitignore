@@ -34,6 +34,9 @@ src/db/*.sql-wal
 tsconfig.tsbuildinfo
 bun.lock
 
+# yarn (install cache only; .yarn/releases is intentionally tracked)
+.yarn/install-state.gz
+
 # tooling
 .mcp.json
 .vercel
