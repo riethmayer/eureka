@@ -9,7 +9,17 @@ import Leaderboard from "@/components/leaderboard";
 export const revalidate = 30;
 
 const HighscoresController = async () => {
-  const highscores = await getHighscores();
+  // Never let a leaderboard fetch failure crash the build or the request: a
+  // preview build without Supabase env, or a transient DB blip, would otherwise
+  // fail prerendering and break the whole deploy. Fall back to an empty board;
+  // ISR refills it on the next successful revalidation, and the client
+  // <Leaderboard> still shows the player their own just-finished score.
+  let highscores: Awaited<ReturnType<typeof getHighscores>> = [];
+  try {
+    highscores = await getHighscores();
+  } catch (error) {
+    console.error("Failed to load highscores:", error);
+  }
 
   return (
     <div className="flex flex-col items-center px-2 sm:px-4 pt-6 sm:pt-8 pb-4 h-full">
