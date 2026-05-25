@@ -42,16 +42,20 @@ describe("grace tiles", () => {
     expect(Object.values(initializeGameBoard()).filter((t) => t.grace)).toHaveLength(0);
   });
 
-  it("level 2 has exactly 1 grace tile", () => {
+  // Grace tiles ramp slowly: 1 from level 2, 2 from level 5, 3 from level 15+.
+  it("levels 2–4 have exactly 1 grace tile", () => {
     expect(graceCount(2)).toBe(1);
+    expect(graceCount(4)).toBe(1);
   });
 
-  it("level 3 has exactly 2 grace tiles", () => {
-    expect(graceCount(3)).toBe(2);
+  it("levels 5–14 have exactly 2 grace tiles", () => {
+    expect(graceCount(5)).toBe(2);
+    expect(graceCount(14)).toBe(2);
   });
 
-  it("level 5 has exactly 4 grace tiles", () => {
-    expect(graceCount(5)).toBe(4);
+  it("levels 15+ have exactly 3 grace tiles", () => {
+    expect(graceCount(15)).toBe(3);
+    expect(graceCount(30)).toBe(3);
   });
 
   it("all non-grace tiles have grace: false", () => {

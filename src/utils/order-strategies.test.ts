@@ -48,7 +48,7 @@ describe("order strategies (port/adapter)", () => {
 
   it("resolves to the production default unless overridden", () => {
     expect(getOrderStrategy().name).toBe(DEFAULT_STRATEGY);
-    expect(DEFAULT_STRATEGY).toBe("scatter");
+    expect(DEFAULT_STRATEGY).toBe("tangled");
 
     setOrderStrategy("original");
     expect(getOrderStrategy().name).toBe("original");
