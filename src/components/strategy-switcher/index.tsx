@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useSyncExternalStore } from "react";
 import { useGameStore } from "@/zustand/game-store";
 import {
+  DEFAULT_STRATEGY,
   getOrderStrategy,
   listOrderStrategies,
   setOrderStrategy,
+  subscribeOrderStrategy,
 } from "@/utils/order-strategies";
 
 /**
@@ -18,8 +20,13 @@ const enabled = process.env.NODE_ENV !== "production";
 
 const StrategySwitcher: React.FC = () => {
   const redeal = useGameStore((state) => state.redealCurrentLevel);
-  const [current, setCurrent] = useState<string>(() =>
-    enabled ? getOrderStrategy().name : ""
+  // Hydration-safe read of the active strategy: SSR + first client render use the
+  // build-time default; after hydration the client snapshot resolves localStorage.
+  // Re-renders when setOrderStrategy fires (e.g. cycling).
+  const current = useSyncExternalStore(
+    subscribeOrderStrategy,
+    () => getOrderStrategy().name,
+    () => DEFAULT_STRATEGY
   );
 
   const cycle = useCallback(
@@ -28,7 +35,6 @@ const StrategySwitcher: React.FC = () => {
       const idx = names.indexOf(getOrderStrategy().name);
       const next = names[(idx + dir + names.length) % names.length];
       setOrderStrategy(next);
-      setCurrent(next);
       redeal();
     },
     [redeal]
