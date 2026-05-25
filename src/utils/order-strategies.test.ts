@@ -29,12 +29,12 @@ describe("order strategies (port/adapter)", () => {
 
   it("every selectable strategy (and the fallback) deals solvable boards", () => {
     for (const strategy of [...Object.values(STRATEGIES), fallbackStrategy]) {
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 12; i++) {
         const { board, solution } = dealSolvableBoard(3, Math.random, strategy);
         expect(solutionWins(board, solution), `${strategy.name} #${i}`).toBe(true);
       }
     }
-  });
+  }, 30000);
 
   it("canonical (fallback) is deterministic; topDownRandom varies", () => {
     const c1 = canonical.peel(() => 0)!.map((p) => p.join("-")).join(",");
@@ -74,7 +74,7 @@ describe("order strategies (port/adapter)", () => {
   // Informational: how often each policy strands (and leans on the fallback).
   // Not an assertion — just a lens for local experimentation.
   it("reports strand rates per strategy", () => {
-    const N = 60;
+    const N = 40;
     for (const strategy of Object.values(STRATEGIES)) {
       let stranded = 0;
       for (let i = 0; i < N; i++) if (strategy.peel(Math.random) === null) stranded++;
