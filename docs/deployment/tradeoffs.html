@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eureka · Deployment — Tradeoffs</title>
+  <meta name="description" content="Why Cloud Run + Workload Identity + Cloud Build — compared against Vercel, GKE, App Engine, service-account keys, and building in CI." />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="wrap">
+      <a class="brand" href="index.html"><span class="dot"></span>Eureka · Deployment</a>
+      <div class="nav-links">
+        <a href="index.html">Overview</a>
+        <a href="pipeline.html">Pipeline</a>
+        <a href="security.html">Security</a>
+        <a class="active" href="tradeoffs.html">Tradeoffs</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero wrap">
+    <p class="eyebrow reveal">Decisions &amp; alternatives</p>
+    <h1 class="reveal">Why this,<br/><em>not that.</em></h1>
+    <p class="lede reveal">Three choices define this setup: <strong>where</strong> the app runs, <strong>how</strong> CI proves who it is, and <strong>how</strong> the image gets built. Each had real alternatives. Here’s the reasoning — and when you’d pick differently.</p>
+  </header>
+
+  <section class="section wrap">
+    <p class="kicker">Decision 1 — compute</p>
+    <h2>Where it runs: Cloud Run</h2>
+    <p>Eureka is a single containerised Next.js app with bursty, low-baseline traffic. That profile points straight at a serverless container platform: scale to zero when idle, scale out under load, no servers to patch.</p>
+
+    <div class="tablewrap reveal">
+      <table>
+        <thead><tr><th>Option</th><th>Model</th><th>Ops burden</th><th>Scale&nbsp;to&nbsp;0</th><th>Verdict for Eureka</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Cloud Run</strong></td><td>Serverless containers</td><td><span class="pill good">low</span></td><td><span class="pill good">yes</span></td><td><strong>Chosen</strong> — closest match to Vercel’s model, full container control</td></tr>
+          <tr><td>Vercel</td><td>Managed Next.js</td><td><span class="pill good">none</span></td><td><span class="pill good">yes</span></td><td>The incumbent — superb DX, but vendor lock-in &amp; the thing we’re migrating off</td></tr>
+          <tr><td>GKE</td><td>Kubernetes</td><td><span class="pill bad">high</span></td><td><span class="pill mid">via KEDA</span></td><td>Overkill — a cluster to run one web app</td></tr>
+          <tr><td>App Engine</td><td>PaaS</td><td><span class="pill mid">low</span></td><td><span class="pill mid">std only</span></td><td>Older model, less container flexibility than Run</td></tr>
+          <tr><td>Compute Engine</td><td>VMs</td><td><span class="pill bad">high</span></td><td><span class="pill bad">no</span></td><td>You own the OS, patching, autoscaling — too much</td></tr>
+          <tr><td>Firebase Hosting + Functions</td><td>Static + FaaS</td><td><span class="pill good">low</span></td><td><span class="pill good">yes</span></td><td>Great for static/JAMstack; awkward fit for a full SSR container</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note go reveal">
+      <span class="tag">When you'd pick differently</span>
+      <p>Reach for <strong>GKE</strong> once you’re running many services with shared networking, sidecars, or strict pod-level control. Stay on <strong>Vercel</strong> if developer velocity and preview deployments matter more than cost and control. For one app that must just run cheaply and reliably, Cloud Run wins.</p>
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <p class="kicker">Decision 2 — CI identity</p>
+    <h2>How CI authenticates: Workload Identity Federation</h2>
+    <p>CI needs to act on GCP. The question is whether it holds a <em>standing</em> credential or proves itself <em>per run</em>. We chose per-run.</p>
+
+    <div class="tablewrap reveal">
+      <table>
+        <thead><tr><th>Option</th><th>Stored secret?</th><th>Credential life</th><th>Leak impact</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Workload Identity Federation</strong></td><td><span class="pill good">none</span></td><td>minutes</td><td><span class="pill good">contained</span></td><td><strong>Chosen</strong> — keyless, repo-scoped, auto-expiring</td></tr>
+          <tr><td>SA JSON key in GitHub secret</td><td><span class="pill bad">yes</span></td><td>until rotated</td><td><span class="pill bad">high</span></td><td>Simplest to set up; a permanent bearer credential is a liability</td></tr>
+          <tr><td>SA key in a vault / Secret Manager</td><td><span class="pill mid">yes</span></td><td>until rotated</td><td><span class="pill mid">medium</span></td><td>Adds a fetch hop but the key is still long-lived</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The cost of WIF is one-time setup complexity — a pool, a provider, a condition, and an impersonation binding. The payoff is permanent: there is no key to rotate, leak, or audit. See <a href="security.html">Security</a> for the full mechanism.</p>
+  </section>
+
+  <section class="section wrap">
+    <p class="kicker">Decision 3 — build</p>
+    <h2>How the image is built: Cloud Build</h2>
+    <p>The build needs build-time secrets (the <code>NEXT_PUBLIC_*</code> values and the Sentry token). Doing it inside Google Cloud lets those secrets stay in Secret Manager and never transit the CI runner.</p>
+
+    <div class="tablewrap reveal">
+      <table>
+        <thead><tr><th>Option</th><th>Where it builds</th><th>Secret handling</th><th>Control</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Cloud Build</strong></td><td>In GCP</td><td><span class="pill good">native (Secret Manager)</span></td><td><span class="pill good">full Dockerfile</span></td><td><strong>Chosen</strong> — secrets never leave GCP; no Docker in the runner</td></tr>
+          <tr><td>Docker build in Actions, push to AR</td><td>In the runner</td><td><span class="pill mid">fetch into runner env</span></td><td><span class="pill good">full Dockerfile</span></td><td>Fast layer caching, but secrets pass through GitHub’s runner</td></tr>
+          <tr><td>Cloud Run <code>--source</code> (buildpacks)</td><td>In GCP</td><td><span class="pill bad">awkward build args</span></td><td><span class="pill bad">no multi-stage</span></td><td>Simplest, but can’t cleanly inline <code>NEXT_PUBLIC_*</code> or discard the Sentry token</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note warn reveal">
+      <span class="tag">The deciding factor</span>
+      <p><code>NEXT_PUBLIC_*</code> must be present <em>during</em> <code>next build</code> (they’re inlined into client JS), and <code>SENTRY_AUTH_TOKEN</code> must be available to the build but absent from the final image. A hand-written multi-stage <code>Dockerfile</code> + Cloud Build’s <code>availableSecrets</code> expresses both cleanly; buildpacks don’t.</p>
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <p class="kicker">In one sentence</p>
+    <h2>The throughline</h2>
+    <p style="font-size:21px;color:var(--text);max-width:64ch">Run the container on the platform that mirrors Vercel’s ergonomics (<strong>Cloud Run</strong>), let CI prove itself per run instead of holding a key (<strong>WIF</strong>), and build where the secrets already live (<strong>Cloud Build</strong>) — so the whole path is portable, auditable, and keyless from push to production.</p>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap row">
+      <span>Eureka · deployment docs</span>
+      <span><a href="security.html">← Security</a></span>
+      <span><a href="index.html">Overview →</a></span>
+      <span style="margin-left:auto">Cloud Run · WIF · Cloud Build</span>
+    </div>
+  </footer>
+
+  <script type="module" src="assets/mermaid-init.js"></script>
+</body>
+</html>

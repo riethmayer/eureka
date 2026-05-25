@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eureka · Deployment — Pipeline</title>
+  <meta name="description" content="The CI/CD pipeline that turns a push to master into a live Cloud Run revision: GitHub Actions, Cloud Build, the multi-stage Docker image, and secret handling." />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="wrap">
+      <a class="brand" href="index.html"><span class="dot"></span>Eureka · Deployment</a>
+      <div class="nav-links">
+        <a href="index.html">Overview</a>
+        <a class="active" href="pipeline.html">Pipeline</a>
+        <a href="security.html">Security</a>
+        <a href="tradeoffs.html">Tradeoffs</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero wrap">
+    <p class="eyebrow reveal">CI/CD · GitHub Actions → Cloud Build → Cloud Run</p>
+    <h1 class="reveal">From <em>push</em><br/>to revision.</h1>
+    <p class="lede reveal">A merge to <code>master</code> triggers <code>.github/workflows/deploy-gcp.yml</code>. It authenticates to Google Cloud with a short-lived token, hands off to <code>deploy/deploy.sh&nbsp;--deploy-only</code>, and the same script you can run by hand builds the image in Cloud Build and rolls it onto Cloud Run.</p>
+  </header>
+
+  <section class="section wrap">
+    <p class="kicker">End to end</p>
+    <h2>The deploy sequence</h2>
+    <p>Nothing long-lived is stored in GitHub. The workflow mints an OIDC token, exchanges it for a federated identity, and impersonates the <code>github-deployer</code> service account — all in seconds, all expiring in minutes.</p>
+
+    <div class="diagram reveal">
+      <div class="cap">Sequence — a single deploy</div>
+      <pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant GH as GitHub Actions
+  participant OIDC as GitHub OIDC
+  participant STS as Google STS
+  participant SA as github-deployer SA
+  participant CB as Cloud Build
+  participant SM as Secret Manager
+  participant AR as Artifact Registry
+  participant CR as Cloud Run
+
+  GH->>OIDC: request id-token
+  OIDC-->>GH: signed JWT (repo, ref, sha)
+  GH->>STS: exchange JWT via WIF provider
+  STS-->>GH: federated token
+  GH->>SA: impersonate
+  SA-->>GH: short-lived access token
+  Note over GH,CR: deploy.sh --deploy-only
+  GH->>CB: builds submit (cloudbuild.yaml)
+  CB->>SM: fetch build-arg secrets
+  SM-->>CB: NEXT_PUBLIC_* + SENTRY_AUTH_TOKEN
+  CB->>CB: docker build · next build
+  CB->>AR: push :latest + :BUILD_ID
+  GH->>CR: run deploy --image :latest
+  CR->>SM: bind SENTRY_DSN at runtime
+  CR-->>GH: revision serving 100%
+      </pre>
+    </div>
+
+    <ol class="steps reveal">
+      <li><strong>Push to master</strong> The workflow triggers (it ignores doc-only changes under <code>docs/**</code> and <code>**.md</code>).</li>
+      <li><strong>Keyless auth</strong> <code>google-github-actions/auth</code> exchanges the GitHub OIDC token for credentials that impersonate the deployer SA. See <a href="security.html">Security</a>.</li>
+      <li><strong>Build in Cloud Build</strong> <code>cloudbuild.yaml</code> pulls build-time secrets from Secret Manager and runs the multi-stage Docker build.</li>
+      <li><strong>Push to Artifact Registry</strong> Tagged <code>:latest</code> and <code>:$BUILD_ID</code> for rollback.</li>
+      <li><strong>Deploy to Cloud Run</strong> New revision, runtime <code>SENTRY_DSN</code> from Secret Manager, traffic shifts to 100%.</li>
+    </ol>
+  </section>
+
+  <section class="section wrap">
+    <p class="kicker">The image</p>
+    <h2>A lean, multi-stage container</h2>
+    <p>Next.js builds in <code>standalone</code> mode, so the runtime image carries only a minimal server bundle — not the full <code>node_modules</code>. The build runs on Debian-based <code>node:24-slim</code> (not Alpine) because the app pulls in <code>sharp</code> for image optimisation, which wants glibc.</p>
+
+    <div class="diagram reveal">
+      <div class="cap">Dockerfile — three stages, one discarded</div>
+      <pre class="mermaid">
+flowchart TD
+  src["Source · yarn.lock · .yarn/releases"]:::src
+  subgraph deps["stage: deps"]
+    d1["yarn install --immutable"]
+  end
+  subgraph builder["stage: builder"]
+    b1["copy node_modules + source"]
+    b2["NEXT_PUBLIC_* + SENTRY_AUTH_TOKEN<br/>injected as build args"]
+    b3["next build → .next/standalone"]
+  end
+  subgraph runner["stage: runner · node:24-slim"]
+    r1["copy standalone + static + public"]
+    r2["run as non-root 'node'"]
+    r3["node server.js · :8080"]
+  end
+  src --> deps --> builder --> runner
+  builder -. "builder stage discarded<br/>SENTRY_AUTH_TOKEN never ships" .-> drop{{"🗑 not in final image"}}:::warn
+
+  classDef src fill:#0e131c,stroke:#5fd5ee,color:#e9eef5;
+  classDef warn fill:#1c1710,stroke:#ffb454,color:#ffd9a0;
+      </pre>
+    </div>
+
+    <div class="note ident reveal">
+      <span class="tag">Build-time vs runtime</span>
+      <p><code>NEXT_PUBLIC_*</code> values (Supabase URL, publishable key, Sentry DSN) are <em>inlined into the client bundle</em> at build time, so they must be present during <code>next build</code> — hence build args, not runtime env. <code>SENTRY_DSN</code> is the only value injected at <em>runtime</em>. <code>SENTRY_AUTH_TOKEN</code> exists only to upload source maps and is confined to the discarded builder stage.</p>
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <p class="kicker">At runtime</p>
+    <h2>Where the data goes</h2>
+    <p>Cloud Run is stateless. Every read and write goes to Supabase over an RLS-gated publishable key — the exact same database Vercel uses, which is what makes the two deployments interchangeable.</p>
+
+    <div class="diagram reveal">
+      <div class="cap">Runtime data flow</div>
+      <pre class="mermaid">
+flowchart LR
+  user((Player)):::user --> cr["Cloud Run<br/>eureka-web · :8080"]:::run
+  cr -->|"publishable key · RLS"| supa[("Supabase<br/>Postgres")]:::data
+  cr -->|"events via /monitoring tunnel"| sentry[("Sentry")]:::amber
+  sm[("Secret Manager")]:::violet -. "SENTRY_DSN at start" .-> cr
+
+  classDef run fill:#18212f,stroke:#c9f24e,color:#e9eef5,stroke-width:2px;
+  classDef data fill:#101b22,stroke:#5fd5ee,color:#e9eef5;
+  classDef amber fill:#18212f,stroke:#ffb454,color:#e9eef5;
+  classDef violet fill:#16132a,stroke:#b69cff,color:#e9eef5;
+  classDef user fill:#16132a,stroke:#b69cff,color:#e9eef5;
+      </pre>
+    </div>
+
+    <div class="note warn reveal">
+      <span class="tag">Scale-to-zero note</span>
+      <p>With <code>min-instances 0</code>, the <code>/highscores</code> ISR cache doesn’t persist across cold starts — each cold start re-renders (~0.13s). Negligible at this traffic; set <code>--min-instances 1</code> for Vercel-identical cache warmth.</p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap row">
+      <span>Eureka · deployment docs</span>
+      <span><a href="index.html">← Overview</a></span>
+      <span><a href="security.html">Security →</a></span>
+      <span style="margin-left:auto">cloudbuild.yaml · Dockerfile · deploy/deploy.sh</span>
+    </div>
+  </footer>
+
+  <script type="module" src="assets/mermaid-init.js"></script>
+</body>
+</html>

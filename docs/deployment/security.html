@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eureka · Deployment — Security</title>
+  <meta name="description" content="The keyless security model: GitHub OIDC, Workload Identity Federation, a repo-locked trust condition, least-privilege roles, and how secrets never reach the image." />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="wrap">
+      <a class="brand" href="index.html"><span class="dot"></span>Eureka · Deployment</a>
+      <div class="nav-links">
+        <a href="index.html">Overview</a>
+        <a href="pipeline.html">Pipeline</a>
+        <a class="active" href="security.html">Security</a>
+        <a href="tradeoffs.html">Tradeoffs</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero wrap">
+    <p class="eyebrow reveal">Workload Identity Federation · zero stored keys</p>
+    <h1 class="reveal">No keys.<br/><em>Anywhere.</em></h1>
+    <p class="lede reveal">The classic way to let CI deploy to GCP is to mint a service-account JSON key and paste it into a GitHub secret. That key is a long-lived bearer credential — if it leaks, anyone is you, until you notice and rotate. Eureka stores <strong>no key at all</strong>. GitHub proves its identity per run with a signed token; Google trades it for credentials that expire in minutes.</p>
+  </header>
+
+  <section class="section wrap">
+    <p class="kicker">The trust chain</p>
+    <h2>How a workflow becomes a deployer</h2>
+    <p>GitHub Actions is an OpenID Connect (OIDC) identity provider. Each run can request a short-lived JWT that asserts <em>which repository, branch, and commit</em> it belongs to. Google’s Workload Identity Federation trusts that issuer, verifies the claims against a condition we set, and only then lets the token impersonate a service account.</p>
+
+    <div class="diagram reveal">
+      <div class="cap">Sequence — token exchange</div>
+      <pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant W as Workflow run
+  participant O as GitHub OIDC issuer
+  participant S as Google STS
+  participant P as WIF provider
+  participant A as github-deployer SA
+  participant G as GCP APIs
+
+  W->>O: give me an id-token
+  O-->>W: JWT { repository: riethmayer/eureka, ref, sha, ... }
+  W->>S: exchange this JWT
+  S->>P: verify issuer + signature
+  P->>P: attribute-condition:<br/>repository == 'riethmayer/eureka'?
+  alt condition matches
+    P-->>S: ok
+    S-->>W: federated token
+    W->>A: impersonate (workloadIdentityUser)
+    A-->>W: access token · TTL ~minutes
+    W->>G: build & deploy
+  else any other repo
+    P-->>S: reject
+    S-->>W: 403 — no credentials
+  end
+      </pre>
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <p class="kicker">The lock</p>
+    <h2>Two independent gates, both pinned to one repo</h2>
+    <p>The repository identity is enforced in <em>two</em> places, so a misconfiguration in one doesn’t open the door:</p>
+
+    <h4>1 · Provider attribute condition</h4>
+    <p>The OIDC provider refuses to issue a federated token unless the JWT’s repository claim matches exactly:</p>
+    <pre><code>--attribute-mapping=\
+  "google.subject=assertion.sub,\
+   attribute.repository=assertion.repository,\
+   attribute.repository_owner=assertion.repository_owner"
+--attribute-condition="assertion.repository=='riethmayer/eureka'"</code></pre>
+
+    <h4>2 · Service-account impersonation binding</h4>
+    <p>Even a valid federated token can only impersonate the SA if it carries this repo’s attribute — the <code>principalSet</code> is scoped to the repository, not the whole pool:</p>
+    <pre><code>principalSet://iam.googleapis.com/projects/369713805962/
+  locations/global/workloadIdentityPools/github-pool/
+  attribute.repository/riethmayer/eureka
+    → roles/iam.workloadIdentityUser on github-deployer</code></pre>
+
+    <div class="note ident reveal">
+      <span class="tag">Why two gates</span>
+      <p>The provider condition stops foreign repos at the token-exchange step. The <code>principalSet</code> binding stops them again at impersonation. A fork opening a PR can’t abuse it either — GitHub restricts OIDC tokens on fork PRs, and the repository claim wouldn’t match regardless.</p>
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <p class="kicker">Least privilege</p>
+    <h2>What the deployer can — and can’t — do</h2>
+    <p>The <code>github-deployer</code> service account holds only the roles required to build and ship. It cannot read application data, cannot touch other projects, and was deliberately <em>not</em> granted secret-access (the build’s own service account reads secrets, not the deployer).</p>
+
+    <div class="tablewrap reveal">
+      <table>
+        <thead><tr><th>Role</th><th>Grants</th><th>Why it’s needed</th></tr></thead>
+        <tbody>
+          <tr><td><code>cloudbuild.builds.editor</code></td><td>Submit / run builds</td><td>Trigger the image build</td></tr>
+          <tr><td><code>storage.objectAdmin</code> + bucket <code>storage.admin</code></td><td>Write to the staging bucket</td><td>Upload build source</td></tr>
+          <tr><td><code>serviceusage.serviceUsageConsumer</code></td><td>Use project APIs</td><td>Required for <code>builds submit</code></td></tr>
+          <tr><td><code>artifactregistry.writer</code></td><td>Read/write images</td><td>Reference the pushed image on deploy</td></tr>
+          <tr><td><code>run.admin</code></td><td>Manage Cloud Run</td><td>Create revisions, set public access</td></tr>
+          <tr><td><code>iam.serviceAccountUser</code> <span class="pill">on runtime SA</span></td><td>actAs the compute SA</td><td>Deploy a service that runs as that identity</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note risk reveal">
+      <span class="tag">Blast radius if the token leaked</span>
+      <p>A leaked federated token expires in minutes and only works from a GitHub run that already matched the repo condition. A leaked SA access token could deploy images to <em>this</em> project — but cannot read Supabase data, cannot reach other GCP projects, and there is no static key to find in the first place. Compare that to a JSON key sitting in a CI secret indefinitely.</p>
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <p class="kicker">Secrets</p>
+    <h2>Single source of truth, never in the image</h2>
+    <p>Secret Manager replaces what used to live in Vercel’s env panel. Values are classified by <em>when</em> they’re needed and handled accordingly.</p>
+
+    <div class="grid cols-2">
+      <div class="card reveal">
+        <div class="num">BUILD-TIME</div>
+        <h3>Inlined or discarded</h3>
+        <p><code>NEXT_PUBLIC_*</code> (Supabase URL, publishable key, Sentry DSN) are public-by-design and get baked into the client bundle. <code>SENTRY_AUTH_TOKEN</code> is sensitive but used only to upload source maps — it lives in the <em>builder</em> stage, which is thrown away.</p>
+      </div>
+      <div class="card cyan reveal">
+        <div class="num">RUNTIME</div>
+        <h3>Injected, not baked</h3>
+        <p><code>SENTRY_DSN</code> is mounted into the Cloud Run container from Secret Manager at start-up via <code>--set-secrets</code> — never written into the image layers.</p>
+      </div>
+    </div>
+
+    <div class="diagram reveal">
+      <div class="cap">Secret lifecycle</div>
+      <pre class="mermaid">
+flowchart LR
+  sm[("Secret Manager<br/>eureka-* secrets")]:::violet
+  sm -->|"availableSecrets → build args"| cb["Cloud Build<br/>builder stage"]:::amber
+  cb -->|"inlined into client JS"| img["image (runner stage)"]:::run
+  cb -. "SENTRY_AUTH_TOKEN<br/>stays in discarded stage" .-> trash{{"🗑 not shipped"}}:::warn
+  sm -->|"--set-secrets at deploy"| cr["Cloud Run runtime"]:::run
+
+  classDef violet fill:#16132a,stroke:#b69cff,color:#e9eef5;
+  classDef amber fill:#18212f,stroke:#ffb454,color:#e9eef5;
+  classDef run fill:#18212f,stroke:#c9f24e,color:#e9eef5,stroke-width:2px;
+  classDef warn fill:#1c1710,stroke:#ffb454,color:#ffd9a0;
+      </pre>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap row">
+      <span>Eureka · deployment docs</span>
+      <span><a href="pipeline.html">← Pipeline</a></span>
+      <span><a href="tradeoffs.html">Tradeoffs →</a></span>
+      <span style="margin-left:auto">pool github-pool · SA github-deployer</span>
+    </div>
+  </footer>
+
+  <script type="module" src="assets/mermaid-init.js"></script>
+</body>
+</html>
