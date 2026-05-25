@@ -20,6 +20,10 @@ yarn-error.log*
 .env.local
 .env*.local
 
+# sentry (auth token written by the build plugin)
+.env.sentry-build-plugin
+.sentryclirc
+
 # local databases
 local.db
 src/db/*.sql
@@ -29,6 +33,9 @@ src/db/*.sql-wal
 # build artifacts
 tsconfig.tsbuildinfo
 bun.lock
+
+# yarn (install cache only; .yarn/releases is intentionally tracked)
+.yarn/install-state.gz
 
 # tooling
 .mcp.json

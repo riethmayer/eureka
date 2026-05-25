@@ -1,12 +1,18 @@
 import "../styles/global.css";
 import Navigation from "@/components/navigation";
-import type { Viewport } from "next";
+import * as Sentry from "@sentry/nextjs";
+import type { Metadata, Viewport } from "next";
 
-export const metadata = {
-  title: "Eureka",
-  description: "Eureka is a Mahjong Solitaire Game",
-  icons: { icon: "/icon.svg" },
-};
+export function generateMetadata(): Metadata {
+  return {
+    title: "Eureka",
+    description: "Eureka is a Mahjong Solitaire Game",
+    icons: { icon: "/icon.svg" },
+    other: {
+      ...Sentry.getTraceData(),
+    },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Why Eureka is sometimes hard to reach</title>
+<style>
+  :root{
+    --ink:#1a1c2e; --muted:#5b5f76; --line:#e7e8f0; --bg:#f6f7fb;
+    --green:#1f8a55; --green-bg:#e7f6ee; --amber:#9a6b00; --amber-bg:#fdf3dd;
+    --blue:#2b56d4; --blue-bg:#eaf0ff; --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  html{ -webkit-text-size-adjust:100% }
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:17px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  .wrap{ max-width:780px; margin:0 auto; padding:40px 22px 80px }
+  header.hero{
+    background:linear-gradient(135deg,#2b56d4,#6a3fd0); color:#fff;
+    border-radius:20px; padding:34px 32px; margin-bottom:30px;
+    box-shadow:0 12px 30px rgba(43,86,212,.22);
+  }
+  header.hero .eyebrow{ text-transform:uppercase; letter-spacing:.12em; font-size:12.5px; opacity:.85; margin:0 0 10px }
+  header.hero h1{ margin:0 0 12px; font-size:30px; line-height:1.2; font-weight:700 }
+  header.hero p{ margin:0; font-size:17px; opacity:.95 }
+  header.hero .date{ margin-top:18px; font-size:13px; opacity:.8 }
+
+  .tldr{
+    background:var(--card); border:1px solid var(--line); border-left:5px solid var(--blue);
+    border-radius:14px; padding:22px 24px; margin-bottom:30px;
+  }
+  .tldr h2{ margin:0 0 8px; font-size:15px; text-transform:uppercase; letter-spacing:.08em; color:var(--blue) }
+  .tldr p{ margin:0; font-size:18px }
+  .tldr strong{ color:var(--ink) }
+
+  h2.section{ font-size:21px; margin:38px 0 14px }
+  p{ color:var(--ink) }
+  .lead{ color:var(--muted) }
+
+  .pills{ display:flex; flex-wrap:wrap; gap:10px; margin:8px 0 4px }
+  .pill{ font-size:13.5px; font-weight:600; padding:6px 12px; border-radius:999px; display:inline-flex; gap:7px; align-items:center }
+  .pill.ok{ background:var(--green-bg); color:var(--green) }
+  .pill.warn{ background:var(--amber-bg); color:var(--amber) }
+  .dot{ width:8px;height:8px;border-radius:50% }
+  .dot.ok{ background:var(--green) } .dot.warn{ background:var(--amber) }
+
+  table.checks{ width:100%; border-collapse:collapse; background:var(--card);
+    border:1px solid var(--line); border-radius:14px; overflow:hidden; margin:10px 0 6px; font-size:15.5px }
+  table.checks th, table.checks td{ text-align:left; padding:13px 16px; vertical-align:top; border-bottom:1px solid var(--line) }
+  table.checks th{ background:#fafbff; font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted) }
+  table.checks tr:last-child td{ border-bottom:none }
+  table.checks .verdict{ white-space:nowrap; font-weight:600 }
+  table.checks .verdict.ok{ color:var(--green) }
+  table.checks .verdict.warn{ color:var(--amber) }
+
+  .analogy{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:24px 26px; margin:14px 0 }
+  .analogy h3{ margin:0 0 10px; font-size:18px }
+  .analogy .shop{ display:flex; gap:16px; flex-wrap:wrap; margin-top:16px }
+  .analogy .shop .box{ flex:1 1 220px; background:var(--bg); border-radius:12px; padding:16px 18px }
+  .analogy .shop .box .ic{ font-size:24px }
+  .analogy .shop .box b{ display:block; margin:6px 0 4px }
+  .analogy .shop .box span{ color:var(--muted); font-size:14.5px }
+
+  .callout{ border-radius:14px; padding:18px 22px; margin:18px 0; font-size:16px }
+  .callout.amber{ background:var(--amber-bg); border:1px solid #f0dca6 }
+  .callout.amber b{ color:var(--amber) }
+
+  ol.recs{ counter-reset:r; list-style:none; padding:0; margin:10px 0 }
+  ol.recs li{ counter-increment:r; background:var(--card); border:1px solid var(--line);
+    border-radius:14px; padding:16px 18px 16px 58px; position:relative; margin-bottom:12px }
+  ol.recs li::before{ content:counter(r); position:absolute; left:16px; top:16px;
+    width:28px;height:28px; border-radius:50%; background:var(--blue); color:#fff;
+    font-weight:700; font-size:15px; display:flex; align-items:center; justify-content:center }
+  ol.recs li b{ display:block; margin-bottom:3px }
+  ol.recs li span{ color:var(--muted); font-size:15px }
+
+  footer{ margin-top:42px; padding-top:20px; border-top:1px solid var(--line); color:var(--muted); font-size:13.5px }
+  .glossary{ margin-top:8px }
+  .glossary details{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:4px 16px; margin-bottom:8px }
+  .glossary summary{ cursor:pointer; font-weight:600; padding:10px 0 }
+  .glossary p{ margin:0 0 12px; color:var(--muted); font-size:15px }
+
+  @media print{ body{ background:#fff } header.hero{ box-shadow:none } .wrap{ padding-top:0 } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">Eureka · Service health explained</p>
+    <h1>Why the game is sometimes hard to reach</h1>
+    <p>A plain-language summary of what we looked into, what we found, and what we plan to do about it.</p>
+    <p class="date">Prepared 24 May 2026</p>
+  </header>
+
+  <div class="tldr">
+    <h2>The short version</h2>
+    <p>The game and all of its saved data are <strong>healthy — no faults found</strong>. The website is online right now, and every page loads. The likely reason some people occasionally can't reach it is that <strong>one page (the high-scores leaderboard) is built fresh on every visit and is slow</strong>. Pages built this way can briefly "fall asleep" when traffic is quiet, and waking them up sometimes takes long enough to fail. We have a clear, low-risk fix.</p>
+  </div>
+
+  <h2 class="section">Where we looked</h2>
+  <p class="lead">Think of the app as having three separate parts. We inspected the records (the "logs") for each one.</p>
+
+  <table class="checks">
+    <thead>
+      <tr><th>The part we checked</th><th>In everyday terms</th><th>What we found</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>The data store</b></td>
+        <td>The storeroom where every game and score is kept.</td>
+        <td class="verdict ok">Healthy ✓</td>
+      </tr>
+      <tr>
+        <td><b>Error monitoring</b></td>
+        <td>A brand-new "smoke alarm" that reports problems the moment they happen.</td>
+        <td class="verdict ok">Active, quiet ✓</td>
+      </tr>
+      <tr>
+        <td><b>The website host</b></td>
+        <td>The service that delivers each page to visitors.</td>
+        <td class="verdict warn">Online, but one slow page ⚠</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pills">
+    <span class="pill ok"><span class="dot ok"></span> Storeroom: zero errors in 24 hours</span>
+    <span class="pill ok"><span class="dot ok"></span> Smoke alarm: no real alerts yet</span>
+    <span class="pill warn"><span class="dot warn"></span> Leaderboard page: ~2.5 seconds to load</span>
+  </div>
+
+  <h2 class="section">What we found</h2>
+  <p>The storeroom is in perfect shape — every request to it succeeded, and looking up the top-10 scores takes a fraction of a millisecond. So <b>the data is not the problem</b>.</p>
+  <p>The website is online. Most pages are <b>pre-made</b>, so they appear almost instantly. But the <b>high-scores leaderboard is rebuilt from scratch every single time someone opens it</b>, and that consistently takes about <b>2.5 seconds</b> — while every other page responds in well under half a second. The delay isn't the data (that part is instant); it's the act of assembling that one page on demand.</p>
+
+  <div class="analogy">
+    <h3>An everyday way to picture it</h3>
+    <p>Imagine the game is a shop:</p>
+    <div class="shop">
+      <div class="box">
+        <div class="ic">📦</div>
+        <b>The storeroom</b>
+        <span>Fully stocked and well-organised. Staff find anything instantly. (This is working perfectly.)</span>
+      </div>
+      <div class="box">
+        <div class="ic">📄</div>
+        <b>Most pages</b>
+        <span>Pre-printed flyers by the door — handed out the instant you walk in.</span>
+      </div>
+      <div class="box">
+        <div class="ic">✍️</div>
+        <b>The leaderboard</b>
+        <span>Hand-written fresh for each visitor by a staff member who, when the shop is quiet, has gone to the back and needs a moment to return.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout amber">
+    <b>Why it's "sometimes," not "always":</b> when very few people are visiting, the part of the system that builds that page <b>goes to sleep to save resources</b>. The next visitor has to wait for it to wake up. Usually that's just a slow load — but occasionally the wake-up takes long enough that the visitor gets an error instead of the page. Because it depends on the exact timing of visits, it happens <b>unpredictably</b>, which is why it's been so hard to catch.
+  </div>
+
+  <p>Importantly, these hiccups don't register as "errors" in the traditional sense — the system isn't breaking, it's just being too slow in that one spot. That's exactly why earlier checks came back clean and the cause stayed hidden.</p>
+
+  <h2 class="section">What we recommend</h2>
+  <ol class="recs">
+    <li>
+      <b>Pre-make the leaderboard and refresh it automatically</b>
+      <span>Instead of rebuilding it for every visitor, keep a ready-made copy and refresh it every 30 seconds. It becomes instant and can no longer "fall asleep" or time out. This is the main fix, and it's low-risk.</span>
+    </li>
+    <li>
+      <b>Keep a longer record of front-door traffic</b>
+      <span>Today the host only keeps about an hour of delivery records, so a hiccup is often gone before anyone can look. Extending this means the next occurrence is captured with evidence.</span>
+    </li>
+    <li>
+      <b>Let the new monitoring keep watch</b>
+      <span>The "smoke alarm" we just installed will now flag genuine faults the instant they occur — including a specific configuration slip we want to rule out. No action needed; it simply needs to run.</span>
+    </li>
+  </ol>
+
+  <footer>
+    <p><b>Bottom line:</b> nothing is broken in the game or its data. The intermittent trouble points to one slow, on-demand page that can stall when traffic is light. The recommended fix is straightforward and removes that exposure.</p>
+
+    <div class="glossary">
+      <details>
+        <summary>A few terms, in plain English</summary>
+        <p><b>Pre-made / pre-printed page:</b> a page prepared in advance so it can be shown instantly, the same way to everyone.</p>
+        <p><b>Built on demand:</b> a page assembled freshly each time someone asks for it — more flexible, but slower, and able to "fall asleep" when idle.</p>
+        <p><b>Falling asleep (cold start):</b> to save money and energy, parts of the system that aren't being used pause themselves. The first visitor afterwards has to wait for them to wake up.</p>
+        <p><b>Error monitoring:</b> a tool that automatically reports problems as they happen, so we don't have to wait for someone to notice and complain.</p>
+      </details>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
