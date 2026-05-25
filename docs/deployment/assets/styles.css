@@ -166,6 +166,34 @@ li::marker { color: var(--signal-dim); }
 .diagram .cap::before { content: "◆"; color: var(--cyan); font-size: 9px; }
 .mermaid { display: flex; justify-content: center; padding: 8px; }
 
+/* Diagram toolbar — Diagram/Source toggle + copy ------------------------- */
+.diagram .cap { flex-wrap: wrap; }
+.dgm-bar { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; }
+.dgm-seg { display: inline-flex; border: 1px solid var(--line-2); border-radius: 8px; overflow: hidden; }
+.dgm-tab {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; text-transform: none;
+  padding: 5px 11px; background: transparent; color: var(--muted); border: 0; cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.dgm-tab + .dgm-tab { border-left: 1px solid var(--line-2); }
+.dgm-tab:not(.is-active):hover { color: var(--text); background: var(--ink-3); }
+.dgm-tab.is-active { background: var(--signal); color: var(--ink); font-weight: 600; }
+.dgm-copy {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+  padding: 5px 11px; background: var(--ink-3); color: var(--text-soft);
+  border: 1px solid var(--line-2); border-radius: 8px; cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+.dgm-copy:hover { color: var(--text); border-color: var(--cyan); }
+.dgm-copy.ok { color: var(--signal); border-color: var(--signal-dim); }
+.dgm-graph { display: flex; justify-content: center; padding: 8px; }
+.dgm-source {
+  margin: 6px 0 0; border: 0; border-left: 3px solid var(--violet);
+  background: var(--ink); border-radius: 0 10px 10px 0; max-height: 540px; overflow: auto;
+}
+.dgm-source code { color: var(--text-soft); background: none; border: 0; padding: 0; }
+[hidden] { display: none !important; }
+
 /* Callouts ---------------------------------------------------------------- */
 .note {
   border-left: 3px solid var(--accent, var(--cyan));
