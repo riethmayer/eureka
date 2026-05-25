@@ -9,6 +9,15 @@ vi.mock("@/utils/post-game-state", () => ({
   postGameState: vi.fn().mockResolvedValue({ id: "mock-game-id" }),
 }));
 
+// start() spins a real 1s interval on the singleton store. beforeEach resets
+// state but never clears live intervals, so they leak across tests and keep
+// firing step() on the shared store — which made the autosave test flaky on CI.
+// Clear any live timer after every test in this file.
+afterEach(() => {
+  const { timer } = useGameStore.getState();
+  if (timer) clearInterval(timer);
+  useGameStore.setState({ timer: null });
+});
 
 describe("useGameStore", () => {
   beforeEach(() => {
@@ -836,30 +845,38 @@ describe("Game State Saving", () => {
   });
 
   it("autosaves every 60 seconds", async () => {
-    const { result } = renderHook(() => useGameStore());
+    // Fake timers so the live 1s interval that start() creates can't fire an
+    // extra step() on a slow machine — which would push timePassed to 60 and
+    // trip the autosave early. The test drives time by calling step() manually.
+    vi.useFakeTimers();
+    try {
+      const { result } = renderHook(() => useGameStore());
 
-    await act(async () => {
-      result.current.start();
-      await Promise.resolve();
-    });
+      await act(async () => {
+        result.current.start();
+        await Promise.resolve();
+      });
 
-    expect(postGameState).not.toHaveBeenCalled();
+      expect(postGameState).not.toHaveBeenCalled();
 
-    await act(async () => {
-      for (let i = 0; i < 59; i++) {
+      await act(async () => {
+        for (let i = 0; i < 59; i++) {
+          result.current.step();
+        }
+        await Promise.resolve();
+      });
+
+      expect(postGameState).not.toHaveBeenCalled();
+
+      await act(async () => {
         result.current.step();
-      }
-      await Promise.resolve();
-    });
+        await Promise.resolve();
+      });
 
-    expect(postGameState).not.toHaveBeenCalled();
-
-    await act(async () => {
-      result.current.step();
-      await Promise.resolve();
-    });
-
-    expect(postGameState).toHaveBeenCalled();
+      expect(postGameState).toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("resets gameId when starting a new game to null", async () => {

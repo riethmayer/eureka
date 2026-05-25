@@ -5,6 +5,7 @@ import GameBoard from "@/components/game-board";
 import { useGameStore } from "@/zustand/game-store";
 import { useRouter } from "next/navigation";
 import RankToast from "@/components/rank-toast";
+import StrategySwitcher from "@/components/strategy-switcher";
 
 export default function Game() {
   const gameOver = useGameStore((state) => state.gameOver);
@@ -28,6 +29,7 @@ export default function Game() {
         <GameBoard />
       </div>
       <RankToast />
+      <StrategySwitcher />
     </div>
   );
 }

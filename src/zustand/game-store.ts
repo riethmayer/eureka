@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import type { GameBoard } from "@/types/game-board";
 import { initializeGameBoard } from "@/utils/init-gameboard";
+import { isSelectable } from "@/utils/board-rules";
+import { getOrderStrategy, DEFAULT_STRATEGY } from "@/utils/order-strategies";
 import { postGameState } from "@/utils/post-game-state";
 
 export type Timer = ReturnType<typeof globalThis.setInterval> | null;
@@ -37,6 +39,9 @@ export type State = {
   // True from the moment restart() clears the board until start() finishes
   // initialising the new board. Used to show a loading indicator in GameBoard.
   isRestarting: boolean;
+  // The order strategy the current board was dealt with. Saved with the game so
+  // highscores record which strategy produced the board (historical rows: 'random').
+  strategy: string;
 };
 
 export type Action = {
@@ -55,6 +60,7 @@ export type Action = {
   scoredPair: () => Promise<void>;
   levelCleared: () => Promise<void>;
   continueNextLevel: () => void;
+  redealCurrentLevel: () => void;
   endGame: () => Promise<void>;
   changeName: (name: string) => void;
   withdraw: () => Promise<void>;
@@ -86,6 +92,7 @@ const initialState: State = {
   boardGeneration: 0, // 0 = no game started yet; Date.now() once a game begins
   shouldAnimateOnMount: false,
   isRestarting: false,
+  strategy: DEFAULT_STRATEGY,
 };
 
 // Serialises all saves so concurrent calls never race on gameId.
@@ -151,6 +158,7 @@ export const useGameStore = create<GameStore>()(
         set((prev) => ({
           ...initialState,
           gameBoard: initializeGameBoard(),
+          strategy: getOrderStrategy().name,
           name: prev.name,
           boardGeneration: Date.now(),
           shouldAnimateOnMount: true,
@@ -208,68 +216,9 @@ export const useGameStore = create<GameStore>()(
       },
 
 
-      allowedforSelection: (index: string) => {
-        const { gameBoard: board } = get();
-        const { row, layer, column } = board[index];
-
-        // Check for a tile on a higher layer that visually covers the clicked tile.
-        // Two tiles overlap vertically when row_j + layer_j === row + layer
-        // (both map to the same topFactor). Only the same column can cover a tile
-        // because adjacent columns are spaced 1.02× tile-width apart — no visual overlap.
-        const coveringItem = (row: number, layer: number, column: number) => {
-          return Object.keys(board).filter((j) => {
-            return (
-              board[j].layer > layer &&
-              board[j].column === column &&
-              board[j].row + board[j].layer === row + layer
-            );
-          });
-        };
-
-        const rowItems = (row: number, layer: number) => {
-          return Object.keys(board)
-            .filter((i) => {
-              return board[i].row === row && board[i].layer == layer;
-            });
-        };
-
-        // Check if covering tile exists
-        if (coveringItem(row, layer, column).length !== 0) {
-          return false;
-        };
-
-        switch (true) {
-          // layer 0
-          // see Excalidraw diagram for level 0 edge cases
-          // 30 == left-side top-left
-          case index === "30":
-            return board[42] === undefined;
-          // 41 == right-side top-right
-          case index === "41":
-            return board[55] === undefined;
-          // 42 == left-side left crooked
-          case index === "42" || index === "56":
-            // outermost crooked items, just for documentation sake
-            return true;
-          // 43 == left-side top-right
-          case index === "43":
-            return board[42] === undefined;
-          // 54 == right-side bottom-right
-          case index === "54":
-            return board[55] === undefined;
-          case index === "55": // right-side left crooked
-            return board[56] === undefined;
-          // layer 3
-          case [139, 140, 141, 142].map(String).includes(index):
-            return board[143] === undefined;
-          default:
-            const items = rowItems(row, layer);
-            return (
-              index === String(items[items.length - 1]) ||
-              index === String(items[0])
-            );
-        }
-      },
+      // Freeness is purely geometric, so it lives in a shared pure helper that
+      // the solvable-board generator reuses — keeping game and generator in sync.
+      allowedforSelection: (index: string) => isSelectable(get().gameBoard, index),
 
       clicked: async (index: string) => {
         set((state) => {
@@ -376,9 +325,22 @@ export const useGameStore = create<GameStore>()(
         set(() => ({
           levelClear: false,
           gameBoard: newBoard,
+          strategy: getOrderStrategy().name,
           boardGeneration: Date.now(),
           shouldAnimateOnMount: true,
           timer: globalThis.setInterval(() => get().step(), EVERY_SECOND),
+        }));
+      },
+
+      // Re-deal the current level's board with the active order strategy,
+      // keeping level/score/time. Used by the dev strategy switcher so a
+      // strategy change takes effect on the board immediately.
+      redealCurrentLevel: () => {
+        set((state) => ({
+          gameBoard: initializeGameBoard(state.level),
+          strategy: getOrderStrategy().name,
+          boardGeneration: Date.now(),
+          shouldAnimateOnMount: true,
         }));
       },
 
@@ -446,6 +408,7 @@ export const useGameStore = create<GameStore>()(
               score: state.score,
               maxTime: state.maxTime,
               timePassed: state.timePassed,
+              strategy: state.strategy,
             });
             set({ gameId: savedGame.id });
           } catch (error) {

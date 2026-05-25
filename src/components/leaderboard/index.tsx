@@ -10,6 +10,8 @@ export interface HighscoreRow {
   level: number;
   created_at: string;
   rank: number;
+  // Order strategy the board was dealt with (historical rows: 'random').
+  strategy?: string;
 }
 
 const LIMIT = 10;
@@ -35,6 +37,7 @@ const Leaderboard = ({ initial }: LeaderboardProps) => {
   const name = useGameStore((s) => s.name);
   const score = useGameStore((s) => s.score);
   const level = useGameStore((s) => s.level);
+  const strategy = useGameStore((s) => s.strategy);
 
   const { rows, youId } = useMemo(() => {
     const merged: Omit<HighscoreRow, "rank">[] = initial.map((r) => ({
@@ -43,13 +46,14 @@ const Leaderboard = ({ initial }: LeaderboardProps) => {
       score: r.score,
       level: r.level,
       created_at: r.created_at,
+      strategy: r.strategy,
     }));
 
     let you: string | null = null;
     if (gameId && score > 0) {
       you = gameId;
       if (!merged.some((r) => r.id === gameId)) {
-        merged.push({ id: gameId, name, score, level, created_at: new Date().toISOString() });
+        merged.push({ id: gameId, name, score, level, created_at: new Date().toISOString(), strategy });
       }
     }
 
@@ -63,7 +67,7 @@ const Leaderboard = ({ initial }: LeaderboardProps) => {
     if (you && !ranked.some((r) => r.id === you)) you = null;
 
     return { rows: ranked, youId: you };
-  }, [initial, gameId, name, score, level]);
+  }, [initial, gameId, name, score, level, strategy]);
 
   return (
     <div className="w-full sm:w-[80vw] rounded-2xl overflow-hidden shadow-2xl border border-slate-600 flex flex-col flex-1 min-h-0">
@@ -99,13 +103,20 @@ const Leaderboard = ({ initial }: LeaderboardProps) => {
                     <span className="text-slate-500 text-xl sm:text-3xl font-bold">{entry.rank}</span>
                   )}
                 </span>
-                <span className="flex items-center gap-2 min-w-0 pr-2">
-                  <span className="text-white font-medium truncate text-sm sm:text-lg">
-                    {entry.name || <span className="text-slate-500 italic">Anonymous</span>}
+                <span className="flex flex-col justify-center min-w-0 pr-2">
+                  <span className="flex items-center gap-2 min-w-0">
+                    <span className="text-white font-medium truncate text-sm sm:text-lg">
+                      {entry.name || <span className="text-slate-500 italic">Anonymous</span>}
+                    </span>
+                    {isYou && (
+                      <span className="shrink-0 rounded-full bg-cyan-400/90 text-slate-900 text-[10px] sm:text-xs font-bold px-2 py-0.5 uppercase tracking-wide">
+                        You
+                      </span>
+                    )}
                   </span>
-                  {isYou && (
-                    <span className="shrink-0 rounded-full bg-cyan-400/90 text-slate-900 text-[10px] sm:text-xs font-bold px-2 py-0.5 uppercase tracking-wide">
-                      You
+                  {entry.strategy && (
+                    <span className="text-[10px] sm:text-xs text-slate-500 font-mono tracking-wide truncate">
+                      {entry.strategy}
                     </span>
                   )}
                 </span>
