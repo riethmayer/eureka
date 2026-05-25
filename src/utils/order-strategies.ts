@@ -199,6 +199,17 @@ export const listOrderStrategies = (): Array<{ name: string; description: string
 const DEV = process.env.NODE_ENV !== "production";
 
 let runtimeOverride: string | null = null;
+const strategyListeners = new Set<() => void>();
+
+/** Subscribe to active-strategy changes. Returns an unsubscribe fn.
+ *  Lets the dev switcher reflect the strategy via React's useSyncExternalStore
+ *  (hydration-safe: server snapshot = DEFAULT, client snapshot = resolved). */
+export const subscribeOrderStrategy = (cb: () => void): (() => void) => {
+  strategyListeners.add(cb);
+  return () => {
+    strategyListeners.delete(cb);
+  };
+};
 
 /**
  * Override the active strategy for this session. Pass a name from `STRATEGIES`,
@@ -215,6 +226,7 @@ export const setOrderStrategy = (name: string | null): void => {
   } catch {
     /* localStorage unavailable (SSR / privacy mode) — in-memory override still applies */
   }
+  strategyListeners.forEach((cb) => cb());
 };
 
 /**
