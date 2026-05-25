@@ -88,11 +88,11 @@ export const dealSolvableBoard = (
     solution.push([a, b]);
   });
 
-  // From level 2 onward, mark `level - 1` random tiles as grace tiles. Grace
-  // only *adds* selectability (it bypasses the position rules), so it can never
-  // turn a solvable board unsolvable.
-  if (level >= 2) {
-    const graceCount = Math.min(level - 1, Object.keys(board).length);
+  // Grace tiles (takeable from anywhere) ramp slowly so higher levels don't keep
+  // getting easier: 1 from level 2, 2 from level 5, 3 from level 15 onward. Grace
+  // only *adds* selectability, so it can never turn a solvable board unsolvable.
+  const graceCount = level >= 15 ? 3 : level >= 5 ? 2 : level >= 2 ? 1 : 0;
+  if (graceCount > 0) {
     shuffleInPlace(Object.keys(board), random)
       .slice(0, graceCount)
       .forEach((idx) => {
@@ -114,7 +114,7 @@ export const initializeTestGameBoard = (): GameBoard => {
 };
 
 // Initializes a guaranteed-solvable game board, filled with matched token pairs.
-// From level 2 onward, `level - 1` tiles are marked as grace tiles.
+// Grace tiles ramp slowly with level: 1 from L2, 2 from L5, 3 from L15+.
 export const initializeGameBoard = (level = 1): GameBoard =>
   dealSolvableBoard(level).board;
 

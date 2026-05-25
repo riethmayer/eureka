@@ -72,7 +72,7 @@ describe("solvable board generation", () => {
 
   it("grace tiles never break solvability", () => {
     const { board, solution } = dealSolvableBoard(5);
-    expect(Object.values(board).filter((t) => t.grace)).toHaveLength(4);
+    expect(Object.values(board).filter((t) => t.grace)).toHaveLength(2); // level 5 → 2 grace tiles
     expect(solutionWins(board, solution)).toBe(true);
   });
 });
