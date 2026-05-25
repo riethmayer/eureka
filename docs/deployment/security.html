@@ -98,7 +98,7 @@ sequenceDiagram
         <thead><tr><th>Role</th><th>Grants</th><th>Why it’s needed</th></tr></thead>
         <tbody>
           <tr><td><code>cloudbuild.builds.editor</code></td><td>Submit / run builds</td><td>Trigger the image build</td></tr>
-          <tr><td><code>storage.objectAdmin</code> + bucket <code>storage.admin</code></td><td>Write to the staging bucket</td><td>Upload build source</td></tr>
+          <tr><td><code>storage.admin</code> <span class="pill">project</span></td><td>Bucket get/list + object write</td><td><code>builds submit</code> stages source (needs project-level bucket access)</td></tr>
           <tr><td><code>serviceusage.serviceUsageConsumer</code></td><td>Use project APIs</td><td>Required for <code>builds submit</code></td></tr>
           <tr><td><code>artifactregistry.writer</code></td><td>Read/write images</td><td>Reference the pushed image on deploy</td></tr>
           <tr><td><code>run.admin</code></td><td>Manage Cloud Run</td><td>Create revisions, set public access</td></tr>
@@ -158,6 +158,7 @@ flowchart LR
     </div>
   </footer>
 
-  <script type="module" src="assets/mermaid-init.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script src="assets/docs.js"></script>
 </body>
 </html>
