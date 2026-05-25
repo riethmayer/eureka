@@ -193,6 +193,11 @@ export const listOrderStrategies = (): Array<{ name: string; description: string
 
 /* ----------------------------------------------------- local experimentation */
 
+// Strategy switching is a development-only affordance. In production the
+// strategy is operator-controlled (env or default) so that highscores stay
+// comparable and players can't change the board distribution they're scored on.
+const DEV = process.env.NODE_ENV !== "production";
+
 let runtimeOverride: string | null = null;
 
 /**
@@ -213,29 +218,32 @@ export const setOrderStrategy = (name: string | null): void => {
 };
 
 /**
- * Resolve the active strategy. Resolution order (first hit wins):
- *   1. `setOrderStrategy(...)` runtime override
- *   2. localStorage `eureka.orderStrategy`           (set from the console)
- *   3. `NEXT_PUBLIC_ORDER_STRATEGY` env (build-time)
- *   4. DEFAULT_STRATEGY
- * Re-read on every deal, so flipping strategies live takes effect next board.
+ * Resolve the active strategy.
+ *   Production: `NEXT_PUBLIC_ORDER_STRATEGY` env → DEFAULT_STRATEGY. Player
+ *               overrides (runtime / localStorage) are ignored.
+ *   Development: runtime override → localStorage `eureka.orderStrategy` → env →
+ *               DEFAULT_STRATEGY, re-read every deal so live switching works.
  */
 export const getOrderStrategy = (): OrderStrategy => {
   const fromEnv =
     typeof process !== "undefined" ? process.env?.NEXT_PUBLIC_ORDER_STRATEGY : undefined;
-  let fromStorage: string | null = null;
-  try {
-    if (typeof localStorage !== "undefined") fromStorage = localStorage.getItem("eureka.orderStrategy");
-  } catch {
-    /* ignore */
+  let name = fromEnv ?? DEFAULT_STRATEGY;
+  if (DEV) {
+    let fromStorage: string | null = null;
+    try {
+      if (typeof localStorage !== "undefined") fromStorage = localStorage.getItem("eureka.orderStrategy");
+    } catch {
+      /* ignore */
+    }
+    name = runtimeOverride ?? fromStorage ?? fromEnv ?? DEFAULT_STRATEGY;
   }
-  const name = runtimeOverride ?? fromStorage ?? fromEnv ?? DEFAULT_STRATEGY;
   return STRATEGIES[name] ?? STRATEGIES[DEFAULT_STRATEGY];
 };
 
 // Dev convenience: expose the knobs on window so you can experiment from the
-// browser console, e.g. `eurekaOrder.set('pureRandom')` then start a new game.
-if (typeof window !== "undefined") {
+// browser console, e.g. `eurekaOrder.set('original')` then start a new game.
+// Not exposed in production — the strategy is locked there.
+if (DEV && typeof window !== "undefined") {
   (window as unknown as { eurekaOrder?: unknown }).eurekaOrder = {
     set: setOrderStrategy,
     list: listOrderStrategies,
