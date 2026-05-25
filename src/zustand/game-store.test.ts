@@ -9,6 +9,15 @@ vi.mock("@/utils/post-game-state", () => ({
   postGameState: vi.fn().mockResolvedValue({ id: "mock-game-id" }),
 }));
 
+// start() spins a real 1s interval on the singleton store. beforeEach resets
+// state but never clears live intervals, so they leak across tests and keep
+// firing step() on the shared store — which made the autosave test flaky on CI.
+// Clear any live timer after every test in this file.
+afterEach(() => {
+  const { timer } = useGameStore.getState();
+  if (timer) clearInterval(timer);
+  useGameStore.setState({ timer: null });
+});
 
 describe("useGameStore", () => {
   beforeEach(() => {
