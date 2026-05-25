@@ -1,0 +1,43 @@
+name: Deploy to Cloud Run
+
+# Auto-deploys the app to GCP Cloud Run on every push to master, in parallel
+# with the existing Vercel deployment. Auth is keyless via Workload Identity
+# Federation (no service-account key stored in GitHub). The build itself
+# (Cloud Build running `next build`) is the gate: a broken build produces no
+# new revision, so the currently-serving revision stays up.
+
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  id-token: write # required to mint the OIDC token for WIF
+
+concurrency:
+  group: deploy-gcp
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud (Workload Identity Federation)
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: eureka-362814
+          workload_identity_provider: ${{ vars.WIF_PROVIDER }}
+          service_account: ${{ vars.WIF_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Build & deploy to Cloud Run
+        run: bash deploy/deploy.sh --deploy-only

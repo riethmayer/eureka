@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eureka · Deployment — Overview</title>
+  <meta name="description" content="How Eureka deploys to Google Cloud Run, in parallel with Vercel — the pipeline, the keyless security model, and the tradeoffs." />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="wrap">
+      <a class="brand" href="index.html"><span class="dot"></span>Eureka · Deployment</a>
+      <div class="nav-links">
+        <a class="active" href="index.html">Overview</a>
+        <a href="pipeline.html">Pipeline</a>
+        <a href="security.html">Security</a>
+        <a href="tradeoffs.html">Tradeoffs</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero wrap">
+    <p class="eyebrow reveal">Cloud Run · project eureka-362814</p>
+    <h1 class="reveal">Eureka ships to<br/><em>two clouds</em> at once.</h1>
+    <p class="lede reveal">Every push to <code>master</code> deploys the same Next.js app to <strong>Google Cloud Run</strong> and <strong>Vercel</strong> in parallel — both backed by the same Supabase database. This is the migration path: prove GCP under real traffic, then flip DNS and retire Vercel. No big-bang cutover, no downtime.</p>
+  </header>
+
+  <section class="section wrap">
+    <p class="kicker">The big picture</p>
+    <h2>One repo, two deploys, one database</h2>
+    <p>A merge to <code>master</code> fans out. Vercel’s GitHub integration rebuilds and serves on its domain. In parallel, a GitHub Actions workflow authenticates to Google Cloud <em>without any stored key</em>, builds a container, and rolls it onto Cloud Run. Players hit whichever front door DNS points at — the data they read and write lives in the same place.</p>
+
+    <div class="diagram reveal">
+      <div class="cap">System context — push to live</div>
+      <pre class="mermaid">
+flowchart LR
+  dev([git push to master]):::evt
+  subgraph GH["GitHub · riethmayer/eureka"]
+    repo[("repository")]
+    gha["Actions<br/>deploy-gcp.yml"]
+  end
+  vercel["Vercel<br/>auto-deploy"]:::vercel
+  subgraph GCP["Google Cloud · eureka-362814"]
+    cb["Cloud Build"]:::amber
+    ar[("Artifact<br/>Registry")]
+    run["Cloud Run<br/>eureka-web"]:::run
+  end
+  supa[("Supabase<br/>Postgres + RLS")]:::data
+  users((Players)):::user
+
+  dev --> repo
+  repo --> vercel
+  repo --> gha
+  gha -->|"keyless WIF auth"| cb
+  cb --> ar --> run
+  vercel -. reads/writes .-> supa
+  run -. reads/writes .-> supa
+  users --> vercel
+  users --> run
+
+  classDef evt fill:#0e131c,stroke:#c9f24e,color:#c9f24e;
+  classDef run fill:#18212f,stroke:#c9f24e,color:#e9eef5,stroke-width:2px;
+  classDef vercel fill:#121927,stroke:#7e8da0,color:#b9c4d2,stroke-dasharray:4 3;
+  classDef amber fill:#18212f,stroke:#ffb454,color:#e9eef5;
+  classDef data fill:#101b22,stroke:#5fd5ee,color:#e9eef5;
+  classDef user fill:#16132a,stroke:#b69cff,color:#e9eef5;
+      </pre>
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <p class="kicker">At a glance</p>
+    <h2>What’s running on GCP</h2>
+    <div class="grid cols-3">
+      <div class="card reveal"><div class="num">SERVICE</div><h3>eureka-web</h3><p>Cloud Run, region <code>europe-west1</code>, scales 0→5 instances.</p></div>
+      <div class="card cyan reveal"><div class="num">URL</div><h3>*.run.app</h3><p><a href="https://eureka-web-369713805962.europe-west1.run.app">eureka-web-369713805962.<wbr/>europe-west1.run.app</a></p></div>
+      <div class="card amber reveal"><div class="num">IMAGE</div><h3>Artifact Registry</h3><p><code>europe-west1-docker.pkg.dev/<wbr/>eureka-362814/eureka/eureka-web</code></p></div>
+      <div class="card violet reveal"><div class="num">AUTH</div><h3>Keyless (WIF)</h3><p>GitHub OIDC → <code>github-deployer</code> SA. No key stored anywhere. <a href="security.html">How →</a></p></div>
+      <div class="card data reveal"><div class="num">DATA</div><h3>Supabase</h3><p>Unchanged. Both clouds talk to the same Postgres over RLS-gated keys.</p></div>
+      <div class="card reveal"><div class="num">SENTRY</div><h3>Monitoring</h3><p>Source maps uploaded at build; errors tunneled via <code>/monitoring</code>.</p></div>
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <p class="kicker">Read next</p>
+    <h2>Three ways in</h2>
+    <div class="grid cols-3">
+      <a class="card reveal" href="pipeline.html" style="text-decoration:none">
+        <div class="num">01 — PIPELINE</div><h3 style="color:var(--text)">How a push becomes a revision</h3>
+        <p>The Actions workflow, the multi-stage Docker build, Cloud Build, and the runtime data flow — with sequence diagrams.</p>
+      </a>
+      <a class="card violet reveal" href="security.html" style="text-decoration:none">
+        <div class="num">02 — SECURITY</div><h3 style="color:var(--text)">Keyless auth, explained</h3>
+        <p>The OIDC token exchange, the repo-locked trust condition, least-privilege roles, and how secrets never touch the image.</p>
+      </a>
+      <a class="card amber reveal" href="tradeoffs.html" style="text-decoration:none">
+        <div class="num">03 — TRADEOFFS</div><h3 style="color:var(--text)">Why this, not that</h3>
+        <p>Cloud Run vs GKE vs App Engine vs Vercel; WIF vs service-account keys; Cloud Build vs building in CI.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <p class="kicker">Runbook</p>
+    <h2>Operating it</h2>
+
+    <h4>Deploy a new revision (manual)</h4>
+    <pre><code># full path: bootstrap (idempotent) + build + deploy
+deploy/deploy.sh
+
+# CI path (what GitHub Actions runs): skip bootstrap, just ship
+deploy/deploy.sh --deploy-only</code></pre>
+
+    <h4>Roll back to the previous revision</h4>
+    <pre><code>gcloud run revisions list --service eureka-web --region europe-west1
+gcloud run services update-traffic eureka-web \
+  --region europe-west1 --to-revisions PREVIOUS_REVISION=100</code></pre>
+
+    <h4>Tail logs</h4>
+    <pre><code>gcloud run services logs read eureka-web --region europe-west1 --limit 100</code></pre>
+
+    <h4>Rotate a secret</h4>
+    <pre><code># add a new version, then redeploy to pick it up
+printf '%s' "$NEW_VALUE" | gcloud secrets versions add eureka-sentry-dsn --data-file=-
+deploy/deploy.sh --deploy-only</code></pre>
+
+    <div class="note go reveal">
+      <span class="tag">Migration status</span>
+      <p>Parallel deployment is <strong>live and verified</strong>. Cutover is deliberately deferred: map the production domain to Cloud Run, flip DNS, watch traffic, then retire the Vercel project. Until then, GCP only deploys when the workflow runs — Vercel is untouched.</p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap row">
+      <span>Eureka · deployment docs</span>
+      <span>project <a href="https://console.cloud.google.com/run?project=eureka-362814">eureka-362814</a></span>
+      <span>repo <a href="https://github.com/riethmayer/eureka">riethmayer/eureka</a></span>
+      <span style="margin-left:auto">Built with mermaid.js · self-hosted, no tracking</span>
+    </div>
+  </footer>
+
+  <script type="module" src="assets/mermaid-init.js"></script>
+</body>
+</html>
