@@ -5,6 +5,7 @@ interface RankedHighscore {
   name: string;
   score: number;
   level: number;
+  strategy: string;
   created_at: string;
   rank: number;
 }
@@ -14,7 +15,7 @@ const LIMIT = 10;
 export const getHighscores = async (): Promise<RankedHighscore[]> => {
   const { data, error } = await (getClient() as any) // untyped client
     .from("games")
-    .select("id, name, score, level, created_at")
+    .select("id, name, score, level, strategy, created_at")
     .order("score", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(LIMIT);

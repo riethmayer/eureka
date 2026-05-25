@@ -50,8 +50,13 @@ const HighscoresController = async () => {
                   <span className="text-center text-2xl sm:text-5xl">
                     {medal ? medal.emoji : <span className="text-slate-500 text-xl sm:text-3xl font-bold">{entry.rank}</span>}
                   </span>
-                  <span className="text-white font-medium truncate pr-2 text-sm sm:text-lg">
-                    {entry.name || <span className="text-slate-500 italic">Anonymous</span>}
+                  <span className="flex flex-col justify-center min-w-0 pr-2">
+                    <span className="text-white font-medium truncate text-sm sm:text-lg">
+                      {entry.name || <span className="text-slate-500 italic">Anonymous</span>}
+                    </span>
+                    <span className="text-[10px] sm:text-xs text-slate-500 font-mono tracking-wide truncate">
+                      {entry.strategy}
+                    </span>
                   </span>
                   <span className={`text-right font-bold tabular-nums text-sm sm:text-lg ${medal ? medal.score : "text-white"}`}>
                     {entry.score}

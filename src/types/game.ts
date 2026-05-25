@@ -8,6 +8,8 @@ export type Game = {
   score: number;
   max_time: number;
   time_passed: number;
+  // Order strategy the board was dealt with. Historical rows default to 'random'.
+  strategy: string;
   created_at: string;
 };
 

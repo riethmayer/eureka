@@ -9,6 +9,7 @@ export interface GameStatePayload {
   score: number;
   maxTime: number;
   timePassed: number;
+  strategy: string;
 }
 
 export const postGameState = async (
@@ -25,6 +26,7 @@ export const postGameState = async (
       score: gameState.score,
       max_time: gameState.maxTime,
       time_passed: gameState.timePassed,
+      strategy: gameState.strategy,
     }),
   });
 

@@ -3,6 +3,7 @@ import { devtools } from "zustand/middleware";
 import type { GameBoard } from "@/types/game-board";
 import { initializeGameBoard } from "@/utils/init-gameboard";
 import { isSelectable } from "@/utils/board-rules";
+import { getOrderStrategy, DEFAULT_STRATEGY } from "@/utils/order-strategies";
 import { postGameState } from "@/utils/post-game-state";
 
 export type Timer = ReturnType<typeof globalThis.setInterval> | null;
@@ -38,6 +39,9 @@ export type State = {
   // True from the moment restart() clears the board until start() finishes
   // initialising the new board. Used to show a loading indicator in GameBoard.
   isRestarting: boolean;
+  // The order strategy the current board was dealt with. Saved with the game so
+  // highscores record which strategy produced the board (historical rows: 'random').
+  strategy: string;
 };
 
 export type Action = {
@@ -88,6 +92,7 @@ const initialState: State = {
   boardGeneration: 0, // 0 = no game started yet; Date.now() once a game begins
   shouldAnimateOnMount: false,
   isRestarting: false,
+  strategy: DEFAULT_STRATEGY,
 };
 
 // Serialises all saves so concurrent calls never race on gameId.
@@ -153,6 +158,7 @@ export const useGameStore = create<GameStore>()(
         set((prev) => ({
           ...initialState,
           gameBoard: initializeGameBoard(),
+          strategy: getOrderStrategy().name,
           name: prev.name,
           boardGeneration: Date.now(),
           shouldAnimateOnMount: true,
@@ -319,6 +325,7 @@ export const useGameStore = create<GameStore>()(
         set(() => ({
           levelClear: false,
           gameBoard: newBoard,
+          strategy: getOrderStrategy().name,
           boardGeneration: Date.now(),
           shouldAnimateOnMount: true,
           timer: globalThis.setInterval(() => get().step(), EVERY_SECOND),
@@ -331,6 +338,7 @@ export const useGameStore = create<GameStore>()(
       redealCurrentLevel: () => {
         set((state) => ({
           gameBoard: initializeGameBoard(state.level),
+          strategy: getOrderStrategy().name,
           boardGeneration: Date.now(),
           shouldAnimateOnMount: true,
         }));
@@ -400,6 +408,7 @@ export const useGameStore = create<GameStore>()(
               score: state.score,
               maxTime: state.maxTime,
               timePassed: state.timePassed,
+              strategy: state.strategy,
             });
             set({ gameId: savedGame.id });
           } catch (error) {
