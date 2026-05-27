@@ -321,7 +321,9 @@ export const useGameStore = create<GameStore>()(
       isLevelClear: () => get().levelClear,
 
       continueNextLevel: () => {
-        const newBoard = initializeGameBoard(get().level);
+        const { timer: prevTimer, level } = get();
+        if (prevTimer) globalThis.clearInterval(prevTimer);
+        const newBoard = initializeGameBoard(level);
         set(() => ({
           levelClear: false,
           gameBoard: newBoard,
