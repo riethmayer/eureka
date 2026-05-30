@@ -327,6 +327,7 @@ export const useGameStore = create<GameStore>()(
         set(() => ({
           levelClear: false,
           gameBoard: newBoard,
+          timePassed: 0,
           strategy: getOrderStrategy().name,
           boardGeneration: Date.now(),
           shouldAnimateOnMount: true,

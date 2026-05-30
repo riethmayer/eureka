@@ -648,6 +648,23 @@ describe("Board Generation", () => {
     expect(result.current.shouldAnimateOnMount).toBe(true);
   });
 
+  it("continueNextLevel resets timePassed to 0 so the progress bar starts full", async () => {
+    const { result } = renderHook(() => useGameStore());
+
+    await act(async () => {
+      await result.current.start();
+      await result.current.step();
+      await result.current.step();
+      await result.current.step();
+    });
+    expect(result.current.timePassed).toBe(3);
+
+    await act(async () => { await result.current.levelCleared(); });
+    act(() => { result.current.continueNextLevel(); });
+
+    expect(result.current.timePassed).toBe(0);
+  });
+
   it("shouldAnimateOnMount is not changed by pause() or resume()", async () => {
     const { result } = renderHook(() => useGameStore());
     await act(async () => { await result.current.start(); });
